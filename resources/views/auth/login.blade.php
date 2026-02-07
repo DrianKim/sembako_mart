@@ -9,6 +9,7 @@
     <!-- Google Fonts - Source Sans Pro -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap"
         rel="stylesheet">
 
@@ -20,6 +21,24 @@
     <div class="absolute top-0 right-6">
         <img src="{{ asset('img/logo_toko_sembako.png') }}" alt="Logo Toko Sembako" class="h-24 w-24">
     </div>
+
+    <!-- Back Button di pojok kiri atas -->
+    <div class="absolute top-6 left-6">
+        <a href="/"
+            class="text-orange-500 hover:text-orange-800 hover:scale-110 transition-transform duration-200 text-3xl font-bold">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+    </div>
+
+    {{-- <div class="absolute top-6 left-6">
+        <a href="/" class="flex items-center text-orange-500 hover:text-orange-800 transition-all duration-200">
+            <!-- Icon panah kiri -->
+            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Kembali
+        </a>
+    </div> --}}
 
     <!-- Login Container -->
     <div class="bg-white rounded-2xl shadow-2xl overflow-hidden max-w-5xl w-full grid md:grid-cols-2">
@@ -77,7 +96,7 @@
                         </svg>
                     </div>
                     <input type="text" name="username" placeholder="Username" value="{{ old('username') }}" required
-                        class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all">
+                        class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all">
                 </div>
 
                 <!-- Password Field -->
@@ -89,14 +108,25 @@
                         </svg>
                     </div>
                     <input type="password" name="password" placeholder="Password" required
-                        class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all">
+                        class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all">
+                </div>
+
+                <!-- Back -->
+                <div class="text-center">
+                    <p class="text-gray-400 text-xs text-justify leading-relaxed">
+                        Login ini hanya diperuntukkan bagi kasir, admin, dan owner.
+                        Gunakan dengan aman dan jangan sebar informasi akun ke orang lain.
+                        Semua aktivitas di halaman ini akan tercatat untuk keperluan audit dan manajemen.
+                        Jika ada masalah login, hubungi pemilik toko atau admin IT.
+                    </p>
                 </div>
 
                 <!-- Login Button -->
                 <button type="submit"
-                    class="w-full bg-gradient-to-r from-[#EB661B] to-[#EDD38C] hover:from-[#D95A15] hover:to-[#E0C97A] text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
+                    class="w-full bg-gradient-to-r from-[#22C55E] to-[#10B981] hover:from-[#16A34A] hover:to-[#059669] text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
                     LOGIN
                 </button>
+
             </form>
         </div>
     </div>
