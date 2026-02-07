@@ -18,7 +18,7 @@
 <body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
     <!-- Logo -->
     <div class="absolute top-0 right-6">
-        <img src="{{ asset('img/logo_toko_sembako.png') }}" alt="Logo Toko Sembako" class="h-28 w-28">
+        <img src="{{ asset('img/logo_toko_sembako.png') }}" alt="Logo Toko Sembako" class="h-24 w-24">
     </div>
 
     <!-- Login Container -->
