@@ -817,14 +817,30 @@
     <script>
         let clickCount = 0;
         const logo = document.getElementById('logo');
+
         logo.addEventListener('click', () => {
             clickCount++;
             if (clickCount === 3) {
-                window.location.href = '/login';
+                fetch('/allow-login', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Content-Type': 'application/json',
+                        },
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.href = '/login';
+                        }
+                    })
+                    .catch(err => console.error(err));
+
+                clickCount = 0;
             }
+
             setTimeout(() => {
                 clickCount = 0;
-            }, 1000);
+            }, 1200);
         });
     </script>
 </body>

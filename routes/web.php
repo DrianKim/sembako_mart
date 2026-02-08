@@ -8,7 +8,16 @@ Route::get('/', function () {
 });
 
 // Halaman Login
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+
+Route::get('/login', [AuthController::class, 'showLoginForm'])
+    ->name('login')
+    ->middleware('hide.login');
+
+Route::post('/allow-login', function () {
+    session(['allow_login_access' => true]);
+    return response()->json(['success' => true]);
+})->middleware('web');
+
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 
 // Logout
