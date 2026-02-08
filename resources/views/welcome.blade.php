@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sembako Mart - Toko Sembako Terpercaya di Kota Anda</title>
+    <link rel="icon" type="image/png" href="{{ asset('img/logo_toko_sembako.png') }}">
     <!-- Google Fonts - Source Sans Pro -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -134,7 +135,6 @@
                 <a href="#tentang" class="block py-2 font-semibold text-gray-700 hover:text-green-500">Tentang Kami</a>
                 <a href="#produk" class="block py-2 font-semibold text-gray-700 hover:text-green-500">Produk</a>
                 <a href="#lokasi" class="block py-2 font-semibold text-gray-700 hover:text-green-500">Lokasi</a>
-                <a href="#kontak" class="block py-2 font-semibold text-gray-700 hover:text-green-500">Kontak</a>
             </div>
         </div>
     </nav>
@@ -319,19 +319,17 @@
             </div>
             <!-- Product Categories -->
             <div class="grid gap-6 mb-12 md:grid-cols-4">
-                <!-- Category 1 -->
+
+                <!-- 1. Beras Premium -->
                 <div
                     class="overflow-hidden transition-all duration-300 transform bg-white shadow-lg product-card rounded-2xl hover:shadow-2xl hover:-translate-y-2">
-                    <div
-                        class="relative flex items-center justify-center h-48 bg-gradient-to-br from-green-400 to-green-200">
-                        <div class="absolute px-3 py-1 rounded-full top-3 right-3 bg-white/20 backdrop-blur-sm">
+                    <div class="relative flex items-center justify-center h-48">
+                        <img src="{{ asset('img/beras_premium.jpg') }}" alt="Beras Premium"
+                            class="object-cover w-full h-full rounded-t-2xl">
+                        <div
+                            class="absolute px-3 py-1 rounded-full shadow-md top-3 right-3 bg-green-700/90 backdrop-blur-sm">
                             <span class="text-xs font-semibold text-white">Stok Tersedia</span>
                         </div>
-                        <svg class="w-20 h-20 text-white drop-shadow-lg" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                        </svg>
                     </div>
                     <div class="p-6">
                         <h3 class="mb-2 text-xl font-bold text-gray-800">Beras Premium</h3>
@@ -339,7 +337,6 @@
                         <div class="flex items-center justify-between mb-4">
                             <span class="text-lg font-bold text-green-600">Mulai Rp 50.000</span>
                         </div>
-                        <!-- Order Button -->
                         <a href="https://wa.me/6285143266694?text=Halo,%20saya%20ingin%20membeli%20*Beras%20Premium*%0AApakah%20stok%20tersedia?"
                             target="_blank"
                             class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
@@ -351,19 +348,17 @@
                         </a>
                     </div>
                 </div>
-                <!-- Category 2 -->
+
+                <!-- 2. Minyak Goreng -->
                 <div
                     class="overflow-hidden transition-all duration-300 transform bg-white shadow-lg product-card rounded-2xl hover:shadow-2xl hover:-translate-y-2">
-                    <div
-                        class="relative flex items-center justify-center h-48 bg-gradient-to-br from-green-400 to-green-200">
-                        <div class="absolute px-3 py-1 rounded-full top-3 right-3 bg-white/20 backdrop-blur-sm">
+                    <div class="relative flex items-center justify-center h-48">
+                        <img src="{{ asset('img/minyak_goreng.jpg') }}" alt="Minyak Goreng"
+                            class="object-cover w-full h-full rounded-t-2xl">
+                        <div
+                            class="absolute px-3 py-1 rounded-full shadow-md top-3 right-3 bg-green-700/90 backdrop-blur-sm">
                             <span class="text-xs font-semibold text-white">Stok Tersedia</span>
                         </div>
-                        <svg class="w-20 h-20 text-white drop-shadow-lg" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                        </svg>
                     </div>
                     <div class="p-6">
                         <h3 class="mb-2 text-xl font-bold text-gray-800">Minyak Goreng</h3>
@@ -371,7 +366,6 @@
                         <div class="flex items-center justify-between mb-4">
                             <span class="text-lg font-bold text-green-600">Mulai Rp 15.000</span>
                         </div>
-                        <!-- Order Button -->
                         <a href="https://wa.me/6285143266694?text=Halo,%20saya%20ingin%20membeli%20*Minyak%20Goreng*%0AApakah%20stok%20tersedia?"
                             target="_blank"
                             class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
@@ -383,19 +377,17 @@
                         </a>
                     </div>
                 </div>
-                <!-- Category 3 -->
+
+                <!-- 3. Bumbu Dapur -->
                 <div
                     class="overflow-hidden transition-all duration-300 transform bg-white shadow-lg product-card rounded-2xl hover:shadow-2xl hover:-translate-y-2">
-                    <div
-                        class="relative flex items-center justify-center h-48 bg-gradient-to-br from-green-400 to-green-200">
-                        <div class="absolute px-3 py-1 rounded-full top-3 right-3 bg-white/20 backdrop-blur-sm">
+                    <div class="relative flex items-center justify-center h-48">
+                        <img src="{{ asset('img/bumbu_dapur.jpg') }}" alt="Bumbu Dapur"
+                            class="object-cover w-full h-full rounded-t-2xl">
+                        <div
+                            class="absolute px-3 py-1 rounded-full shadow-md top-3 right-3 bg-green-700/90 backdrop-blur-sm">
                             <span class="text-xs font-semibold text-white">Stok Tersedia</span>
                         </div>
-                        <svg class="w-20 h-20 text-white drop-shadow-lg" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                        </svg>
                     </div>
                     <div class="p-6">
                         <h3 class="mb-2 text-xl font-bold text-gray-800">Bumbu Dapur</h3>
@@ -403,7 +395,6 @@
                         <div class="flex items-center justify-between mb-4">
                             <span class="text-lg font-bold text-green-600">Mulai Rp 5.000</span>
                         </div>
-                        <!-- Order Button -->
                         <a href="https://wa.me/6285143266694?text=Halo,%20saya%20ingin%20membeli%20*Bumbu%20Dapur*%0AApakah%20stok%20tersedia?"
                             target="_blank"
                             class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
@@ -415,19 +406,17 @@
                         </a>
                     </div>
                 </div>
-                <!-- Category 4 -->
+
+                <!-- 4. Makanan Instan -->
                 <div
                     class="overflow-hidden transition-all duration-300 transform bg-white shadow-lg product-card rounded-2xl hover:shadow-2xl hover:-translate-y-2">
-                    <div
-                        class="relative flex items-center justify-center h-48 bg-gradient-to-br from-green-400 to-green-200">
-                        <div class="absolute px-3 py-1 rounded-full top-3 right-3 bg-white/20 backdrop-blur-sm">
+                    <div class="relative flex items-center justify-center h-48">
+                        <img src="{{ asset('img/makanan_instan.jpg') }}" alt="Makanan Instan"
+                            class="object-cover w-full h-full rounded-t-2xl">
+                        <div
+                            class="absolute px-3 py-1 rounded-full shadow-md top-3 right-3 bg-green-700/90 backdrop-blur-sm">
                             <span class="text-xs font-semibold text-white">Stok Tersedia</span>
                         </div>
-                        <svg class="w-20 h-20 text-white drop-shadow-lg" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                        </svg>
                     </div>
                     <div class="p-6">
                         <h3 class="mb-2 text-xl font-bold text-gray-800">Makanan Instan</h3>
@@ -435,7 +424,6 @@
                         <div class="flex items-center justify-between mb-4">
                             <span class="text-lg font-bold text-green-600">Mulai Rp 2.500</span>
                         </div>
-                        <!-- Order Button -->
                         <a href="https://wa.me/6285143266694?text=Halo,%20saya%20ingin%20membeli%20*Makanan%20Instan*%0AApakah%20stok%20tersedia?"
                             target="_blank"
                             class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
@@ -447,19 +435,17 @@
                         </a>
                     </div>
                 </div>
-                <!-- Category 5 -->
+
+                <!-- 5. Gula & Kopi -->
                 <div
                     class="overflow-hidden transition-all duration-300 transform bg-white shadow-lg product-card rounded-2xl hover:shadow-2xl hover:-translate-y-2">
-                    <div
-                        class="relative flex items-center justify-center h-48 bg-gradient-to-br from-green-400 to-green-200">
-                        <div class="absolute px-3 py-1 rounded-full top-3 right-3 bg-white/20 backdrop-blur-sm">
+                    <div class="relative flex items-center justify-center h-48">
+                        <img src="{{ asset('img/gula_kopi.jpg') }}" alt="Gula & Kopi"
+                            class="object-cover w-full h-full rounded-t-2xl">
+                        <div
+                            class="absolute px-3 py-1 rounded-full shadow-md top-3 right-3 bg-green-700/90 backdrop-blur-sm">
                             <span class="text-xs font-semibold text-white">Stok Tersedia</span>
                         </div>
-                        <svg class="w-20 h-20 text-white drop-shadow-lg" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
-                        </svg>
                     </div>
                     <div class="p-6">
                         <h3 class="mb-2 text-xl font-bold text-gray-800">Gula & Kopi</h3>
@@ -467,7 +453,6 @@
                         <div class="flex items-center justify-between mb-4">
                             <span class="text-lg font-bold text-green-600">Mulai Rp 10.000</span>
                         </div>
-                        <!-- Order Button -->
                         <a href="https://wa.me/6285143266694?text=Halo,%20saya%20ingin%20membeli%20*Gula%20%26%20Kopi*%0AApakah%20stok%20tersedia?"
                             target="_blank"
                             class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
@@ -479,19 +464,17 @@
                         </a>
                     </div>
                 </div>
-                <!-- Category 6 -->
+
+                <!-- 6. Sabun & Detergen -->
                 <div
                     class="overflow-hidden transition-all duration-300 transform bg-white shadow-lg product-card rounded-2xl hover:shadow-2xl hover:-translate-y-2">
-                    <div
-                        class="relative flex items-center justify-center h-48 bg-gradient-to-br from-green-400 to-green-200">
-                        <div class="absolute px-3 py-1 rounded-full top-3 right-3 bg-white/20 backdrop-blur-sm">
+                    <div class="relative flex items-center justify-center h-48">
+                        <img src="{{ asset('img/sabun_detergen.jpg') }}" alt="Sabun & Detergen"
+                            class="object-cover w-full h-full rounded-t-2xl">
+                        <div
+                            class="absolute px-3 py-1 rounded-full shadow-md top-3 right-3 bg-green-700/90 backdrop-blur-sm">
                             <span class="text-xs font-semibold text-white">Stok Tersedia</span>
                         </div>
-                        <svg class="w-20 h-20 text-white drop-shadow-lg" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                        </svg>
                     </div>
                     <div class="p-6">
                         <h3 class="mb-2 text-xl font-bold text-gray-800">Sabun & Detergen</h3>
@@ -499,7 +482,6 @@
                         <div class="flex items-center justify-between mb-4">
                             <span class="text-lg font-bold text-green-600">Mulai Rp 3.000</span>
                         </div>
-                        <!-- Order Button -->
                         <a href="https://wa.me/6285143266694?text=Halo,%20saya%20ingin%20membeli%20*Sabun%20%26%20Detergen*%0AApakah%20stok%20tersedia?"
                             target="_blank"
                             class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
@@ -511,19 +493,17 @@
                         </a>
                     </div>
                 </div>
-                <!-- Category 7 -->
+
+                <!-- 7. Telur & Susu -->
                 <div
                     class="overflow-hidden transition-all duration-300 transform bg-white shadow-lg product-card rounded-2xl hover:shadow-2xl hover:-translate-y-2">
-                    <div
-                        class="relative flex items-center justify-center h-48 bg-gradient-to-br from-green-400 to-green-200">
-                        <div class="absolute px-3 py-1 rounded-full top-3 right-3 bg-white/20 backdrop-blur-sm">
+                    <div class="relative flex items-center justify-center h-48">
+                        <img src="{{ asset('img/susu_telur.jpg') }}" alt="Telur & Susu"
+                            class="object-cover w-full h-full rounded-t-2xl">
+                        <div
+                            class="absolute px-3 py-1 rounded-full shadow-md top-3 right-3 bg-green-700/90 backdrop-blur-sm">
                             <span class="text-xs font-semibold text-white">Stok Tersedia</span>
                         </div>
-                        <svg class="w-20 h-20 text-white drop-shadow-lg" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
                     </div>
                     <div class="p-6">
                         <h3 class="mb-2 text-xl font-bold text-gray-800">Telur & Susu</h3>
@@ -531,10 +511,9 @@
                         <div class="flex items-center justify-between mb-4">
                             <span class="text-lg font-bold text-green-600">Mulai Rp 25.000</span>
                         </div>
-                        <!-- Order Button -->
                         <a href="https://wa.me/6285143266694?text=Halo,%20saya%20ingin%20membeli%20*Telur%20%26%20Susu*%0AApakah%20stok%20tersedia?"
                             target="_blank"
-                            class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green   -700 text-white font-semibold py-3 px-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
+                            class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                 <path
                                     d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
@@ -543,19 +522,17 @@
                         </a>
                     </div>
                 </div>
-                <!-- Category 8 -->
+
+                <!-- 8. Snack & Minuman -->
                 <div
                     class="overflow-hidden transition-all duration-300 transform bg-white shadow-lg product-card rounded-2xl hover:shadow-2xl hover:-translate-y-2">
-                    <div
-                        class="relative flex items-center justify-center h-48 bg-gradient-to-br from-green-400 to-green-200">
-                        <div class="absolute px-3 py-1 rounded-full top-3 right-3 bg-white/20 backdrop-blur-sm">
+                    <div class="relative flex items-center justify-center h-48">
+                        <img src="{{ asset('img/snack_minuman.jpg') }}" alt="Snack & Minuman"
+                            class="object-cover w-full h-full rounded-t-2xl">
+                        <div
+                            class="absolute px-3 py-1 rounded-full shadow-md top-3 right-3 bg-green-700/90 backdrop-blur-sm">
                             <span class="text-xs font-semibold text-white">Stok Tersedia</span>
                         </div>
-                        <svg class="w-20 h-20 text-white drop-shadow-lg" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-                        </svg>
                     </div>
                     <div class="p-6">
                         <h3 class="mb-2 text-xl font-bold text-gray-800">Snack & Minuman</h3>
@@ -563,7 +540,6 @@
                         <div class="flex items-center justify-between mb-4">
                             <span class="text-lg font-bold text-green-600">Mulai Rp 1.000</span>
                         </div>
-                        <!-- Order Button -->
                         <a href="https://wa.me/6285143266694?text=Halo,%20saya%20ingin%20membeli%20*Snack%20%26%20Minuman*%0AApakah%20stok%20tersedia?"
                             target="_blank"
                             class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
@@ -640,9 +616,9 @@
                             <div>
                                 <h3 class="mb-2 text-lg font-bold text-gray-800">Alamat Lengkap</h3>
                                 <p class="leading-relaxed text-gray-600">
-                                    Jl. Raya Sembako No. 123<br>
-                                    Kelurahan Makmur, Kecamatan Sejahtera<br>
-                                    Jakarta Selatan 12345
+                                    Gg. A. Ipeng 44 <br>
+                                    Karanganyar, Kec. Subang, Kabupaten Subang <br>
+                                    Jawa Barat 41211
                                 </p>
                             </div>
                         </div>
@@ -670,7 +646,7 @@
                         </div>
                     </div>
                     <!-- Contact Info -->
-                    <div
+                    {{-- <div
                         class="p-6 transition-all duration-300 border-2 border-green-100 bg-gradient-to-br from-green-50 to-white rounded-2xl hover:shadow-lg">
                         <div class="flex items-start space-x-4">
                             <div
@@ -690,7 +666,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                     <!-- Direction Button -->
                     <a href="https://maps.google.com" target="_blank"
                         class="block w-full bg-gradient-to-r from-[#22C55E] to-[#10B981] hover:from-[#16A34A] hover:to-[#059669] text-white font-bold py-4 rounded-lg shadow-lg hover:shadow-xl text-center transform hover:-translate-y-1 transition-all duration-200">
@@ -723,7 +699,6 @@
                         <li><a href="#tentang" class="transition hover:text-green-400">Tentang Kami</a></li>
                         <li><a href="#produk" class="transition hover:text-green-400">Produk</a></li>
                         <li><a href="#lokasi" class="transition hover:text-green-400">Lokasi</a></li>
-                        <li><a href="#kontak" class="transition hover:text-green-400">Kontak</a></li>
                     </ul>
                 </div>
                 <!-- Products -->
@@ -757,14 +732,14 @@
                     </p>
                     <!-- Social Media -->
                     <div class="flex space-x-4">
-                        <a href="#"
+                        <a href="https://www.facebook.com/muhamad.enza.3" target="_blank"
                             class="w-10 h-10 bg-gradient-to-r from-[#22C55E] to-[#10B981] rounded-full flex items-center justify-center hover:opacity-80 transition">
                             <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                                 <path
                                     d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                             </svg>
                         </a>
-                        <a href="#"
+                        <a href="https://www.instagram.com/inkspirationpress" target="_blank"
                             class="w-10 h-10 bg-gradient-to-r from-[#FB923C] to-[#F97316] rounded-full flex items-center justify-center hover:opacity-80 transition">
                             <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                                 <path
@@ -773,7 +748,8 @@
                                     d="M12 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zm0 10.162a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
                             </svg>
                         </a>
-                        <a href="https://wa.me/6281234567890" target="_blank"
+                        <a href="https://wa.me/6285143266694?text=Halo,%20saya%20ingin%20membeli%20*Sesuatu*%0AApakah%20stok%20tersedia?"
+                            target="_blank"
                             class="w-10 h-10 bg-gradient-to-r from-[#22C55E] to-[#10B981] rounded-full flex items-center justify-center hover:opacity-80 transition">
                             <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                                 <path
