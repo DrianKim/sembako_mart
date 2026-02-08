@@ -717,8 +717,8 @@
                     <h4 class="mb-4 text-lg font-bold">Hubungi Kami</h4>
                     <ul class="space-y-2 text-sm text-gray-400">
                         <li>📍 Gg. A. Ipeng 44<br>Subang</li>
-                        <li>📞 (021) 1234-5678</li>
-                        <li>📱 +62 812-3456-7890</li>
+                        {{-- <li>📞 (021) 1234-5678</li> --}}
+                        <li>📱 +62 851-4326-6694</li>
                         <li>✉️ info@sembakomart.com</li>
                     </ul>
                 </div>
