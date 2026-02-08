@@ -135,7 +135,7 @@
     <!-- Footer -->
     <div class="absolute w-full text-center bottom-8">
         <p class="text-sm text-gray-600">
-            © 2026 Sembako Mart. Made with <span class="text-red-500">❤</span> by <span class="font-semibold">𝓟</span>
+            © 2026 Sembako Mart.Made with <span class="text-red-500">❤</span> by <span class="font-semibold">𝓟</span>
         </p>
     </div>
 </body>
