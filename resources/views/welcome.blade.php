@@ -89,15 +89,15 @@
     </style>
 </head>
 
-<body class="bg-white font-sans">
+<body class="font-sans bg-white">
     <!-- Navigation Bar -->
-    <nav class="fixed w-full bg-white/95 backdrop-blur-sm shadow-md z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
+    <nav class="fixed z-50 w-full shadow-md bg-white/95 backdrop-blur-sm">
+        <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
                 <!-- Logo -->
                 <div class="flex items-center space-x-3">
                     <img id="logo" src="{{ asset('img/logo_toko_sembako.png') }}" alt="Logo Sembako Mart"
-                        class="h-14 w-14 cursor-pointer">
+                        class="cursor-pointer h-14 w-14">
                     <div>
                         <h1 class="text-2xl font-bold">
                             <span style="color: #EB661B;">S</span><span class="gradient-text">embako Mart</span>
@@ -106,20 +106,21 @@
                     </div>
                 </div>
                 <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="#beranda" class="text-gray-700 hover:text-green-500 font-semibold transition">Beranda</a>
-                    <a href="#tentang" class="text-gray-700 hover:text-green-500 font-semibold transition">Tentang
+                <div class="items-center hidden space-x-8 md:flex">
+                    <a href="#beranda" class="font-semibold text-gray-700 transition hover:text-green-500">Beranda</a>
+                    <a href="#tentang" class="font-semibold text-gray-700 transition hover:text-green-500">Tentang
                         Kami</a>
-                    <a href="#produk" class="text-gray-700 hover:text-green-500 font-semibold transition">Produk</a>
-                    <a href="#lokasi" class="text-gray-700 hover:text-green-500 font-semibold transition">Lokasi</a>
+                    <a href="#produk" class="font-semibold text-gray-700 transition hover:text-green-500">Produk</a>
+                    <a href="#lokasi" class="font-semibold text-gray-700 transition hover:text-green-500">Lokasi</a>
                     <a href="https://wa.me/6285143266694?text=Halo,%20saya%20ingin%20membeli%20*Sesuatu*%0AApakah%20stok%20tersedia?"
+                        target="_blank"
                         class="bg-gradient-to-r from-[#22C55E] to-[#10B981] text-white px-6 py-2.5 rounded-full font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-200">
                         Hubungi Kami
                     </a>
                 </div>
                 <!-- Mobile Menu Button -->
-                <button id="mobile-menu-btn" class="md:hidden text-gray-700 hover:text-green-500">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button id="mobile-menu-btn" class="text-gray-700 md:hidden hover:text-green-500">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
@@ -127,30 +128,30 @@
             </div>
         </div>
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+        <div id="mobile-menu" class="hidden bg-white border-t md:hidden">
             <div class="px-4 pt-2 pb-4 space-y-2">
-                <a href="#beranda" class="block py-2 text-gray-700 hover:text-green-500 font-semibold">Beranda</a>
-                <a href="#tentang" class="block py-2 text-gray-700 hover:text-green-500 font-semibold">Tentang Kami</a>
-                <a href="#produk" class="block py-2 text-gray-700 hover:text-green-500 font-semibold">Produk</a>
-                <a href="#lokasi" class="block py-2 text-gray-700 hover:text-green-500 font-semibold">Lokasi</a>
-                <a href="#kontak" class="block py-2 text-gray-700 hover:text-green-500 font-semibold">Kontak</a>
+                <a href="#beranda" class="block py-2 font-semibold text-gray-700 hover:text-green-500">Beranda</a>
+                <a href="#tentang" class="block py-2 font-semibold text-gray-700 hover:text-green-500">Tentang Kami</a>
+                <a href="#produk" class="block py-2 font-semibold text-gray-700 hover:text-green-500">Produk</a>
+                <a href="#lokasi" class="block py-2 font-semibold text-gray-700 hover:text-green-500">Lokasi</a>
+                <a href="#kontak" class="block py-2 font-semibold text-gray-700 hover:text-green-500">Kontak</a>
             </div>
         </div>
     </nav>
     <!-- Hero Section -->
     <section id="beranda" class="pt-32 pb-20 bg-gradient-to-br from-green-50 via-white to-green-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid md:grid-cols-2 gap-12 items-center">
+        <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div class="grid items-center gap-12 md:grid-cols-2">
                 <!-- Left Content -->
                 <div class="animate-fade-in-up">
-                    <div class="inline-block bg-gradient-to-r from-green-100 to-green-100 px-4 py-2 rounded-full mb-4">
+                    <div class="inline-block px-4 py-2 mb-4 rounded-full bg-gradient-to-r from-green-100 to-green-100">
                         <span class="text-sm font-semibold text-green-700">🎉 Buka Setiap Hari</span>
                     </div>
-                    <h1 class="text-5xl md:text-6xl font-bold text-gray-800 mb-6 leading-tight">
+                    <h1 class="mb-6 text-5xl font-bold leading-tight text-gray-800 md:text-6xl">
                         Belanja <span style="color: #EB661B;">S</span><span class="gradient-text">embako</span> Lengkap
                         & Terpercaya!
                     </h1>
-                    <p class="text-xl text-gray-600 mb-8 leading-relaxed">
+                    <p class="mb-8 text-xl leading-relaxed text-gray-600">
                         Dapatkan kebutuhan sembako harian Anda dengan harga terjangkau dan kualitas terjamin. Kami
                         melayani dengan sepenuh hati!
                     </p>
@@ -158,47 +159,47 @@
                     <div class="grid grid-cols-2 gap-4 mb-8">
                         <div class="flex items-center space-x-3">
                             <div
-                                class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                class="flex items-center justify-center flex-shrink-0 w-10 h-10 bg-orange-100 rounded-full">
                                 <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7" />
                                 </svg>
                             </div>
-                            <span class="text-gray-700 font-semibold">Harga Terjangkau</span>
+                            <span class="font-semibold text-gray-700">Harga Terjangkau</span>
                         </div>
                         <div class="flex items-center space-x-3">
                             <div
-                                class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                class="flex items-center justify-center flex-shrink-0 w-10 h-10 bg-green-100 rounded-full">
                                 <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7" />
                                 </svg>
                             </div>
-                            <span class="text-gray-700 font-semibold">Produk Lengkap</span>
+                            <span class="font-semibold text-gray-700">Produk Lengkap</span>
                         </div>
                         <div class="flex items-center space-x-3">
                             <div
-                                class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                class="flex items-center justify-center flex-shrink-0 w-10 h-10 bg-orange-100 rounded-full">
                                 <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7" />
                                 </svg>
                             </div>
-                            <span class="text-gray-700 font-semibold">Kualitas Terjamin</span>
+                            <span class="font-semibold text-gray-700">Kualitas Terjamin</span>
                         </div>
                         <div class="flex items-center space-x-3">
                             <div
-                                class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                class="flex items-center justify-center flex-shrink-0 w-10 h-10 bg-green-100 rounded-full">
                                 <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7" />
                                 </svg>
                             </div>
-                            <span class="text-gray-700 font-semibold">Lokasi Strategis</span>
+                            <span class="font-semibold text-gray-700">Lokasi Strategis</span>
                         </div>
                     </div>
                     <div class="flex flex-wrap gap-4">
@@ -207,16 +208,16 @@
                             Lihat Produk
                         </a>
                         <a href="#lokasi"
-                            class="bg-white border-2 border-green-500 text-green-600 px-8 py-4 rounded-lg font-bold text-lg hover:bg-green-50 transform hover:-translate-y-1 transition-all duration-200">
+                            class="px-8 py-4 text-lg font-bold text-green-600 transition-all duration-200 transform bg-white border-2 border-green-500 rounded-lg hover:bg-green-50 hover:-translate-y-1">
                             Kunjungi Toko
                         </a>
                     </div>
                 </div>
                 <!-- Right Image -->
                 <div class="relative">
-                    <div class="absolute -top-4 -right-4 w-72 h-72 bg-green-200 rounded-full opacity-20 blur-3xl">
+                    <div class="absolute bg-green-200 rounded-full -top-4 -right-4 w-72 h-72 opacity-20 blur-3xl">
                     </div>
-                    <div class="absolute -bottom-4 -left-4 w-72 h-72 bg-orange-200 rounded-full opacity-20 blur-3xl">
+                    <div class="absolute bg-orange-200 rounded-full -bottom-4 -left-4 w-72 h-72 opacity-20 blur-3xl">
                     </div>
                     <img src="{{ asset('img/fotologin.png') }}" alt="Shopping"
                         class="relative z-10 w-full h-auto animate-float drop-shadow-2xl">
@@ -226,20 +227,20 @@
     </section>
     <!-- About Section -->
     <section id="tentang" class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+        <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div class="mb-16 text-center">
+                <h2 class="mb-4 text-4xl font-bold text-gray-800 md:text-5xl">
                     Tentang Sembako Mart
                     {{-- <span class="gradient-text"></span> --}}
                 </h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                <p class="max-w-3xl mx-auto text-xl text-gray-600">
                     Toko sembako terpercaya yang telah melayani kebutuhan masyarakat dengan dedikasi tinggi
                 </p>
             </div>
-            <div class="grid md:grid-cols-3 gap-8">
+            <div class="grid gap-8 md:grid-cols-3">
                 <!-- Value 1 -->
                 <div
-                    class="bg-gradient-to-br from-green-50 to-white p-8 rounded-2xl border-2 border-green-100 hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300">
+                    class="p-8 transition-all duration-300 transform border-2 border-green-100 bg-gradient-to-br from-green-50 to-white rounded-2xl hover:shadow-xl hover:-translate-y-2">
                     <div
                         class="w-16 h-16 bg-gradient-to-r from-[#22C55E] to-[#10B981] rounded-xl flex items-center justify-center mb-6">
                         <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -247,14 +248,14 @@
                                 d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-3">Buka Setiap Hari</h3>
-                    <p class="text-gray-600 leading-relaxed">
+                    <h3 class="mb-3 text-2xl font-bold text-gray-800">Buka Setiap Hari</h3>
+                    <p class="leading-relaxed text-gray-600">
                         Kami buka setiap hari untuk melayani kebutuhan sembako Anda. Senin - Minggu, pagi hingga malam.
                     </p>
                 </div>
                 <!-- Value 2 -->
                 <div
-                    class="bg-gradient-to-br from-orange-50 to-white p-8 rounded-2xl border-2 border-orange-100 hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300">
+                    class="p-8 transition-all duration-300 transform border-2 border-orange-100 bg-gradient-to-br from-orange-50 to-white rounded-2xl hover:shadow-xl hover:-translate-y-2">
                     <div
                         class="w-16 h-16 bg-gradient-to-r from-[#FB923C] to-[#F97316] rounded-xl flex items-center justify-center mb-6">
                         <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -262,14 +263,14 @@
                                 d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                         </svg>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-3">Produk Berkualitas</h3>
-                    <p class="text-gray-600 leading-relaxed">
+                    <h3 class="mb-3 text-2xl font-bold text-gray-800">Produk Berkualitas</h3>
+                    <p class="leading-relaxed text-gray-600">
                         Semua produk yang kami jual adalah produk pilihan dengan kualitas terjamin dan harga bersaing.
                     </p>
                 </div>
                 <!-- Value 3 -->
                 <div
-                    class="bg-gradient-to-br from-green-50 to-white p-8 rounded-2xl border-2 border-green-100 hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300">
+                    class="p-8 transition-all duration-300 transform border-2 border-green-100 bg-gradient-to-br from-green-50 to-white rounded-2xl hover:shadow-xl hover:-translate-y-2">
                     <div
                         class="w-16 h-16 bg-gradient-to-r from-[#22C55E] to-[#10B981] rounded-xl flex items-center justify-center mb-6">
                         <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -277,54 +278,54 @@
                                 d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-3">Pelayanan Ramah</h3>
-                    <p class="text-gray-600 leading-relaxed">
+                    <h3 class="mb-3 text-2xl font-bold text-gray-800">Pelayanan Ramah</h3>
+                    <p class="leading-relaxed text-gray-600">
                         Tim kami siap melayani Anda dengan ramah dan membantu menemukan produk yang Anda butuhkan.
                     </p>
                 </div>
             </div>
             <!-- Stats -->
-            <div class="grid md:grid-cols-4 gap-8 mt-16">
+            <div class="grid gap-8 mt-16 md:grid-cols-4">
                 <div class="text-center">
-                    <div class="text-5xl font-bold gradient-text mb-2">5+</div>
-                    <div class="text-gray-600 font-semibold">Tahun Beroperasi</div>
+                    <div class="mb-2 text-5xl font-bold gradient-text">5+</div>
+                    <div class="font-semibold text-gray-600">Tahun Beroperasi</div>
                 </div>
                 <div class="text-center">
-                    <div class="text-5xl font-bold gradient-text mb-2">500+</div>
-                    <div class="text-gray-600 font-semibold">Produk Tersedia</div>
+                    <div class="mb-2 text-5xl font-bold gradient-text">500+</div>
+                    <div class="font-semibold text-gray-600">Produk Tersedia</div>
                 </div>
                 <div class="text-center">
-                    <div class="text-5xl font-bold gradient-text mb-2">1000+</div>
-                    <div class="text-gray-600 font-semibold">Pelanggan Setia</div>
+                    <div class="mb-2 text-5xl font-bold gradient-text">1000+</div>
+                    <div class="font-semibold text-gray-600">Pelanggan Setia</div>
                 </div>
                 <div class="text-center">
-                    <div class="text-5xl font-bold gradient-text mb-2">100%</div>
-                    <div class="text-gray-600 font-semibold">Kepuasan</div>
+                    <div class="mb-2 text-5xl font-bold gradient-text">100%</div>
+                    <div class="font-semibold text-gray-600">Kepuasan</div>
                 </div>
             </div>
         </div>
     </section>
     <!-- Products Section -->
     <section id="produk" class="py-20 bg-gradient-to-br from-green-50 via-white to-green-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+        <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div class="mb-16 text-center">
+                <h2 class="mb-4 text-4xl font-bold text-gray-800 md:text-5xl">
                     Produk Kami
                     {{-- <span class="gradient-text"></span> --}}
                 </h2>
-                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                <p class="max-w-2xl mx-auto text-xl text-gray-600">
                     Berbagai macam kebutuhan sembako berkualitas dengan harga terjangkau
                 </p>
             </div>
             <!-- Product Categories -->
-            <div class="grid md:grid-cols-4 gap-6 mb-12">
+            <div class="grid gap-6 mb-12 md:grid-cols-4">
                 <!-- Category 1 -->
                 <div
-                    class="product-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300">
+                    class="overflow-hidden transition-all duration-300 transform bg-white shadow-lg product-card rounded-2xl hover:shadow-2xl hover:-translate-y-2">
                     <div
-                        class="h-48 bg-gradient-to-br from-green-400 to-green-200 flex items-center justify-center relative">
-                        <div class="absolute top-3 right-3 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
-                            <span class="text-white text-xs font-semibold">Stok Tersedia</span>
+                        class="relative flex items-center justify-center h-48 bg-gradient-to-br from-green-400 to-green-200">
+                        <div class="absolute px-3 py-1 rounded-full top-3 right-3 bg-white/20 backdrop-blur-sm">
+                            <span class="text-xs font-semibold text-white">Stok Tersedia</span>
                         </div>
                         <svg class="w-20 h-20 text-white drop-shadow-lg" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
@@ -333,10 +334,10 @@
                         </svg>
                     </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">Beras Premium</h3>
-                        <p class="text-gray-600 text-sm mb-4">Berbagai merk beras pilihan berkualitas</p>
+                        <h3 class="mb-2 text-xl font-bold text-gray-800">Beras Premium</h3>
+                        <p class="mb-4 text-sm text-gray-600">Berbagai merk beras pilihan berkualitas</p>
                         <div class="flex items-center justify-between mb-4">
-                            <span class="text-green-600 font-bold text-lg">Mulai Rp 50.000</span>
+                            <span class="text-lg font-bold text-green-600">Mulai Rp 50.000</span>
                         </div>
                         <!-- Order Button -->
                         <a href="https://wa.me/6285143266694?text=Halo,%20saya%20ingin%20membeli%20*Beras%20Premium*%0AApakah%20stok%20tersedia?"
@@ -352,11 +353,11 @@
                 </div>
                 <!-- Category 2 -->
                 <div
-                    class="product-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300">
+                    class="overflow-hidden transition-all duration-300 transform bg-white shadow-lg product-card rounded-2xl hover:shadow-2xl hover:-translate-y-2">
                     <div
-                        class="h-48 bg-gradient-to-br from-green-400 to-green-200 flex items-center justify-center relative">
-                        <div class="absolute top-3 right-3 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
-                            <span class="text-white text-xs font-semibold">Stok Tersedia</span>
+                        class="relative flex items-center justify-center h-48 bg-gradient-to-br from-green-400 to-green-200">
+                        <div class="absolute px-3 py-1 rounded-full top-3 right-3 bg-white/20 backdrop-blur-sm">
+                            <span class="text-xs font-semibold text-white">Stok Tersedia</span>
                         </div>
                         <svg class="w-20 h-20 text-white drop-shadow-lg" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
@@ -365,10 +366,10 @@
                         </svg>
                     </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">Minyak Goreng</h3>
-                        <p class="text-gray-600 text-sm mb-4">Minyak goreng berkualitas untuk masak</p>
+                        <h3 class="mb-2 text-xl font-bold text-gray-800">Minyak Goreng</h3>
+                        <p class="mb-4 text-sm text-gray-600">Minyak goreng berkualitas untuk masak</p>
                         <div class="flex items-center justify-between mb-4">
-                            <span class="text-green-600 font-bold text-lg">Mulai Rp 15.000</span>
+                            <span class="text-lg font-bold text-green-600">Mulai Rp 15.000</span>
                         </div>
                         <!-- Order Button -->
                         <a href="https://wa.me/6285143266694?text=Halo,%20saya%20ingin%20membeli%20*Minyak%20Goreng*%0AApakah%20stok%20tersedia?"
@@ -384,11 +385,11 @@
                 </div>
                 <!-- Category 3 -->
                 <div
-                    class="product-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300">
+                    class="overflow-hidden transition-all duration-300 transform bg-white shadow-lg product-card rounded-2xl hover:shadow-2xl hover:-translate-y-2">
                     <div
-                        class="h-48 bg-gradient-to-br from-green-400 to-green-200 flex items-center justify-center relative">
-                        <div class="absolute top-3 right-3 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
-                            <span class="text-white text-xs font-semibold">Stok Tersedia</span>
+                        class="relative flex items-center justify-center h-48 bg-gradient-to-br from-green-400 to-green-200">
+                        <div class="absolute px-3 py-1 rounded-full top-3 right-3 bg-white/20 backdrop-blur-sm">
+                            <span class="text-xs font-semibold text-white">Stok Tersedia</span>
                         </div>
                         <svg class="w-20 h-20 text-white drop-shadow-lg" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
@@ -397,10 +398,10 @@
                         </svg>
                     </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">Bumbu Dapur</h3>
-                        <p class="text-gray-600 text-sm mb-4">Lengkapi dapur dengan bumbu pilihan</p>
+                        <h3 class="mb-2 text-xl font-bold text-gray-800">Bumbu Dapur</h3>
+                        <p class="mb-4 text-sm text-gray-600">Lengkapi dapur dengan bumbu pilihan</p>
                         <div class="flex items-center justify-between mb-4">
-                            <span class="text-green-600 font-bold text-lg">Mulai Rp 5.000</span>
+                            <span class="text-lg font-bold text-green-600">Mulai Rp 5.000</span>
                         </div>
                         <!-- Order Button -->
                         <a href="https://wa.me/6285143266694?text=Halo,%20saya%20ingin%20membeli%20*Bumbu%20Dapur*%0AApakah%20stok%20tersedia?"
@@ -416,11 +417,11 @@
                 </div>
                 <!-- Category 4 -->
                 <div
-                    class="product-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300">
+                    class="overflow-hidden transition-all duration-300 transform bg-white shadow-lg product-card rounded-2xl hover:shadow-2xl hover:-translate-y-2">
                     <div
-                        class="h-48 bg-gradient-to-br from-green-400 to-green-200 flex items-center justify-center relative">
-                        <div class="absolute top-3 right-3 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
-                            <span class="text-white text-xs font-semibold">Stok Tersedia</span>
+                        class="relative flex items-center justify-center h-48 bg-gradient-to-br from-green-400 to-green-200">
+                        <div class="absolute px-3 py-1 rounded-full top-3 right-3 bg-white/20 backdrop-blur-sm">
+                            <span class="text-xs font-semibold text-white">Stok Tersedia</span>
                         </div>
                         <svg class="w-20 h-20 text-white drop-shadow-lg" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
@@ -429,10 +430,10 @@
                         </svg>
                     </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">Makanan Instan</h3>
-                        <p class="text-gray-600 text-sm mb-4">Mie instan dan makanan siap saji</p>
+                        <h3 class="mb-2 text-xl font-bold text-gray-800">Makanan Instan</h3>
+                        <p class="mb-4 text-sm text-gray-600">Mie instan dan makanan siap saji</p>
                         <div class="flex items-center justify-between mb-4">
-                            <span class="text-green-600 font-bold text-lg">Mulai Rp 2.500</span>
+                            <span class="text-lg font-bold text-green-600">Mulai Rp 2.500</span>
                         </div>
                         <!-- Order Button -->
                         <a href="https://wa.me/6285143266694?text=Halo,%20saya%20ingin%20membeli%20*Makanan%20Instan*%0AApakah%20stok%20tersedia?"
@@ -448,11 +449,11 @@
                 </div>
                 <!-- Category 5 -->
                 <div
-                    class="product-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300">
+                    class="overflow-hidden transition-all duration-300 transform bg-white shadow-lg product-card rounded-2xl hover:shadow-2xl hover:-translate-y-2">
                     <div
-                        class="h-48 bg-gradient-to-br from-green-400 to-green-200 flex items-center justify-center relative">
-                        <div class="absolute top-3 right-3 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
-                            <span class="text-white text-xs font-semibold">Stok Tersedia</span>
+                        class="relative flex items-center justify-center h-48 bg-gradient-to-br from-green-400 to-green-200">
+                        <div class="absolute px-3 py-1 rounded-full top-3 right-3 bg-white/20 backdrop-blur-sm">
+                            <span class="text-xs font-semibold text-white">Stok Tersedia</span>
                         </div>
                         <svg class="w-20 h-20 text-white drop-shadow-lg" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
@@ -461,10 +462,10 @@
                         </svg>
                     </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">Gula & Kopi</h3>
-                        <p class="text-gray-600 text-sm mb-4">Gula pasir, gula merah, kopi sachet</p>
+                        <h3 class="mb-2 text-xl font-bold text-gray-800">Gula & Kopi</h3>
+                        <p class="mb-4 text-sm text-gray-600">Gula pasir, gula merah, kopi sachet</p>
                         <div class="flex items-center justify-between mb-4">
-                            <span class="text-green-600 font-bold text-lg">Mulai Rp 10.000</span>
+                            <span class="text-lg font-bold text-green-600">Mulai Rp 10.000</span>
                         </div>
                         <!-- Order Button -->
                         <a href="https://wa.me/6285143266694?text=Halo,%20saya%20ingin%20membeli%20*Gula%20%26%20Kopi*%0AApakah%20stok%20tersedia?"
@@ -480,11 +481,11 @@
                 </div>
                 <!-- Category 6 -->
                 <div
-                    class="product-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300">
+                    class="overflow-hidden transition-all duration-300 transform bg-white shadow-lg product-card rounded-2xl hover:shadow-2xl hover:-translate-y-2">
                     <div
-                        class="h-48 bg-gradient-to-br from-green-400 to-green-200 flex items-center justify-center relative">
-                        <div class="absolute top-3 right-3 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
-                            <span class="text-white text-xs font-semibold">Stok Tersedia</span>
+                        class="relative flex items-center justify-center h-48 bg-gradient-to-br from-green-400 to-green-200">
+                        <div class="absolute px-3 py-1 rounded-full top-3 right-3 bg-white/20 backdrop-blur-sm">
+                            <span class="text-xs font-semibold text-white">Stok Tersedia</span>
                         </div>
                         <svg class="w-20 h-20 text-white drop-shadow-lg" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
@@ -493,10 +494,10 @@
                         </svg>
                     </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">Sabun & Detergen</h3>
-                        <p class="text-gray-600 text-sm mb-4">Kebutuhan mandi dan cuci pakaian</p>
+                        <h3 class="mb-2 text-xl font-bold text-gray-800">Sabun & Detergen</h3>
+                        <p class="mb-4 text-sm text-gray-600">Kebutuhan mandi dan cuci pakaian</p>
                         <div class="flex items-center justify-between mb-4">
-                            <span class="text-green-600 font-bold text-lg">Mulai Rp 3.000</span>
+                            <span class="text-lg font-bold text-green-600">Mulai Rp 3.000</span>
                         </div>
                         <!-- Order Button -->
                         <a href="https://wa.me/6285143266694?text=Halo,%20saya%20ingin%20membeli%20*Sabun%20%26%20Detergen*%0AApakah%20stok%20tersedia?"
@@ -512,11 +513,11 @@
                 </div>
                 <!-- Category 7 -->
                 <div
-                    class="product-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300">
+                    class="overflow-hidden transition-all duration-300 transform bg-white shadow-lg product-card rounded-2xl hover:shadow-2xl hover:-translate-y-2">
                     <div
-                        class="h-48 bg-gradient-to-br from-green-400 to-green-200 flex items-center justify-center relative">
-                        <div class="absolute top-3 right-3 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
-                            <span class="text-white text-xs font-semibold">Stok Tersedia</span>
+                        class="relative flex items-center justify-center h-48 bg-gradient-to-br from-green-400 to-green-200">
+                        <div class="absolute px-3 py-1 rounded-full top-3 right-3 bg-white/20 backdrop-blur-sm">
+                            <span class="text-xs font-semibold text-white">Stok Tersedia</span>
                         </div>
                         <svg class="w-20 h-20 text-white drop-shadow-lg" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
@@ -525,10 +526,10 @@
                         </svg>
                     </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">Telur & Susu</h3>
-                        <p class="text-gray-600 text-sm mb-4">Telur ayam segar dan susu kotak</p>
+                        <h3 class="mb-2 text-xl font-bold text-gray-800">Telur & Susu</h3>
+                        <p class="mb-4 text-sm text-gray-600">Telur ayam segar dan susu kotak</p>
                         <div class="flex items-center justify-between mb-4">
-                            <span class="text-green-600 font-bold text-lg">Mulai Rp 25.000</span>
+                            <span class="text-lg font-bold text-green-600">Mulai Rp 25.000</span>
                         </div>
                         <!-- Order Button -->
                         <a href="https://wa.me/6285143266694?text=Halo,%20saya%20ingin%20membeli%20*Telur%20%26%20Susu*%0AApakah%20stok%20tersedia?"
@@ -544,11 +545,11 @@
                 </div>
                 <!-- Category 8 -->
                 <div
-                    class="product-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300">
+                    class="overflow-hidden transition-all duration-300 transform bg-white shadow-lg product-card rounded-2xl hover:shadow-2xl hover:-translate-y-2">
                     <div
-                        class="h-48 bg-gradient-to-br from-green-400 to-green-200 flex items-center justify-center relative">
-                        <div class="absolute top-3 right-3 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
-                            <span class="text-white text-xs font-semibold">Stok Tersedia</span>
+                        class="relative flex items-center justify-center h-48 bg-gradient-to-br from-green-400 to-green-200">
+                        <div class="absolute px-3 py-1 rounded-full top-3 right-3 bg-white/20 backdrop-blur-sm">
+                            <span class="text-xs font-semibold text-white">Stok Tersedia</span>
                         </div>
                         <svg class="w-20 h-20 text-white drop-shadow-lg" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
@@ -557,10 +558,10 @@
                         </svg>
                     </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">Snack & Minuman</h3>
-                        <p class="text-gray-600 text-sm mb-4">Cemilan dan minuman dingin segar</p>
+                        <h3 class="mb-2 text-xl font-bold text-gray-800">Snack & Minuman</h3>
+                        <p class="mb-4 text-sm text-gray-600">Cemilan dan minuman dingin segar</p>
                         <div class="flex items-center justify-between mb-4">
-                            <span class="text-green-600 font-bold text-lg">Mulai Rp 1.000</span>
+                            <span class="text-lg font-bold text-green-600">Mulai Rp 1.000</span>
                         </div>
                         <!-- Order Button -->
                         <a href="https://wa.me/6285143266694?text=Halo,%20saya%20ingin%20membeli%20*Snack%20%26%20Minuman*%0AApakah%20stok%20tersedia?"
@@ -576,7 +577,7 @@
                 </div>
             </div>
             <!-- Product Note -->
-            <div class="bg-white rounded-2xl shadow-lg p-8 border-2 border-green-100">
+            <div class="p-8 bg-white border-2 border-green-100 shadow-lg rounded-2xl">
                 <div class="flex items-start space-x-4">
                     <div
                         class="w-12 h-12 bg-gradient-to-r from-[#22C55E] to-[#10B981] rounded-lg flex items-center justify-center flex-shrink-0">
@@ -586,8 +587,8 @@
                         </svg>
                     </div>
                     <div>
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">Catatan Penting</h3>
-                        <p class="text-gray-600 leading-relaxed">
+                        <h3 class="mb-2 text-xl font-bold text-gray-800">Catatan Penting</h3>
+                        <p class="leading-relaxed text-gray-600">
                             Harga dapat berubah sewaktu-waktu mengikuti harga pasar. Stok produk selalu kami update
                             untuk memastikan ketersediaan.
                             Untuk info produk dan harga terbaru, silakan kunjungi toko kami langsung atau hubungi nomor
@@ -600,31 +601,31 @@
     </section>
     <!-- Location Section -->
     <section id="lokasi" class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+        <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div class="mb-16 text-center">
+                <h2 class="mb-4 text-4xl font-bold text-gray-800 md:text-5xl">
                     Lokasi Toko
                     {{-- <span class="gradient-text"></span> --}}
                 </h2>
-                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                <p class="max-w-2xl mx-auto text-xl text-gray-600">
                     Temukan kami di lokasi yang strategis dan mudah dijangkau
                 </p>
             </div>
-            <div class="grid md:grid-cols-2 gap-12">
+            <div class="grid gap-12 md:grid-cols-2">
                 <!-- Map -->
-                <div class="rounded-2xl overflow-hidden shadow-xl">
+                <div class="overflow-hidden shadow-xl rounded-2xl">
                     <iframe
                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d700.6873417953105!2d107.77299258192721!3d-6.56124109264776!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e693b7aeba2cdd7%3A0x6592eba2241aae3b!2sGg.%20A.%20Ipeng%2044%2C%20Karanganyar%2C%20Kec.%20Subang%2C%20Kabupaten%20Subang%2C%20Jawa%20Barat%2041211!5e0!3m2!1sid!2sid!4v1770466474492!5m2!1sid!2sid"
                         width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"
                         referrerpolicy="no-referrer-when-downgrade"
-                        class="grayscale hover:grayscale-0 transition duration-300">
+                        class="transition duration-300 grayscale hover:grayscale-0">
                     </iframe>
                 </div>
                 <!-- Store Info -->
                 <div class="space-y-6">
                     <!-- Address -->
                     <div
-                        class="bg-gradient-to-br from-green-50 to-white p-6 rounded-2xl border-2 border-green-100 hover:shadow-lg transition-all duration-300">
+                        class="p-6 transition-all duration-300 border-2 border-green-100 bg-gradient-to-br from-green-50 to-white rounded-2xl hover:shadow-lg">
                         <div class="flex items-start space-x-4">
                             <div
                                 class="w-12 h-12 bg-gradient-to-r from-[#22C55E] to-[#10B981] rounded-lg flex items-center justify-center flex-shrink-0">
@@ -637,8 +638,8 @@
                                 </svg>
                             </div>
                             <div>
-                                <h3 class="font-bold text-gray-800 text-lg mb-2">Alamat Lengkap</h3>
-                                <p class="text-gray-600 leading-relaxed">
+                                <h3 class="mb-2 text-lg font-bold text-gray-800">Alamat Lengkap</h3>
+                                <p class="leading-relaxed text-gray-600">
                                     Jl. Raya Sembako No. 123<br>
                                     Kelurahan Makmur, Kecamatan Sejahtera<br>
                                     Jakarta Selatan 12345
@@ -648,7 +649,7 @@
                     </div>
                     <!-- Opening Hours -->
                     <div
-                        class="bg-gradient-to-br from-orange-50 to-white p-6 rounded-2xl border-2 border-orange-100 hover:shadow-lg transition-all duration-300">
+                        class="p-6 transition-all duration-300 border-2 border-orange-100 bg-gradient-to-br from-orange-50 to-white rounded-2xl hover:shadow-lg">
                         <div class="flex items-start space-x-4">
                             <div
                                 class="w-12 h-12 bg-gradient-to-r from-[#FB923C] to-[#F97316] rounded-lg flex items-center justify-center flex-shrink-0">
@@ -659,18 +660,18 @@
                                 </svg>
                             </div>
                             <div>
-                                <h3 class="font-bold text-gray-800 text-lg mb-2">Jam Operasional</h3>
+                                <h3 class="mb-2 text-lg font-bold text-gray-800">Jam Operasional</h3>
                                 <div class="space-y-1 text-gray-600">
                                     <p><span class="font-semibold">Senin - Sabtu:</span> 07.00 - 21.00 WIB</p>
                                     <p><span class="font-semibold">Minggu:</span> 08.00 - 20.00 WIB</p>
-                                    <p class="text-green-600 font-semibold mt-2">✓ Buka Setiap Hari</p>
+                                    <p class="mt-2 font-semibold text-green-600">✓ Buka Setiap Hari</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <!-- Contact Info -->
                     <div
-                        class="bg-gradient-to-br from-green-50 to-white p-6 rounded-2xl border-2 border-green-100 hover:shadow-lg transition-all duration-300">
+                        class="p-6 transition-all duration-300 border-2 border-green-100 bg-gradient-to-br from-green-50 to-white rounded-2xl hover:shadow-lg">
                         <div class="flex items-start space-x-4">
                             <div
                                 class="w-12 h-12 bg-gradient-to-r from-[#22C55E] to-[#10B981] rounded-lg flex items-center justify-center flex-shrink-0">
@@ -681,7 +682,7 @@
                                 </svg>
                             </div>
                             <div>
-                                <h3 class="font-bold text-gray-800 text-lg mb-2">Hubungi Kami</h3>
+                                <h3 class="mb-2 text-lg font-bold text-gray-800">Hubungi Kami</h3>
                                 <div class="space-y-1 text-gray-600">
                                     <p><span class="font-semibold">Telepon:</span> (021) 1234-5678</p>
                                     <p><span class="font-semibold">WhatsApp:</span> +62 812-3456-7890</p>
@@ -700,35 +701,35 @@
         </div>
     </section>
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid md:grid-cols-4 gap-8 mb-8">
+    <footer class="py-12 text-white bg-gray-900">
+        <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div class="grid gap-8 mb-8 md:grid-cols-4">
                 <!-- About -->
                 <div>
-                    <div class="flex items-center space-x-2 mb-4">
-                        <img src="{{ asset('img/logo_toko_sembako.png') }}" alt="Logo" class="h-10 w-10">
+                    <div class="flex items-center mb-4 space-x-2">
+                        <img src="{{ asset('img/logo_toko_sembako.png') }}" alt="Logo" class="w-10 h-10">
                         <span class="text-xl font-bold">Sembako Mart</span>
                     </div>
-                    <p class="text-gray-400 text-sm leading-relaxed">
+                    <p class="text-sm leading-relaxed text-gray-400">
                         Toko sembako terpercaya yang melayani kebutuhan sehari-hari Anda dengan harga terjangkau dan
                         kualitas terjamin.
                     </p>
                 </div>
                 <!-- Quick Links -->
                 <div>
-                    <h4 class="font-bold text-lg mb-4">Menu</h4>
-                    <ul class="space-y-2 text-gray-400 text-sm">
-                        <li><a href="#beranda" class="hover:text-green-400 transition">Beranda</a></li>
-                        <li><a href="#tentang" class="hover:text-green-400 transition">Tentang Kami</a></li>
-                        <li><a href="#produk" class="hover:text-green-400 transition">Produk</a></li>
-                        <li><a href="#lokasi" class="hover:text-green-400 transition">Lokasi</a></li>
-                        <li><a href="#kontak" class="hover:text-green-400 transition">Kontak</a></li>
+                    <h4 class="mb-4 text-lg font-bold">Menu</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#beranda" class="transition hover:text-green-400">Beranda</a></li>
+                        <li><a href="#tentang" class="transition hover:text-green-400">Tentang Kami</a></li>
+                        <li><a href="#produk" class="transition hover:text-green-400">Produk</a></li>
+                        <li><a href="#lokasi" class="transition hover:text-green-400">Lokasi</a></li>
+                        <li><a href="#kontak" class="transition hover:text-green-400">Kontak</a></li>
                     </ul>
                 </div>
                 <!-- Products -->
                 <div>
-                    <h4 class="font-bold text-lg mb-4">Produk Kami</h4>
-                    <ul class="space-y-2 text-gray-400 text-sm">
+                    <h4 class="mb-4 text-lg font-bold">Produk Kami</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
                         <li>Beras & Minyak Goreng</li>
                         <li>Bumbu Dapur</li>
                         <li>Makanan Instan</li>
@@ -738,8 +739,8 @@
                 </div>
                 <!-- Contact -->
                 <div>
-                    <h4 class="font-bold text-lg mb-4">Hubungi Kami</h4>
-                    <ul class="space-y-2 text-gray-400 text-sm">
+                    <h4 class="mb-4 text-lg font-bold">Hubungi Kami</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
                         <li>📍 Gg. A. Ipeng 44<br>Subang</li>
                         <li>📞 (021) 1234-5678</li>
                         <li>📱 +62 812-3456-7890</li>
@@ -748,9 +749,9 @@
                 </div>
             </div>
             <!-- Bottom Footer -->
-            <div class="border-t border-gray-800 pt-8">
-                <div class="flex flex-col md:flex-row justify-between items-center">
-                    <p class="text-gray-400 text-sm mb-4 md:mb-0">
+            <div class="pt-8 border-t border-gray-800">
+                <div class="flex flex-col items-center justify-between md:flex-row">
+                    <p class="mb-4 text-sm text-gray-400 md:mb-0">
                         © 2026 Sembako Mart. Made with <span class="text-red-500">❤</span> by <span
                             class="font-semibold">𝓟</span>
                     </p>

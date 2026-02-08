@@ -13,7 +13,16 @@ class AuthController extends Controller
     public function showLoginForm()
     {
         if (Auth::check()) {
-            return redirect()->route('dashboard');
+            $user = Auth::user();
+
+            $dashboard = match ($user->role) {
+                'admin' => route('admin.dashboard'),
+                'kasir' => route('kasir.dashboard'),
+                'owner' => route('owner.dashboard'),
+                default => route('login'),
+            };
+
+            return redirect($dashboard);
         }
 
         return view('auth.login');
@@ -46,12 +55,19 @@ class AuthController extends Controller
         Auth::login($user);
 
         Log::create([
-            'id_user' => $user->id,
-            'aktivitas' => 'Login',
-            'waktu' => now(),
+            'id_user'   => $user->id,
+            'aktivitas' => "User '{$user->nama}' melakukan login sebagai '{$user->role}'",
+            'waktu'     => now(),
         ]);
 
-        return redirect()->route('dashboard');
+        $dashboard = match ($user->role) {
+            'admin' => route('admin.dashboard'),
+            'kasir' => route('kasir.dashboard'),
+            'owner' => route('owner.dashboard'),
+            default => route('login'),
+        };
+
+        return redirect($dashboard)->with('success', 'Anda Berhasil Login!');
     }
 
     public function logout(Request $request)
@@ -59,7 +75,7 @@ class AuthController extends Controller
         if (Auth::check()) {
             Log::create([
                 'id_user' => Auth::id(),
-                'aktivitas' => 'Logout',
+                'aktivitas' => "User '" . Auth::user()->nama . "' melakukan logout sebagai '" . Auth::user()->role . "'",
                 'waktu' => now(),
             ]);
         }
