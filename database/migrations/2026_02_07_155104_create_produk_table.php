@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('nama_produk');
             $table->decimal('harga', 12, 2);
             $table->integer('stok')->default(0);
+            $table->string('foto')->nullable();
+            $table->string('barcode')->unique();
             $table->enum('satuan', ['kg', 'pcs', 'liter']);
             $table->timestamps();
         });

@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>@yield('title', 'Dashboard Admin') - Sembako Mart</title>
     <link rel="icon" type="image/png" href="{{ asset('img/logo_toko_sembako.png') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Google Fonts - Source Sans Pro -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -390,7 +391,7 @@ x
                         <span class="font-semibold">Riwayat Transaksi</span>
                     </a>
 
-                    <!-- Divider -->
+                    {{-- <!-- Divider -->
                     <div class="pt-4 pb-2">
                         <p class="px-4 text-xs font-semibold tracking-wider text-gray-400 uppercase">Supplier & Stok
                         </p>
@@ -427,7 +428,7 @@ x
                                 d="M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z" />
                         </svg>
                         <span class="font-semibold">Retur Produk</span>
-                    </a>
+                    </a> --}}
 
                     <!-- Divider -->
                     <div class="pt-4 pb-2">
@@ -443,17 +444,6 @@ x
                                 d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                         </svg>
                         <span class="font-semibold">Laporan Keuangan</span>
-                    </a>
-
-                    <!-- Kas & Bank -->
-                    <a href="#"
-                        class="flex items-center px-4 py-3 text-gray-700 transition-all duration-200 rounded-lg nav-item group">
-                        <svg class="w-5 h-5 mr-3 text-gray-500 group-hover:text-green-600" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                        <span class="font-semibold">Kas & Bank</span>
                     </a>
 
                     <!-- Pengeluaran -->
@@ -484,7 +474,7 @@ x
                     </a>
 
                     <!-- Hutang Piutang -->
-                    <a href="#"
+                    {{-- <a href="#"
                         class="flex items-center px-4 py-3 text-gray-700 transition-all duration-200 rounded-lg nav-item group">
                         <svg class="w-5 h-5 mr-3 text-gray-500 group-hover:text-green-600" fill="none"
                             stroke="currentColor" viewBox="0 0 24 24">
@@ -492,7 +482,7 @@ x
                                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
                         <span class="font-semibold">Hutang Piutang</span>
-                    </a>
+                    </a> --}}
 
                     <!-- Divider -->
                     <div class="pt-4 pb-2">
@@ -724,16 +714,16 @@ x
             <footer class="bg-white border-t border-gray-200">
                 <div class="px-6 py-4">
                     <div class="flex flex-col items-center justify-between space-y-2 md:flex-row md:space-y-0">
-                        <p class="text-sm text-gray-600">
-                            Made with <span class="text-red-500">❤</span> by <span class="font-semibold">𝓟</span>
+                        <p class="text-gray-600 text-l">
+                            Made with <i class="text-red-500 fas fa-heart"></i> by <span class="font-semibold">𝓟</span>
                         </p>
-                        <div class="flex space-x-4">
+                        {{-- <div class="flex space-x-4">
                             <a href="#" class="text-sm text-gray-600 hover:text-green-600">Bantuan</a>
                             <a href="#" class="text-sm text-gray-600 hover:text-green-600">Kebijakan
                                 Privasi</a>
                             <a href="#" class="text-sm text-gray-600 hover:text-green-600">Syarat &
                                 Ketentuan</a>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </footer>
