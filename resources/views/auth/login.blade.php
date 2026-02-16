@@ -115,10 +115,10 @@
                 <!-- Back -->
                 <div class="text-center">
                     <p class="text-xs leading-relaxed text-justify text-gray-400">
-                        Login ini hanya diperuntukkan bagi kasir, admin, dan owner.
-                        Gunakan dengan aman dan jangan sebar informasi akun ke orang lain.
-                        Semua aktivitas di halaman ini akan tercatat untuk keperluan audit dan manajemen.
-                        Jika ada masalah login, hubungi pemilik toko atau admin IT.
+                        Akses login ini khusus untuk admin, kasir, dan owner.
+                        Pastikan data akun tetap rahasia dan tidak dibagikan ke siapa pun.
+                        Semua aktivitas akan tercatat dalam sistem.
+                        Jika mengalami kendala, segera hubungi admin toko.
                     </p>
                 </div>
 

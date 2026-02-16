@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sembamok Mart - Toko Sembamok Terpercaya di Kota Anda</title>
     <link rel="icon" type="image/png" href="{{ asset('img/logo_toko_sembako.png') }}">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <!-- Google Fonts - Source Sans Pro -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -727,7 +731,7 @@
             <div class="pt-8 border-t border-gray-800">
                 <div class="flex flex-col items-center justify-between md:flex-row">
                     <p class="mb-4 text-sm text-gray-400 md:mb-0">
-                        © 2026 Sembako Mart. Made with <span class="text-red-500">❤</span> by <span
+                        © 2026 Sembako Mart. Made with <i class="text-red-500 fas fa-heart"></i> by <span
                             class="font-semibold">𝓟</span>
                     </p>
                     <!-- Social Media -->
