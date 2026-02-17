@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AdminController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -25,9 +26,18 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Admin
 Route::middleware(['auth', 'role:admin'])->prefix('/admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
+
+    // Dashboard
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+
+
+    // Kategori 
+    Route::get('/kategori', [AdminController::class, 'kategoriIndex'])->name('kategori');
+    Route::get('/kategori/create', [AdminController::class, 'kategoriCreate'])->name('kategori.create');
+    Route::post('/kategori/store', [AdminController::class, 'kategoriStore'])->name('kategori.store');
+    Route::get('/kategori/{id}/edit', [AdminController::class, 'kategoriEdit'])->name('kategori.edit');
+    Route::put('/kategori/{id}/update', [AdminController::class, 'kategoriUpdate'])->name('kategori.update');
+    Route::delete('/kategori/{id}/delete', [AdminController::class, 'kategoriDelete'])->name('kategori.delete');
 });
 
 // Kasir
