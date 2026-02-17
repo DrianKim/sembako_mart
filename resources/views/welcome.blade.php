@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sembamok Mart - Toko Sembamok Terpercaya di Kota Anda</title>
+    <title>Sembako Mart - Toko Sembako Terpercaya di Kota Anda</title>
     <link rel="icon" type="image/png" href="{{ asset('img/logo_toko_sembako.png') }}">
 
     <!-- Font Awesome -->
@@ -238,7 +238,7 @@
                     {{-- <span class="gradient-text"></span> --}}
                 </h2>
                 <p class="max-w-3xl mx-auto text-xl text-gray-600">
-                    Toko sembamok terpercaya yang telah melayani kebutuhan masyarakat dengan dedikasi tinggi
+                    Toko Sembako terpercaya yang telah melayani kebutuhan masyarakat dengan dedikasi tinggi
                 </p>
             </div>
             <div class="grid gap-8 md:grid-cols-3">
