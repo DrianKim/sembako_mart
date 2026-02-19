@@ -3,25 +3,38 @@
 @section('page-description', 'Halaman untuk mengelola kategori produk.')
 
 @section('content')
-    <!-- Header Section with Action Buttons -->
-    <div class="mb-6">
+    <!-- Breadcrumb & Header Section -->
+    <section class="mb-6">
         <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-800">Kelola Kategori</h1>
-                <p class="mt-1 text-sm text-gray-600">Manajemen kategori produk sembako</p>
-            </div>
-            <div class="flex gap-3">
-                <button id="btnTambah"
-                    class="flex items-center px-4 py-2.5 text-white transition-all duration-200 bg-gradient-to-r from-green-600 to-green-500 rounded-lg shadow-md hover:shadow-lg hover:from-green-700 hover:to-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                    </svg>
-                    Tambah Kategori
-                </button>
-            </div>
+            <!-- Breadcrumb -->
+            <nav class="flex mb-4 md:mb-0" aria-label="Breadcrumb">
+                <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                    <li class="inline-flex items-center">
+                        <a href="{{ route('admin.dashboard') }}"
+                            class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-green-600">
+                            <i class="w-4 h-4 mr-2 fas fa-home"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li aria-current="page">
+                        <div class="flex items-center">
+                            <i class="w-6 h-6 text-gray-400 fas fa-chevron-right"></i>
+                            <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">Blablabla</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
+
+            <!-- Create Button -->
+            <a href=""
+                class="flex items-center px-4 py-2.5 text-white transition-all duration-200 bg-gradient-to-r from-green-600 to-green-500 rounded-lg shadow-md hover:shadow-lg hover:from-green-700 hover:to-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Tambah
+            </a>
         </div>
-    </div>
+    </section>
 
     <!-- Filter & Search Section -->
     <div class="p-6 mb-6 bg-white border border-gray-200 rounded-lg shadow-sm">
@@ -254,246 +267,6 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-3 py-1 text-sm font-semibold text-green-700 bg-green-100 rounded-full">
                                 12 Produk
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span
-                                class="inline-flex items-center px-3 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">
-                                <span class="w-2 h-2 mr-2 bg-green-500 rounded-full"></span>
-                                Aktif
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                            <div class="flex justify-center gap-2">
-                                <button
-                                    class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
-                                    title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button
-                                    class="p-2 text-red-600 transition-colors rounded-lg bg-red-50 hover:bg-red-100"
-                                    title="Hapus">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <!-- Row 4 -->
-                    <tr class="transition-colors hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <input type="checkbox" class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
-                        </td>
-                        <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">4</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="flex items-center justify-center flex-shrink-0 w-10 h-10 mr-3 bg-red-100 rounded-lg">
-                                    <i class="text-red-600 fas fa-pepper-hot"></i>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-semibold text-gray-900">Bumbu & Rempah</div>
-                                    <div class="text-xs text-gray-500">Kode: KTG-004</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">Bumbu dapur, rempah-rempah</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-3 py-1 text-sm font-semibold text-green-700 bg-green-100 rounded-full">
-                                35 Produk
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span
-                                class="inline-flex items-center px-3 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">
-                                <span class="w-2 h-2 mr-2 bg-green-500 rounded-full"></span>
-                                Aktif
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                            <div class="flex justify-center gap-2">
-                                <button
-                                    class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
-                                    title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button
-                                    class="p-2 text-red-600 transition-colors rounded-lg bg-red-50 hover:bg-red-100"
-                                    title="Hapus">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <!-- Row 5 -->
-                    <tr class="transition-colors hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <input type="checkbox" class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
-                        </td>
-                        <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">5</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="flex items-center justify-center flex-shrink-0 w-10 h-10 mr-3 bg-purple-100 rounded-lg">
-                                    <i class="text-purple-600 fas fa-cookie-bite"></i>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-semibold text-gray-900">Makanan Ringan</div>
-                                    <div class="text-xs text-gray-500">Kode: KTG-005</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">Snack, keripik, dan makanan ringan</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-3 py-1 text-sm font-semibold text-green-700 bg-green-100 rounded-full">
-                                42 Produk
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span
-                                class="inline-flex items-center px-3 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">
-                                <span class="w-2 h-2 mr-2 bg-green-500 rounded-full"></span>
-                                Aktif
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                            <div class="flex justify-center gap-2">
-                                <button
-                                    class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
-                                    title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button
-                                    class="p-2 text-red-600 transition-colors rounded-lg bg-red-50 hover:bg-red-100"
-                                    title="Hapus">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <!-- Row 6 -->
-                    <tr class="transition-colors hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <input type="checkbox" class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
-                        </td>
-                        <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">6</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="flex items-center justify-center flex-shrink-0 w-10 h-10 mr-3 rounded-lg bg-cyan-100">
-                                    <i class="text-cyan-600 fas fa-coffee"></i>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-semibold text-gray-900">Minuman</div>
-                                    <div class="text-xs text-gray-500">Kode: KTG-006</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">Kopi, teh, minuman kemasan</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-3 py-1 text-sm font-semibold text-green-700 bg-green-100 rounded-full">
-                                28 Produk
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span
-                                class="inline-flex items-center px-3 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">
-                                <span class="w-2 h-2 mr-2 bg-green-500 rounded-full"></span>
-                                Aktif
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                            <div class="flex justify-center gap-2">
-                                <button
-                                    class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
-                                    title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button
-                                    class="p-2 text-red-600 transition-colors rounded-lg bg-red-50 hover:bg-red-100"
-                                    title="Hapus">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <!-- Row 7 -->
-                    <tr class="transition-colors hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <input type="checkbox" class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
-                        </td>
-                        <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">7</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="flex items-center justify-center flex-shrink-0 w-10 h-10 mr-3 bg-yellow-100 rounded-lg">
-                                    <i class="text-yellow-600 fas fa-bread-slice"></i>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-semibold text-gray-900">Roti & Kue</div>
-                                    <div class="text-xs text-gray-500">Kode: KTG-007</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">Roti tawar, kue kering, pastry</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-3 py-1 text-sm font-semibold text-green-700 bg-green-100 rounded-full">
-                                16 Produk
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span
-                                class="inline-flex items-center px-3 py-1 text-xs font-semibold text-red-700 bg-red-100 rounded-full">
-                                <span class="w-2 h-2 mr-2 bg-red-500 rounded-full"></span>
-                                Nonaktif
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                            <div class="flex justify-center gap-2">
-                                <button
-                                    class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
-                                    title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button
-                                    class="p-2 text-red-600 transition-colors rounded-lg bg-red-50 hover:bg-red-100"
-                                    title="Hapus">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <!-- Row 8 -->
-                    <tr class="transition-colors hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <input type="checkbox" class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
-                        </td>
-                        <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">8</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="flex items-center justify-center flex-shrink-0 w-10 h-10 mr-3 bg-pink-100 rounded-lg">
-                                    <i class="text-pink-600 fas fa-soap"></i>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-semibold text-gray-900">Perlengkapan Rumah</div>
-                                    <div class="text-xs text-gray-500">Kode: KTG-008</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">Sabun, deterjen, pembersih</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-3 py-1 text-sm font-semibold text-green-700 bg-green-100 rounded-full">
-                                31 Produk
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">

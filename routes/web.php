@@ -31,13 +31,28 @@ Route::middleware(['auth', 'role:admin'])->prefix('/admin')->name('admin.')->gro
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
 
-    // Kategori 
+    // Kategori
     Route::get('/kategori', [AdminController::class, 'kategoriIndex'])->name('kategori');
     Route::get('/kategori/create', [AdminController::class, 'kategoriCreate'])->name('kategori.create');
     Route::post('/kategori/store', [AdminController::class, 'kategoriStore'])->name('kategori.store');
     Route::get('/kategori/{id}/edit', [AdminController::class, 'kategoriEdit'])->name('kategori.edit');
     Route::put('/kategori/{id}/update', [AdminController::class, 'kategoriUpdate'])->name('kategori.update');
     Route::delete('/kategori/{id}/delete', [AdminController::class, 'kategoriDelete'])->name('kategori.delete');
+
+    // Produk
+    Route::get('/produk', [AdminController::class, 'produkIndex'])->name('produk');
+    Route::get('/produk/create', [AdminController::class, 'produkCreate'])->name('produk.create');
+    Route::post('/produk/store', [AdminController::class, 'produkStore'])->name('produk.store');
+    Route::get('/produk/{id}/edit', [AdminController::class, 'produkEdit'])->name('produk.edit');
+    Route::put('/produk/{id}/update', [AdminController::class, 'produkUpdate'])->name('produk.update');
+    Route::delete('/produk/{id}/delete', [AdminController::class, 'produkDelete'])->name('produk.delete');
+
+    // Stok
+    Route::get('/stok', [AdminController::class, 'stokIndex'])->name('stok');
+    Route::get('/stok/create', [AdminController::class, 'stokCreate'])->name('stok.create');
+    Route::post('/stok/store', [AdminController::class, 'stokStore'])->name('stok.store');
+    Route::get('/stok/{id}/edit', [AdminController::class, 'stokEdit'])->name('stok.edit');
+    Route::put('/stok/{id}/update', [AdminController::class, 'stokUpdate'])->name('stok.update');
 });
 
 // Kasir

@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
-@section('title', 'Kategori Produk')
-@section('page-description', 'Halaman untuk mengelola kategori produk.')
+@section('title', 'Produk')
+@section('page-description', 'Halaman untuk mengelola produk.')
 
 @section('content')
     <!-- Breadcrumb & Header Section -->
@@ -19,19 +19,19 @@
                     <li aria-current="page">
                         <div class="flex items-center">
                             <i class="w-6 h-6 text-gray-400 fas fa-chevron-right"></i>
-                            <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">Kategori Produk</span>
+                            <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">Produk</span>
                         </div>
                     </li>
                 </ol>
             </nav>
 
             <!-- Create Button -->
-            <a href="{{ route('admin.kategori.create') }}"
+            <a href="{{ route('admin.produk.create') }}"
                 class="flex items-center px-4 py-2.5 text-white transition-all duration-200 bg-gradient-to-r from-green-600 to-green-500 rounded-lg shadow-md hover:shadow-lg hover:from-green-700 hover:to-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
-                Tambah Kategori
+                Tambah Produk
             </a>
         </div>
     </section>
@@ -43,7 +43,7 @@
             <div class="md:col-span-2">
                 <label class="block mb-2 text-sm font-semibold text-gray-700">
                     <i class="mr-1 text-green-600 fas fa-search"></i>
-                    Cari Kategori
+                    Cari Produk
                 </label>
                 <div class="relative">
                     <input type="text" id="searchInput" placeholder="Cari berdasarkan nama atau deskripsi..."
@@ -96,9 +96,9 @@
                     <i class="text-xl text-green-600 fas fa-tags"></i>
                 </div>
                 <div>
-                    <h3 class="text-lg font-semibold text-gray-800">Daftar Kategori</h3>
+                    <h3 class="text-lg font-semibold text-gray-800">Daftar Produk</h3>
                     <p class="text-sm text-gray-600">Total: <span id="totalData"
-                            class="font-semibold text-green-600">8</span> kategori</p>
+                            class="font-semibold text-green-600">8</span> produk</p>
                 </div>
             </div>
             <div class="flex gap-2">
@@ -126,13 +126,28 @@
                             <input type="checkbox" id="selectAll"
                                 class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
                         </th>
-                        <th class="w-12 px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
+                        <th class="w-12 px-4 py-3 text-xs font-semibold text-left text-gray-600 uppercase">
                             No
                         </th>
-                        <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
-                            Nama Kategori
+                        <th class="px-4 py-3 text-xs font-semibold text-left text-gray-600 uppercase">
+                            Gambar
                         </th>
-                        <th class="px-6 py-4 text-xs font-semibold tracking-wider text-center text-gray-600 uppercase">
+                        <th class="px-4 py-3 text-xs font-semibold text-left text-gray-600 uppercase">
+                            Nama Produk
+                        </th>
+                        <th class="px-4 py-3 text-xs font-semibold text-left text-gray-600 uppercase">
+                            Kategori
+                        </th>
+                        <th class="px-4 py-3 text-xs font-semibold text-left text-gray-600 uppercase">
+                            Harga
+                        </th>
+                        <th class="px-4 py-3 text-xs font-semibold text-left text-gray-600 uppercase">
+                            Stok
+                        </th>
+                        <th class="px-4 py-3 text-xs font-semibold text-left text-gray-600 uppercase">
+                            Satuan
+                        </th>
+                        <th class="px-4 py-3 text-xs font-semibold text-center text-gray-600 uppercase">
                             Aksi
                         </th>
                     </tr>
@@ -146,17 +161,17 @@
                         </td>
                         <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">1</td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div
-                                    class="flex items-center justify-center flex-shrink-0 w-10 h-10 mr-3 bg-green-100 rounded-lg">
-                                    <i class="text-green-600 fas fa-rice"></i>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-semibold text-gray-900">Beras & Tepung</div>
-                                    <div class="text-xs text-gray-500">Kode: KTG-001</div>
-                                </div>
-                            </div>
+                            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=100&h=100&fit=crop"
+                                alt="Beras Pandan" class="object-cover w-10 h-10 rounded">
                         </td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm font-semibold text-gray-900">Beras Pandan Premium</div>
+                            <div class="text-xs text-gray-500">BRP-001</div>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-900">Beras & Tepung</td>
+                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">Rp 78.000</td>
+                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">45 kg</td>
+                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">Kg</td>
                         <td class="px-6 py-4 text-center whitespace-nowrap">
                             <div class="flex justify-center gap-2">
                                 <button class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
@@ -179,17 +194,17 @@
                         </td>
                         <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">2</td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div
-                                    class="flex items-center justify-center flex-shrink-0 w-10 h-10 mr-3 bg-orange-100 rounded-lg">
-                                    <i class="text-orange-600 fas fa-oil-can"></i>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-semibold text-gray-900">Minyak & Mentega</div>
-                                    <div class="text-xs text-gray-500">Kode: KTG-002</div>
-                                </div>
-                            </div>
+                            <img src="https://images.unsplash.com/photo-1626957341926-98752fc2ba90?w=100&h=100&fit=crop"
+                                alt="Minyak Goreng" class="object-cover w-10 h-10 rounded">
                         </td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm font-semibold text-gray-900">Minyak Goreng Sania 2L</div>
+                            <div class="text-xs text-gray-500">MNG-002</div>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-900">Minyak & Mentega</td>
+                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">Rp 42.500</td>
+                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">120 botol</td>
+                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">Botol</td>
                         <td class="px-6 py-4 text-center whitespace-nowrap">
                             <div class="flex justify-center gap-2">
                                 <button class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
@@ -212,17 +227,17 @@
                         </td>
                         <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">3</td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div
-                                    class="flex items-center justify-center flex-shrink-0 w-10 h-10 mr-3 bg-yellow-100 rounded-lg">
-                                    <i class="text-yellow-600 fas fa-bread-slice"></i>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-semibold text-gray-900">Roti & Kue</div>
-                                    <div class="text-xs text-gray-500">Kode: KTG-007</div>
-                                </div>
-                            </div>
+                            <img src="https://images.unsplash.com/photo-1556400666-a8c3349b0a4e?w=100&h=100&fit=crop"
+                                alt="Gula Pasir" class="object-cover w-10 h-10 rounded">
                         </td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm font-semibold text-gray-900">Gula Pasir Gulaku 1kg</div>
+                            <div class="text-xs text-gray-500">GLP-003</div>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-900">Gula & Pemanis</td>
+                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">Rp 18.000</td>
+                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">200 sak</td>
+                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">Kg</td>
                         <td class="px-6 py-4 text-center whitespace-nowrap">
                             <div class="flex justify-center gap-2">
                                 <button class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
@@ -371,10 +386,22 @@
             });
         });
 
+        // Button Tambah
+        document.getElementById('btnTambah').addEventListener('click', function() {
+            alert('Fitur Tambah Produk akan segera ditambahkan!');
+        });
+
+        // Edit buttons
+        document.querySelectorAll('button[title="Edit"]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                alert('Fitur Edit akan segera ditambahkan!');
+            });
+        });
+
         // Delete buttons
         document.querySelectorAll('button[title="Hapus"]').forEach(btn => {
             btn.addEventListener('click', function() {
-                if (confirm('Apakah Anda yakin ingin menghapus kategori ini?')) {
+                if (confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
                     alert('Data berhasil dihapus!');
                 }
             });
