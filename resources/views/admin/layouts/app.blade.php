@@ -15,6 +15,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700;800&display=swap"
         rel="stylesheet">
 
+    <!-- SweetAlert2 CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     @vite('resources/css/app.css')
 
     <style>
@@ -262,18 +266,20 @@
                     </a>
                 </div>
 
-                <!-- Logout Button -->
+                <!-- Logout -->
                 <div class="pt-6 mt-6 border-t border-gray-200">
-                    <form action="{{ route('logout') }}" method="POST">
+                    <button type="button" id="logoutBtn"
+                        class="flex items-center w-full px-4 py-3 text-red-600 transition-all duration-200 rounded-lg nav-item hover:bg-red-50">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        <span class="font-semibold">Logout</span>
+                    </button>
+
+                    <!-- Hidden Form Logout (ditrigger via JS) -->
+                    <form id="logoutForm" action="{{ route('logout') }}" method="POST" class="hidden">
                         @csrf
-                        <button type="submit"
-                            class="flex items-center w-full px-4 py-3 text-red-600 transition-all duration-200 rounded-lg nav-item hover:bg-red-50">
-                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                            </svg>
-                            <span class="font-semibold">Logout</span>
-                        </button>
                     </form>
                 </div>
             </nav>
@@ -413,18 +419,15 @@
                                     </a>
                                 </div>
                                 <div class="border-t border-gray-200">
-                                    <form action="{{ route('logout') }}" method="POST">
-                                        @csrf
-                                        <button type="submit"
-                                            class="flex items-center w-full px-4 py-2 text-sm text-red-600 transition-colors hover:bg-red-50">
-                                            <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                                            </svg>
-                                            Logout
-                                        </button>
-                                    </form>
+                                    <button type="button" id="logoutBtnProfile"
+                                        class="flex items-center w-full px-4 py-2 text-sm text-red-600 transition-colors hover:bg-red-50">
+                                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                        </svg>
+                                        Logout
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -503,6 +506,44 @@
         document.addEventListener('click', () => {
             notificationDropdown?.classList.add('hidden');
             profileDropdown?.classList.add('hidden');
+        });
+
+        // SweetAlert Logout Confirmation (untuk tombol di sidebar & profile)
+        function handleLogout() {
+            Swal.fire({
+                title: 'Yakin mau logout?',
+                text: "Kamu akan keluar dari sesi admin.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#22C55E',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Logout',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Sedang logout...',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    // Submit form logout
+                    document.getElementById('logoutForm').submit();
+                }
+            });
+        }
+
+        document.getElementById('logoutBtn')?.addEventListener('click', function(e) {
+            e.preventDefault();
+            handleLogout();
+        });
+
+        document.getElementById('logoutBtnProfile')?.addEventListener('click', function(e) {
+            e.preventDefault();
+            handleLogout();
         });
     </script>
 
