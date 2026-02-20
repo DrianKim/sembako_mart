@@ -35,7 +35,7 @@
                 </div>
                 <div>
                     <h3 class="text-xl font-bold text-gray-800">Edit Produk: Beras Pandan Premium 5kg</h3>
-                    <p class="text-sm text-gray-600">Kode: BRP-001 | Kategori: Beras & Tepung</p>
+                    <p class="text-sm text-gray-600">Kode: BRP-001 | Satuan: Kg</p>
                 </div>
             </div>
         </div>
@@ -47,20 +47,19 @@
             <div class="p-6">
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
 
-                    <!-- Kode Produk (readonly) -->
-                    <div class="md:col-span-2">
-                        <label class="block mb-2 text-sm font-semibold text-gray-700">
+                    <!-- Kode Produk (readonly) + Nama Produk (dibuat satu row di desktop) -->
+                    <div class="md:col-span-1">
+                        <label for="kode_produk" class="block mb-2 text-sm font-semibold text-gray-700">
                             <i class="mr-1 text-green-600 fas fa-barcode"></i>
                             Kode Produk
                         </label>
-                        <input type="text" value="BRP-001"
+                        <input type="text" id="kode_produk" name="kode_produk" value="BRP-001"
                             class="w-full px-4 py-2.5 bg-gray-100 border border-gray-300 rounded-lg cursor-not-allowed"
                             readonly>
                         <p class="mt-1 text-xs text-gray-500">Kode produk tidak dapat diubah</p>
                     </div>
 
-                    <!-- Nama Produk -->
-                    <div class="md:col-span-2">
+                    <div class="md:col-span-1">
                         <label for="nama_produk" class="block mb-2 text-sm font-semibold text-gray-700">
                             <i class="mr-1 text-green-600 fas fa-tag"></i>
                             Nama Produk <span class="text-red-500">*</span>
@@ -132,7 +131,8 @@
                             <div class="mt-3">
                                 <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=300&h=300&fit=crop"
                                     alt="Preview Gambar Saat Ini" class="object-cover w-32 h-32 rounded-lg shadow">
-                                <p class="mt-1 text-xs text-gray-500">Gambar saat ini. Upload baru jika ingin mengganti.</p>
+                                <p class="mt-1 text-xs text-gray-500">Gambar saat ini. Upload baru jika ingin mengganti.
+                                </p>
                             </div>
                             <!-- Preview Gambar Baru -->
                             <div id="imagePreview" class="hidden mt-3">

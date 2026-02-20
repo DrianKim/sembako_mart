@@ -360,72 +360,82 @@
 @push('scripts')
     <script>
         // Select All Checkbox
-        document.getElementById('selectAll').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = this.checked;
+        const selectAll = document.getElementById('selectAll');
+        if (selectAll) {
+            selectAll.addEventListener('change', function() {
+                const checkboxes = document.querySelectorAll('#tableBody input[type="checkbox"]');
+                checkboxes.forEach(cb => cb.checked = this.checked);
+                updateBulkActions();
             });
-            updateBulkActions();
-        });
+        }
 
-        // Individual Checkboxes
-        document.querySelectorAll('tbody input[type="checkbox"]').forEach(checkbox => {
+        // Individual Checkboxes for bulk actions
+        document.querySelectorAll('#tableBody input[type="checkbox"]').forEach(checkbox => {
             checkbox.addEventListener('change', updateBulkActions);
         });
 
         function updateBulkActions() {
-            const checkedBoxes = document.querySelectorAll('tbody input[type="checkbox"]:checked');
+            const checkedBoxes = document.querySelectorAll('#tableBody input[type="checkbox"]:checked');
             const bulkActions = document.getElementById('bulkActions');
             const selectedCount = document.getElementById('selectedCount');
 
-            selectedCount.textContent = checkedBoxes.length;
+            if (selectedCount) selectedCount.textContent = checkedBoxes.length;
 
             if (checkedBoxes.length > 0) {
                 bulkActions.classList.remove('hidden', 'translate-y-full');
             } else {
                 bulkActions.classList.add('translate-y-full');
-                setTimeout(() => {
-                    bulkActions.classList.add('hidden');
-                }, 300);
+                setTimeout(() => bulkActions.classList.add('hidden'), 300);
             }
         }
 
-        // Search functionality
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const rows = document.querySelectorAll('#tableBody tr');
-
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(searchTerm) ? '' : 'none';
+        // Live Search (real-time)
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                applyFilters();
             });
-        });
+        }
 
-        // Filter functionality (Status + Search combined)
-        document.getElementById('btnFilter').addEventListener('click', function() {
-            const statusFilter = document.getElementById('statusFilter').value.toLowerCase();
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        // Status Filter + Search combined
+        const statusFilter = document.getElementById('statusFilter');
+        if (statusFilter) {
+            statusFilter.addEventListener('change', function() {
+                applyFilters();
+            });
+        }
+
+        function applyFilters() {
+            const searchTerm = (searchInput ? searchInput.value.toLowerCase().trim() : '');
+            const statusVal = (statusFilter ? statusFilter.value.toLowerCase() : '');
             const rows = document.querySelectorAll('#tableBody tr');
 
             rows.forEach(row => {
                 const rowText = row.textContent.toLowerCase();
-                const statusCell = row.querySelector('td:nth-child(6) span')?.textContent.toLowerCase() ||
+                const statusBadge = row.querySelector('td:nth-child(5) span')?.textContent.toLowerCase().trim() ||
                     '';
 
                 const matchSearch = rowText.includes(searchTerm);
-                const matchStatus = statusFilter === '' || statusCell.includes(statusFilter);
+                const matchStatus = statusVal === '' || statusBadge.includes(statusVal);
 
                 row.style.display = (matchSearch && matchStatus) ? '' : 'none';
             });
-        });
+        }
 
-        // Reset functionality
-        document.getElementById('btnReset').addEventListener('click', function() {
-            document.getElementById('searchInput').value = '';
-            document.getElementById('statusFilter').value = '';
-            document.querySelectorAll('#tableBody tr').forEach(row => {
-                row.style.display = '';
+        // Tombol Terapkan (manual trigger filter)
+        const btnFilter = document.getElementById('btnFilter');
+        if (btnFilter) {
+            btnFilter.addEventListener('click', applyFilters);
+        }
+
+        // Tombol Reset (bersihin semua filter)
+        const btnReset = document.getElementById('btnReset');
+        if (btnReset) {
+            btnReset.addEventListener('click', function() {
+                if (searchInput) searchInput.value = '';
+                if (statusFilter) statusFilter.value = '';
+                applyFilters();
             });
-        });
+        }
     </script>
 @endpush

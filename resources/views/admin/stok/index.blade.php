@@ -99,8 +99,7 @@
                             <div class="text-sm font-semibold text-gray-900">Beras Pandan Premium 5kg</div>
                             <div class="text-xs text-gray-500">BRP-001</div>
                         </td>
-                        <td class="px-6 py-4 text-sm font-bold text-green-600 whitespace-nowrap">120 {{ 'Kg' }}
-                        </td>
+                        <td class="px-6 py-4 text-sm font-bold text-green-600 whitespace-nowrap">120 Kg</td>
                         <td class="px-6 py-4 text-center whitespace-nowrap">
                             <div class="flex justify-center gap-2">
                                 <a href="{{ route('admin.stok.edit', 1) }}"
@@ -123,7 +122,7 @@
                             <div class="text-sm font-semibold text-gray-900">Minyak Goreng Sania 2L</div>
                             <div class="text-xs text-gray-500">MNG-002</div>
                         </td>
-                        <td class="px-6 py-4 text-sm font-bold text-green-600 whitespace-nowrap">85 {{ 'Botol' }}</td>
+                        <td class="px-6 py-4 text-sm font-bold text-green-600 whitespace-nowrap">85 Botol</td>
                         <td class="px-6 py-4 text-center whitespace-nowrap">
                             <div class="flex justify-center gap-2">
                                 <a href="#"
@@ -146,7 +145,7 @@
                             <div class="text-sm font-semibold text-gray-900">Gula Pasir Gulaku 1kg</div>
                             <div class="text-xs text-gray-500">GLP-003</div>
                         </td>
-                        <td class="px-6 py-4 text-sm font-bold text-red-600 whitespace-nowrap">8 {{ 'Sak' }}</td>
+                        <td class="px-6 py-4 text-sm font-bold text-red-600 whitespace-nowrap">8 Sak</td>
                         <td class="px-6 py-4 text-center whitespace-nowrap">
                             <div class="flex justify-center gap-2">
                                 <a href="#"
@@ -169,8 +168,7 @@
                             <div class="text-sm font-semibold text-gray-900">Telur Ayam Kampung Grade A</div>
                             <div class="text-xs text-gray-500">TLR-004</div>
                         </td>
-                        <td class="px-6 py-4 text-sm font-bold text-green-600 whitespace-nowrap">320 {{ 'Butir' }}
-                        </td>
+                        <td class="px-6 py-4 text-sm font-bold text-green-600 whitespace-nowrap">320 Butir</td>
                         <td class="px-6 py-4 text-center whitespace-nowrap">
                             <div class="flex justify-center gap-2">
                                 <a href="#"
@@ -193,8 +191,7 @@
                             <div class="text-sm font-semibold text-gray-900">Sayur Bayam Organik</div>
                             <div class="text-xs text-gray-500">SAY-005</div>
                         </td>
-                        <td class="px-6 py-4 text-sm font-bold text-green-600 whitespace-nowrap">45 {{ 'Ikat' }}
-                        </td>
+                        <td class="px-6 py-4 text-sm font-bold text-green-600 whitespace-nowrap">45 Ikat</td>
                         <td class="px-6 py-4 text-center whitespace-nowrap">
                             <div class="flex justify-center gap-2">
                                 <a href="#"
@@ -237,22 +234,47 @@
 @push('scripts')
     <script>
         // Select All Checkbox
-        document.getElementById('selectAll').addEventListener('change', function() {
-            document.querySelectorAll('tbody input[type="checkbox"]').forEach(cb => cb.checked = this.checked);
-        });
-
-        // Live Search
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            const term = e.target.value.toLowerCase();
-            document.querySelectorAll('#tableBody tr').forEach(row => {
-                row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+        const selectAll = document.getElementById('selectAll');
+        if (selectAll) {
+            selectAll.addEventListener('change', function() {
+                const checkboxes = document.querySelectorAll('#tableBody input[type="checkbox"]');
+                checkboxes.forEach(cb => {
+                    cb.checked = this.checked;
+                });
             });
-        });
+        }
 
-        // Reset Filter (dummy)
-        document.getElementById('btnReset').addEventListener('click', function() {
-            document.getElementById('searchInput').value = '';
-            document.querySelectorAll('#tableBody tr').forEach(row => row.style.display = '');
-        });
+        // Live Search (real-time, tanpa tombol Terapkan)
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', function(e) {
+                const term = e.target.value.toLowerCase().trim();
+                const rows = document.querySelectorAll('#tableBody tr');
+
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(term) ? '' : 'none';
+                });
+            });
+        }
+
+        // Tombol Terapkan (sebagai trigger manual search jika perlu, tapi live search sudah cukup)
+        const btnFilter = document.getElementById('btnFilter');
+        if (btnFilter) {
+            btnFilter.addEventListener('click', function() {
+                // Bisa ditambah logika filter lain nanti (misal status)
+                alert('Filter diterapkan! (live search sudah aktif)');
+            });
+        }
+
+        // Tombol Reset (bersihin search & tampilin semua)
+        const btnReset = document.getElementById('btnReset');
+        if (btnReset) {
+            btnReset.addEventListener('click', function() {
+                if (searchInput) searchInput.value = '';
+                const rows = document.querySelectorAll('#tableBody tr');
+                rows.forEach(row => row.style.display = '');
+            });
+        }
     </script>
 @endpush
