@@ -386,7 +386,6 @@ class AdminController extends Controller
 
         $transaksi = Transaksi::findOrFail($id);
 
-        // Hitung ulang kembalian
         $uang_bayar = $request->uang_bayar ?? $transaksi->uang_bayar;
         $uang_kembali = max(0, $uang_bayar - $request->total_harga);
 

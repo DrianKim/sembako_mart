@@ -171,7 +171,6 @@
                         </td>
                     </tr>
 
-                    <!-- Tambah dummy lain sesuai kebutuhan -->
                 </tbody>
             </table>
         </div>

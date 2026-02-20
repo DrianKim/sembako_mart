@@ -116,7 +116,6 @@
                         @enderror
                     </div>
 
-                    <!-- Satuan + Gambar (dibarengin di satu row) -->
                     <div class="grid grid-cols-1 gap-6 md:col-span-2 md:grid-cols-2">
                         <!-- Satuan -->
                         <div>
@@ -156,20 +155,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Deskripsi (full width) -->
-                    {{-- <div class="md:col-span-2">
-                        <label for="deskripsi" class="block mb-2 text-sm font-semibold text-gray-700">
-                            <i class="mr-1 text-green-600 fas fa-align-left"></i>
-                            Deskripsi
-                        </label>
-                        <textarea id="deskripsi" name="deskripsi" rows="4"
-                            placeholder="Masukkan deskripsi produk (opsional)"
-                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all @error('deskripsi') border-red-500 @enderror">{{ old('deskripsi') }}</textarea>
-                        @error('deskripsi')
-                            <p class="mt-1 text-sm text-red-500"><i class="mr-1 fas fa-exclamation-circle"></i> {{ $message }}</p>
-                        @enderror
-                    </div> --}}
                 </div>
 
                 <div class="p-4 mt-8 border-l-4 border-green-500 rounded bg-green-50">

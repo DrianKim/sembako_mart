@@ -47,7 +47,7 @@
             <div class="p-6">
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
 
-                    <!-- Kode Produk (readonly) + Nama Produk (dibuat satu row di desktop) -->
+                    <!-- Kode Produk -->
                     <div class="md:col-span-1">
                         <label for="kode_produk" class="block mb-2 text-sm font-semibold text-gray-700">
                             <i class="mr-1 text-green-600 fas fa-barcode"></i>
@@ -59,6 +59,7 @@
                         <p class="mt-1 text-xs text-gray-500">Kode produk tidak dapat diubah</p>
                     </div>
 
+                    <!-- Nama Produk -->
                     <div class="md:col-span-1">
                         <label for="nama_produk" class="block mb-2 text-sm font-semibold text-gray-700">
                             <i class="mr-1 text-green-600 fas fa-tag"></i>
@@ -98,7 +99,6 @@
                             class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
                     </div>
 
-                    <!-- Satuan + Gambar (dibarengin di satu row) -->
                     <div class="grid grid-cols-1 gap-6 md:col-span-2 md:grid-cols-2">
                         <!-- Satuan -->
                         <div>
@@ -127,7 +127,7 @@
                             </label>
                             <input type="file" id="gambar" name="gambar" accept="image/*"
                                 class="block w-full text-sm text-gray-700 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
-                            <!-- Preview Gambar Saat Ini (dummy) -->
+                            <!-- Preview Gambar Saat Ini -->
                             <div class="mt-3">
                                 <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=300&h=300&fit=crop"
                                     alt="Preview Gambar Saat Ini" class="object-cover w-32 h-32 rounded-lg shadow">

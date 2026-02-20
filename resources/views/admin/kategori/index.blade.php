@@ -261,7 +261,7 @@
         </div>
     </div>
 
-    <!-- Bulk Actions (shown when items selected) -->
+    <!-- Bulk Actions -->
     <div id="bulkActions"
         class="fixed bottom-0 left-0 right-0 z-50 hidden p-4 transition-all duration-300 transform translate-y-full bg-white border-t-2 border-green-500 shadow-2xl">
         <div class="container flex items-center justify-between mx-auto">

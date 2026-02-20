@@ -212,32 +212,6 @@
         </div>
     </div>
 
-    <!-- Bulk Actions (dummy, meski log ga perlu hapus) -->
-    <div id="bulkActions"
-        class="fixed bottom-0 left-0 right-0 z-50 hidden p-4 transition-all duration-300 transform translate-y-full bg-white border-t-2 border-green-500 shadow-2xl">
-        <div class="container flex items-center justify-between mx-auto">
-            <div class="flex items-center">
-                <div class="flex items-center justify-center w-10 h-10 mr-3 bg-green-100 rounded-lg">
-                    <i class="text-green-600 fas fa-check-circle"></i>
-                </div>
-                <span class="text-sm font-semibold text-gray-800">
-                    <span id="selectedCount">0</span> aktivitas dipilih
-                </span>
-            </div>
-            <div class="flex gap-3">
-                <button
-                    class="flex items-center px-4 py-2 text-white transition-colors bg-red-600 rounded-lg hover:bg-red-700">
-                    <i class="mr-2 fas fa-trash"></i>
-                    Hapus Terpilih
-                </button>
-                <button
-                    class="flex items-center px-4 py-2 text-gray-700 transition-colors bg-gray-200 rounded-lg hover:bg-gray-300">
-                    <i class="mr-2 fas fa-times"></i>
-                    Batal
-                </button>
-            </div>
-        </div>
-    </div>
 @endsection
 
 @push('scripts')

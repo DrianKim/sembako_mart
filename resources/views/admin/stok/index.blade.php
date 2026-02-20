@@ -244,7 +244,7 @@
             });
         }
 
-        // Live Search (real-time, tanpa tombol Terapkan)
+        // Live Search 
         const searchInput = document.getElementById('searchInput');
         if (searchInput) {
             searchInput.addEventListener('input', function(e) {
@@ -258,7 +258,7 @@
             });
         }
 
-        // Tombol Terapkan (sebagai trigger manual search jika perlu, tapi live search sudah cukup)
+        // Tombol Terapkan
         const btnFilter = document.getElementById('btnFilter');
         if (btnFilter) {
             btnFilter.addEventListener('click', function() {
@@ -267,7 +267,7 @@
             });
         }
 
-        // Tombol Reset (bersihin search & tampilin semua)
+        // Tombol Reset
         const btnReset = document.getElementById('btnReset');
         if (btnReset) {
             btnReset.addEventListener('click', function() {

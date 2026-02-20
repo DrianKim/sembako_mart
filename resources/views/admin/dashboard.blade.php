@@ -89,7 +89,7 @@
             <!-- Chart Omzet 7 Hari Terakhir -->
             <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
                 <h3 class="mb-4 text-lg font-semibold text-gray-800">Omzet 7 Hari Terakhir</h3>
-                <div class="relative h-80"> <!-- Tinggi fixed biar ga ngebug -->
+                <div class="relative h-80">
                     <canvas id="omzetChart"></canvas>
                 </div>
             </div>
@@ -98,6 +98,7 @@
             <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
                 <h3 class="mb-4 text-lg font-semibold text-gray-800">Transaksi Terbaru</h3>
                 <div class="space-y-4">
+                    <!-- Dummy Recent 1 -->
                     <div class="flex items-center justify-between p-4 rounded-lg bg-gray-50">
                         <div>
                             <p class="font-medium">TRX-20260220-128</p>
@@ -108,7 +109,30 @@
                             <p class="text-xs text-gray-500">14:45 WIB</p>
                         </div>
                     </div>
-                    <!-- ... (dummy lain sama seperti sebelumnya) ... -->
+
+                    <!-- Dummy Recent 2 -->
+                    <div class="flex items-center justify-between p-4 rounded-lg bg-gray-50">
+                        <div>
+                            <p class="font-medium">TRX-20260220-127</p>
+                            <p class="text-sm text-gray-600">Siti Rahayu • Ani</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-green-600">Rp 92.500</p>
+                            <p class="text-xs text-gray-500">15:30 WIB</p>
+                        </div>
+                    </div>
+
+                    <!-- Dummy Recent 3 -->
+                    <div class="flex items-center justify-between p-4 rounded-lg bg-gray-50">
+                        <div>
+                            <p class="font-medium">TRX-20260220-126</p>
+                            <p class="text-sm text-gray-600">Andi Susanto • Rina</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-green-600">Rp 450.000</p>
+                            <p class="text-xs text-gray-500">16:10 WIB</p>
+                        </div>
+                    </div>
                 </div>
                 <a href="{{ route('admin.riwayat_transaksi') }}"
                     class="block mt-4 text-center text-green-600 hover:underline">
@@ -183,7 +207,7 @@
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false, // Penting! Biar ga ngikut rasio default
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
                             display: false

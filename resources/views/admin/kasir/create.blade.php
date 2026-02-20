@@ -90,7 +90,7 @@
                             class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all @error('no_hp') border-red-500 @enderror">
                     </div>
 
-                    <!-- Status (default aktif) -->
+                    <!-- Status -->
                     <div class="md:col-span-2">
                         <label class="block mb-2 text-sm font-semibold text-gray-700">
                             <i class="mr-1 text-green-600 fas fa-toggle-on"></i>

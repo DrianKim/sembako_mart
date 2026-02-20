@@ -30,7 +30,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('/admin')->name('admin.')->gro
     // Dashboard
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
-
     // Kategori
     Route::get('/kategori', [AdminController::class, 'kategoriIndex'])->name('kategori');
     Route::get('/kategori/create', [AdminController::class, 'kategoriCreate'])->name('kategori.create');

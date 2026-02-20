@@ -87,7 +87,7 @@
                             class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
                     </div>
 
-                    <!-- Uang Kembali (auto calculate via JS) -->
+                    <!-- Uang Kembali -->
                     <div>
                         <label class="block mb-2 text-sm font-semibold text-gray-700">
                             <i class="mr-1 text-green-600 fas fa-calculator"></i>
