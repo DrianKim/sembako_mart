@@ -1,12 +1,11 @@
 @extends('admin.layouts.app')
-@section('title', 'Kategori Produk')
-@section('page-description', 'Halaman untuk mengelola kategori produk.')
+@section('title', 'Data Kasir')
+@section('page-description', 'Halaman untuk mengelola data kasir.')
 
 @section('content')
-    <!-- Breadcrumb & Header Section -->
+    <!-- Breadcrumb & Header -->
     <section class="mb-6">
         <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <!-- Breadcrumb -->
             <nav class="flex mb-4 md:mb-0" aria-label="Breadcrumb">
                 <ol class="inline-flex items-center space-x-1 md:space-x-3">
                     <li class="inline-flex items-center">
@@ -19,19 +18,16 @@
                     <li aria-current="page">
                         <div class="flex items-center">
                             <i class="w-6 h-6 text-gray-400 fas fa-chevron-right"></i>
-                            <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">Kategori Produk</span>
+                            <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">Kasir</span>
                         </div>
                     </li>
                 </ol>
             </nav>
 
-            <!-- Create Button -->
-            <a href="{{ route('admin.kategori.create') }}"
+            <a href="{{ route('admin.kasir.create') }}"
                 class="flex items-center px-4 py-2.5 text-white transition-all duration-200 bg-gradient-to-r from-green-600 to-green-500 rounded-lg shadow-md hover:shadow-lg hover:from-green-700 hover:to-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                Tambah Kategori
+                <i class="mr-2 fas fa-plus"></i>
+                Tambah Kasir
             </a>
         </div>
     </section>
@@ -43,18 +39,29 @@
             <div class="md:col-span-2">
                 <label class="block mb-2 text-sm font-semibold text-gray-700">
                     <i class="mr-1 text-green-600 fas fa-search"></i>
-                    Cari Kategori
+                    Cari Kasir
                 </label>
                 <div class="relative">
-                    <input type="text" id="searchInput" placeholder="Cari berdasarkan nama atau deskripsi..."
+                    <input type="text" id="searchInput" placeholder="Cari nama, username atau nomor HP..."
                         class="w-full px-4 py-2.5 pl-10 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
+                        <i class="text-gray-400 fas fa-search"></i>
                     </div>
                 </div>
+            </div>
+
+            <!-- Status Filter -->
+            <div>
+                <label class="block mb-2 text-sm font-semibold text-gray-700">
+                    <i class="mr-1 text-green-600 fas fa-filter"></i>
+                    Status
+                </label>
+                <select id="statusFilter"
+                    class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
+                    <option value="">Semua Status</option>
+                    <option value="aktif">Aktif</option>
+                    <option value="nonaktif">Nonaktif</option>
+                </select>
             </div>
         </div>
 
@@ -79,12 +86,12 @@
         <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gray-50">
             <div class="flex items-center">
                 <div class="flex items-center justify-center w-10 h-10 mr-3 bg-green-100 rounded-lg">
-                    <i class="text-xl text-green-600 fas fa-tags"></i>
+                    <i class="text-xl text-green-600 fas fa-user-tie"></i>
                 </div>
                 <div>
-                    <h3 class="text-lg font-semibold text-gray-800">Daftar Kategori</h3>
+                    <h3 class="text-lg font-semibold text-gray-800">Daftar Kasir</h3>
                     <p class="text-sm text-gray-600">Total: <span id="totalData"
-                            class="font-semibold text-green-600">8</span> kategori</p>
+                            class="font-semibold text-green-600">6</span> kasir</p>
                 </div>
             </div>
             <div class="flex gap-2">
@@ -109,14 +116,19 @@
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="w-12 px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
-                            <input type="checkbox" id="selectAll"
-                                class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
-                        </th>
-                        <th class="w-12 px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
                             No
                         </th>
                         <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
-                            Nama Kategori
+                            Nama
+                        </th>
+                        <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
+                            Username
+                        </th>
+                        <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
+                            No HP
+                        </th>
+                        <th class="px-6 py-4 text-xs font-semibold tracking-wider text-center text-gray-600 uppercase">
+                            Status
                         </th>
                         <th class="px-6 py-4 text-xs font-semibold tracking-wider text-center text-gray-600 uppercase">
                             Aksi
@@ -124,105 +136,161 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200" id="tableBody">
-                    <!-- Row 1 -->
+                    <!-- Dummy Row 1 - Aktif -->
                     <tr class="transition-colors hover:bg-gray-50">
-                        <td class="w-12 px-6 py-4 whitespace-nowrap">
-                            <input type="checkbox"
-                                class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
-                        </td>
                         <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">1</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div
-                                    class="flex items-center justify-center flex-shrink-0 w-10 h-10 mr-3 bg-green-100 rounded-lg">
-                                    <i class="text-green-600 fas fa-rice"></i>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-semibold text-gray-900">Beras & Tepung</div>
-                                    <div class="text-xs text-gray-500">Kode: KTG-001</div>
-                                </div>
-                            </div>
+                        <td class="px-6 py-4">
+                            <div class="text-sm font-semibold text-gray-900">Andi Susanto</div>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-900">andi_kasir</td>
+                        <td class="px-6 py-4 text-sm text-gray-900">081234567890</td>
+                        <td class="px-6 py-4 text-center whitespace-nowrap">
+                            <span
+                                class="inline-flex items-center px-3 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">
+                                <span class="w-2 h-2 mr-2 bg-green-500 rounded-full"></span>
+                                Aktif
+                            </span>
                         </td>
                         <td class="px-6 py-4 text-center whitespace-nowrap">
                             <div class="flex justify-center gap-2">
-                                <a href="{{ route('admin.kategori.edit', 1) }}" class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
+                                <a href="{{ route('admin.kasir.edit', 1) }}"
+                                    class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
                                     title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <button class="p-2 text-red-600 transition-colors rounded-lg bg-red-50 hover:bg-red-100"
-                                    title="Hapus">
-                                    <i class="fas fa-trash"></i>
-                                </button>
                             </div>
                         </td>
                     </tr>
 
-                    <!-- Row 2 -->
+                    <!-- Dummy Row 2 - Aktif -->
                     <tr class="transition-colors hover:bg-gray-50">
-                        <td class="w-12 px-6 py-4 whitespace-nowrap">
-                            <input type="checkbox"
-                                class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
-                        </td>
                         <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">2</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div
-                                    class="flex items-center justify-center flex-shrink-0 w-10 h-10 mr-3 bg-orange-100 rounded-lg">
-                                    <i class="text-orange-600 fas fa-oil-can"></i>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-semibold text-gray-900">Minyak & Mentega</div>
-                                    <div class="text-xs text-gray-500">Kode: KTG-002</div>
-                                </div>
-                            </div>
+                        <td class="px-6 py-4">
+                            <div class="text-sm font-semibold text-gray-900">Siti Rahayu</div>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-900">siti_kasir01</td>
+                        <td class="px-6 py-4 text-sm text-gray-900">08567891234</td>
+                        <td class="px-6 py-4 text-center whitespace-nowrap">
+                            <span
+                                class="inline-flex items-center px-3 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">
+                                <span class="w-2 h-2 mr-2 bg-green-500 rounded-full"></span>
+                                Aktif
+                            </span>
                         </td>
                         <td class="px-6 py-4 text-center whitespace-nowrap">
                             <div class="flex justify-center gap-2">
-                                <button class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
+                                <a href="#"
+                                    class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
                                     title="Edit">
                                     <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="p-2 text-red-600 transition-colors rounded-lg bg-red-50 hover:bg-red-100"
-                                    title="Hapus">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                                </a>
                             </div>
                         </td>
                     </tr>
 
-                    <!-- Row 3 -->
+                    <!-- Dummy Row 3 - Nonaktif -->
                     <tr class="transition-colors hover:bg-gray-50">
-                        <td class="w-12 px-6 py-4 whitespace-nowrap">
-                            <input type="checkbox"
-                                class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
-                        </td>
                         <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">3</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div
-                                    class="flex items-center justify-center flex-shrink-0 w-10 h-10 mr-3 bg-yellow-100 rounded-lg">
-                                    <i class="text-yellow-600 fas fa-bread-slice"></i>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-semibold text-gray-900">Roti & Kue</div>
-                                    <div class="text-xs text-gray-500">Kode: KTG-007</div>
-                                </div>
-                            </div>
+                        <td class="px-6 py-4">
+                            <div class="text-sm font-semibold text-gray-900">Budi Santoso</div>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-900">budi_kasir</td>
+                        <td class="px-6 py-4 text-sm text-gray-900">087654321098</td>
+                        <td class="px-6 py-4 text-center whitespace-nowrap">
+                            <span
+                                class="inline-flex items-center px-3 py-1 text-xs font-semibold text-red-700 bg-red-100 rounded-full">
+                                <span class="w-2 h-2 mr-2 bg-red-500 rounded-full"></span>
+                                Nonaktif
+                            </span>
                         </td>
                         <td class="px-6 py-4 text-center whitespace-nowrap">
                             <div class="flex justify-center gap-2">
-                                <button class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
+                                <a href="#"
+                                    class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
                                     title="Edit">
                                     <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="p-2 text-red-600 transition-colors rounded-lg bg-red-50 hover:bg-red-100"
-                                    title="Hapus">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                                </a>
                             </div>
                         </td>
                     </tr>
 
+                    <!-- Dummy Row 4 - Aktif -->
+                    <tr class="transition-colors hover:bg-gray-50">
+                        <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">4</td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm font-semibold text-gray-900">Dewi Lestari</div>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-900">dewi_kasir02</td>
+                        <td class="px-6 py-4 text-sm text-gray-900">089876543210</td>
+                        <td class="px-6 py-4 text-center whitespace-nowrap">
+                            <span
+                                class="inline-flex items-center px-3 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">
+                                <span class="w-2 h-2 mr-2 bg-green-500 rounded-full"></span>
+                                Aktif
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-center whitespace-nowrap">
+                            <div class="flex justify-center gap-2">
+                                <a href="#"
+                                    class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
+                                    title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Dummy Row 5 - Nonaktif -->
+                    <tr class="transition-colors hover:bg-gray-50">
+                        <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">5</td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm font-semibold text-gray-900">Rudi Hartono</div>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-900">rudi_kasir</td>
+                        <td class="px-6 py-4 text-sm text-gray-900">08111222333</td>
+                        <td class="px-6 py-4 text-center whitespace-nowrap">
+                            <span
+                                class="inline-flex items-center px-3 py-1 text-xs font-semibold text-red-700 bg-red-100 rounded-full">
+                                <span class="w-2 h-2 mr-2 bg-red-500 rounded-full"></span>
+                                Nonaktif
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-center whitespace-nowrap">
+                            <div class="flex justify-center gap-2">
+                                <a href="#"
+                                    class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
+                                    title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Dummy Row 6 - Aktif -->
+                    <tr class="transition-colors hover:bg-gray-50">
+                        <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">6</td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm font-semibold text-gray-900">Lina Marlina</div>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-900">lina_kasir</td>
+                        <td class="px-6 py-4 text-sm text-gray-900">082345678901</td>
+                        <td class="px-6 py-4 text-center whitespace-nowrap">
+                            <span
+                                class="inline-flex items-center px-3 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">
+                                <span class="w-2 h-2 mr-2 bg-green-500 rounded-full"></span>
+                                Aktif
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-center whitespace-nowrap">
+                            <div class="flex justify-center gap-2">
+                                <a href="#"
+                                    class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
+                                    title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -230,8 +298,8 @@
         <!-- Table Footer with Pagination -->
         <div class="flex flex-col items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50 sm:flex-row">
             <div class="mb-4 text-sm text-gray-600 sm:mb-0">
-                Menampilkan <span class="font-semibold text-gray-900">1-8</span> dari <span
-                    class="font-semibold text-gray-900">8</span> data
+                Menampilkan <span class="font-semibold text-gray-900">1-6</span> dari <span
+                    class="font-semibold text-gray-900">6</span> data
             </div>
             <div class="flex items-center gap-2">
                 <button
@@ -333,18 +401,21 @@
             });
         });
 
-        // Filter functionality
+        // Filter functionality (Status + Search combined)
         document.getElementById('btnFilter').addEventListener('click', function() {
             const statusFilter = document.getElementById('statusFilter').value.toLowerCase();
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const rows = document.querySelectorAll('#tableBody tr');
 
             rows.forEach(row => {
-                if (statusFilter === '') {
-                    row.style.display = '';
-                } else {
-                    const statusCell = row.querySelector('td:nth-child(6)').textContent.toLowerCase();
-                    row.style.display = statusCell.includes(statusFilter) ? '' : 'none';
-                }
+                const rowText = row.textContent.toLowerCase();
+                const statusCell = row.querySelector('td:nth-child(6) span')?.textContent.toLowerCase() ||
+                    '';
+
+                const matchSearch = rowText.includes(searchTerm);
+                const matchStatus = statusFilter === '' || statusCell.includes(statusFilter);
+
+                row.style.display = (matchSearch && matchStatus) ? '' : 'none';
             });
         });
 
@@ -354,15 +425,6 @@
             document.getElementById('statusFilter').value = '';
             document.querySelectorAll('#tableBody tr').forEach(row => {
                 row.style.display = '';
-            });
-        });
-
-        // Delete buttons
-        document.querySelectorAll('button[title="Hapus"]').forEach(btn => {
-            btn.addEventListener('click', function() {
-                if (confirm('Apakah Anda yakin ingin menghapus kategori ini?')) {
-                    alert('Data berhasil dihapus!');
-                }
             });
         });
     </script>

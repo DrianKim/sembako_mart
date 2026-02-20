@@ -80,10 +80,6 @@
             <table class="w-full">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="w-12 px-6 py-4 text-xs font-semibold text-left text-gray-600 uppercase">
-                            <input type="checkbox" id="selectAll"
-                                class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
-                        </th>
                         <th class="w-12 px-4 py-3 text-xs font-semibold text-left text-gray-600 uppercase">No</th>
                         <th class="px-4 py-3 text-xs font-semibold text-left text-gray-600 uppercase">Gambar</th>
                         <th class="px-4 py-3 text-xs font-semibold text-left text-gray-600 uppercase">Nama Produk</th>
@@ -94,10 +90,6 @@
                 <tbody class="bg-white divide-y divide-gray-200" id="tableBody">
                     <!-- Dummy Row 1 -->
                     <tr class="transition-colors hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <input type="checkbox"
-                                class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
-                        </td>
                         <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">1</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=100&h=100&fit=crop"
@@ -111,7 +103,7 @@
                         </td>
                         <td class="px-6 py-4 text-center whitespace-nowrap">
                             <div class="flex justify-center gap-2">
-                                <a href="#"
+                                <a href="{{ route('admin.stok.edit', 1) }}"
                                     class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
                                     title="Edit Stok">
                                     <i class="fas fa-edit"></i>
@@ -122,10 +114,6 @@
 
                     <!-- Dummy Row 2 -->
                     <tr class="transition-colors hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <input type="checkbox"
-                                class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
-                        </td>
                         <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">2</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <img src="https://images.unsplash.com/photo-1626957341926-98752fc2ba90?w=100&h=100&fit=crop"
@@ -149,10 +137,6 @@
 
                     <!-- Dummy Row 3 -->
                     <tr class="transition-colors hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <input type="checkbox"
-                                class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
-                        </td>
                         <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">3</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <img src="https://images.unsplash.com/photo-1556400666-a8c3349b0a4e?w=100&h=100&fit=crop"
@@ -176,10 +160,6 @@
 
                     <!-- Dummy Row 4 -->
                     <tr class="transition-colors hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <input type="checkbox"
-                                class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
-                        </td>
                         <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">4</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <img src="https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=100&h=100&fit=crop"
@@ -204,10 +184,6 @@
 
                     <!-- Dummy Row 5 -->
                     <tr class="transition-colors hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <input type="checkbox"
-                                class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
-                        </td>
                         <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">5</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <img src="https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=100&h=100&fit=crop"

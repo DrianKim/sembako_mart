@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Kategori;
 use App\Models\Produk;
+use App\Models\Transaksi;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -55,11 +58,8 @@ class AdminController extends Controller
 
     public function kategoriEdit($id)
     {
-        $kategori = Kategori::findOrFail($id);
-
         $data = [
             'title' => 'Edit Kategori',
-            'kategori' => $kategori,
         ];
 
         return view('admin.kategori.edit', $data);
@@ -154,11 +154,8 @@ class AdminController extends Controller
 
     public function produkEdit($id)
     {
-        $produk = Produk::findOrFail($id);
-
         $data = [
             'title' => 'Edit Produk',
-            'produk' => $produk,
         ];
 
         return view('admin.produk.edit', $data);
@@ -257,11 +254,8 @@ class AdminController extends Controller
 
     public function stokEdit($id)
     {
-        $produk = Produk::findOrFail($id);
-
         $data = [
             'title' => 'Edit Stok Produk',
-            'produk' => $produk,
         ];
 
         return view('admin.stok.edit', $data);
@@ -282,5 +276,146 @@ class AdminController extends Controller
         ]);
 
         return redirect()->route('admin.stok')->with('success', 'Stok produk berhasil diperbarui!');
+    }
+
+    // Kasir
+    public function kasirIndex()
+    {
+        $data = [
+            'title' => 'Kasir',
+        ];
+
+        return view('admin.kasir.index', $data);
+    }
+
+    public function kasirCreate()
+    {
+        $data = [
+            'title' => 'Tambah Transaksi',
+        ];
+
+        return view('admin.kasir.create', $data);
+    }
+
+    public function kasirStore(Request $request)
+    {
+        // create role kasir saja
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users,username',
+            'password' => 'required|string|min:8',
+            'no_hp' => 'required|string|max:20',
+            'role' => 'required|enum:admin,kasir',
+            'status' => 'required|enum:aktif,nonaktif',
+        ]);
+
+        User::create([
+            'nama' => $request->nama,
+            'username' => $request->username,
+            'password' => Hash::make($request->password),
+            'no_hp' => $request->no_hp,
+            'role' => $request->role,
+            'status' => $request->status,
+        ]);
+
+        return redirect()->route('admin.kasir')->with('success', 'Kasir berhasil ditambahkan!');
+    }
+
+    public function kasirEdit($id)
+    {
+        $kasir = User::findOrFail($id);
+
+        $data = [
+            'title' => 'Edit Kasir',
+            'kasir' => $kasir,
+        ];
+
+        return view('admin.kasir.edit', $data);
+    }
+
+    public function kasirUpdate(Request $request, $id)
+    {
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users,username,' . $id,
+            'password' => 'nullable|string|min:8',
+            'no_hp' => 'required|string|max:20',
+            'role' => 'required|enum:admin,kasir',
+            'status' => 'required|enum:aktif,nonaktif',
+        ]);
+
+        $kasir = User::findOrFail($id);
+        $kasir->update([
+            'nama' => $request->nama,
+            'username' => $request->username,
+            'password' => $request->password ? Hash::make($request->password) : $kasir->password,
+            'no_hp' => $request->no_hp,
+            'role' => $request->role,
+            'status' => $request->status,
+        ]);
+
+        return redirect()->route('admin.kasir')->with('success', 'Kasir berhasil diperbarui!');
+    }
+
+    // Riwayat Transaksi
+    public function riwayatTransaksiIndex()
+    {
+        $data = [
+            'title' => 'Riwayat Transaksi',
+        ];
+
+        return view('admin.riwayat_transaksi.index', $data);
+    }
+
+    public function riwayatTransaksiEdit($id)
+    {
+        $data = [
+            'title' => 'Detail Transaksi',
+        ];
+
+        return view('admin.riwayat_transaksi.edit', $data);
+    }
+
+    public function riwayatTransaksiUpdate(Request $request, $id)
+    {
+        $request->validate([
+            'nama_pelanggan' => 'nullable|string|max:255',
+            'total_harga'    => 'required|numeric|min:0',
+            'uang_bayar'     => 'nullable|numeric|min:0',
+        ]);
+
+        $transaksi = Transaksi::findOrFail($id);
+
+        // Hitung ulang kembalian
+        $uang_bayar = $request->uang_bayar ?? $transaksi->uang_bayar;
+        $uang_kembali = max(0, $uang_bayar - $request->total_harga);
+
+        $transaksi->update([
+            'nama_pelanggan' => $request->nama_pelanggan ?? $transaksi->nama_pelanggan,
+            'total_harga'    => $request->total_harga,
+            'uang_bayar'     => $uang_bayar,
+            'uang_kembali'   => $uang_kembali,
+        ]);
+
+        return redirect()->route('admin.riwayat_transaksi')->with('success', 'Transaksi berhasil diperbarui!');
+    }
+
+    public function struk($id)
+    {
+        $data = [
+            'title' => 'Struk Transaksi',
+        ];
+
+        return view('admin.riwayat_transaksi.struk', $data);
+    }
+
+    // Log Aktivitas
+    public function logIndex()
+    {
+        $data = [
+            'title' => 'Log Aktivitas',
+        ];
+
+        return view('admin.log.log_aktivitas', $data);
     }
 }

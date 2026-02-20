@@ -53,6 +53,23 @@ Route::middleware(['auth', 'role:admin'])->prefix('/admin')->name('admin.')->gro
     Route::post('/stok/store', [AdminController::class, 'stokStore'])->name('stok.store');
     Route::get('/stok/{id}/edit', [AdminController::class, 'stokEdit'])->name('stok.edit');
     Route::put('/stok/{id}/update', [AdminController::class, 'stokUpdate'])->name('stok.update');
+
+    // Kasir
+    Route::get('/kasir', [AdminController::class, 'kasirIndex'])->name('kasir');
+    Route::get('/kasir/create', [AdminController::class, 'kasirCreate'])->name('kasir.create');
+    Route::post('/kasir/store', [AdminController::class, 'kasirStore'])->name('kasir.store');
+    Route::get('/kasir/{id}/edit', [AdminController::class, 'kasirEdit'])->name('kasir.edit');
+    Route::put('/kasir/{id}/update', [AdminController::class, 'kasirUpdate'])->name('kasir.update');
+
+    // Riwayat Transaksi
+    Route::get('/riwayat-transaksi', [AdminController::class, 'riwayatTransaksiIndex'])->name('riwayat_transaksi');
+    Route::get('/riwayat-transaksi/{id}/edit', [AdminController::class, 'riwayatTransaksiEdit'])->name('riwayat_transaksi.edit');
+    Route::put('/riwayat-transaksi/{id}/update', [AdminController::class, 'riwayatTransaksiUpdate'])->name('riwayat_transaksi.update');
+
+    Route::get('/struk/{id}', [AdminController::class, 'struk'])->name('riwayat_transaksi.struk');
+
+    // Log Aktivitas
+    Route::get('/log', [AdminController::class, 'logIndex'])->name('log');
 });
 
 // Kasir

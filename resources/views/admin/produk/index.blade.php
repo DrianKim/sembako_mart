@@ -174,10 +174,11 @@
                         <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">Kg</td>
                         <td class="px-6 py-4 text-center whitespace-nowrap">
                             <div class="flex justify-center gap-2">
-                                <button class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
+                                <a href="{{ route('admin.produk.edit', 1) }}"
+                                    class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
                                     title="Edit">
                                     <i class="fas fa-edit"></i>
-                                </button>
+                                </a>
                                 <button class="p-2 text-red-600 transition-colors rounded-lg bg-red-50 hover:bg-red-100"
                                     title="Hapus">
                                     <i class="fas fa-trash"></i>

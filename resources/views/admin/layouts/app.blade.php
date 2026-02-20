@@ -218,20 +218,11 @@
                         <p class="px-4 text-xs font-semibold tracking-wider text-gray-400 uppercase">Transaksi</p>
                     </div>
 
-                    <!-- Penjualan -->
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-700 rounded-lg nav-item">
-                        <svg class="w-5 h-5 mr-3 text-gray-500" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                        <span class="font-semibold">Penjualan</span>
-                    </a>
-
                     <!-- Riwayat Transaksi -->
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-700 rounded-lg nav-item">
-                        <svg class="w-5 h-5 mr-3 text-gray-500" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
+                    <a href="{{ route('admin.riwayat_transaksi') }}"
+                        class="flex items-center px-4 py-3 text-gray-700 rounded-lg nav-item {{ request()->routeIs('admin.riwayat_transaksi*') ? 'nav-item-active' : '' }}">
+                        <svg class="w-5 h-5 mr-3 {{ request()->routeIs('admin.riwayat_transaksi*') ? 'text-green-600' : 'text-gray-500' }}"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                         </svg>
@@ -240,67 +231,34 @@
 
                     <!-- Divider -->
                     <div class="pt-4 pb-2">
-                        <p class="px-4 text-xs font-semibold tracking-wider text-gray-400 uppercase">Keuangan</p>
+                        <p class="px-4 text-xs font-semibold tracking-wider text-gray-400 uppercase">User</p>
                     </div>
 
-                    <!-- Laporan Keuangan -->
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-700 rounded-lg nav-item">
-                        <svg class="w-5 h-5 mr-3 text-gray-500" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
+                    <!-- Data Kasir -->
+                    <a href="{{ route('admin.kasir') }}"
+                        class="flex items-center px-4 py-3 text-gray-700 rounded-lg nav-item {{ request()->routeIs('admin.kasir*') ? 'nav-item-active' : '' }}">
+                        <svg class="w-5 h-5 mr-3 {{ request()->routeIs('admin.kasir*') ? 'text-green-600' : 'text-gray-500' }}"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                         </svg>
-                        <span class="font-semibold">Laporan Keuangan</span>
-                    </a>
-
-                    <!-- Pengeluaran -->
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-700 rounded-lg nav-item">
-                        <svg class="w-5 h-5 mr-3 text-gray-500" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span class="font-semibold">Pengeluaran</span>
+                        <span class="font-semibold">Data Kasir</span>
                     </a>
 
                     <!-- Divider -->
                     <div class="pt-4 pb-2">
-                        <p class="px-4 text-xs font-semibold tracking-wider text-gray-400 uppercase">Pelanggan</p>
+                        <p class="px-4 text-xs font-semibold tracking-wider text-gray-400 uppercase">Aktivitas</p>
                     </div>
 
-                    <!-- Data Pelanggan -->
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-700 rounded-lg nav-item">
-                        <svg class="w-5 h-5 mr-3 text-gray-500" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
+                    <!-- Log Aktivitas -->
+                    <a href="{{ route('admin.log') }}"
+                        class="flex items-center px-4 py-3 text-gray-700 rounded-lg nav-item {{ request()->routeIs('admin.log*') ? 'nav-item-active' : '' }}">
+                        <svg class="w-5 h-5 mr-3 {{ request()->routeIs('admin.log*') ? 'text-green-600' : 'text-gray-500' }}"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
-                        <span class="font-semibold">Data Pelanggan</span>
-                    </a>
-
-                    <!-- Divider -->
-                    <div class="pt-4 pb-2">
-                        <p class="px-4 text-xs font-semibold tracking-wider text-gray-400 uppercase">Pengaturan</p>
-                    </div>
-
-                    <!-- User & Akses -->
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-700 rounded-lg nav-item">
-                        <svg class="w-5 h-5 mr-3 text-gray-500" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
-                        <span class="font-semibold">User & Akses</span>
-                    </a>
-
-                    <!-- Profil Toko -->
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-700 rounded-lg nav-item">
-                        <svg class="w-5 h-5 mr-3 text-gray-500" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                        </svg>
-                        <span class="font-semibold">Profil Toko</span>
+                        <span class="font-semibold">Log Aktivitas</span>
                     </a>
                 </div>
 
