@@ -117,8 +117,47 @@
             </div>
         </div>
 
-        <!-- Quick Links (sama seperti sebelumnya) -->
-        <!-- ... -->
+        <!-- Quick Links -->
+        <div class="grid grid-cols-1 gap-6 mt-6 md:grid-cols-3">
+            <a href="{{ route('admin.produk') }}"
+                class="p-6 transition bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md">
+                <div class="flex items-center">
+                    <div class="p-3 bg-green-100 rounded-full">
+                        <i class="text-2xl text-green-600 fas fa-box"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h4 class="font-semibold text-gray-800">Kelola Produk</h4>
+                        <p class="text-sm text-gray-600">Tambah, edit, hapus produk</p>
+                    </div>
+                </div>
+            </a>
+
+            <a href="{{ route('admin.stok') }}"
+                class="p-6 transition bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md">
+                <div class="flex items-center">
+                    <div class="p-3 bg-blue-100 rounded-full">
+                        <i class="text-2xl text-blue-600 fas fa-boxes"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h4 class="font-semibold text-gray-800">Kelola Stok</h4>
+                        <p class="text-sm text-gray-600">Cek stok rendah & tambah stok</p>
+                    </div>
+                </div>
+            </a>
+
+            <a href="{{ route('admin.kasir') }}"
+                class="p-6 transition bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md">
+                <div class="flex items-center">
+                    <div class="p-3 bg-purple-100 rounded-full">
+                        <i class="text-2xl text-purple-600 fas fa-user-tie"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h4 class="font-semibold text-gray-800">Kelola Kasir</h4>
+                        <p class="text-sm text-gray-600">Tambah/ubah status kasir</p>
+                    </div>
+                </div>
+            </a>
+        </div>
     </div>
 @endsection
 
