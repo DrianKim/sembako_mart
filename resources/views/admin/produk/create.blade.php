@@ -32,15 +32,15 @@
     </nav>
 
     <!-- Form Card -->
-    <div class="overflow-hidden bg-white border border-gray-200 rounded-lg shadow-sm">
-        <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-green-50 to-white">
+    <div class="overflow-hidden bg-white border border-gray-200 shadow-md rounded-xl">
+        <div class="px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-green-50 to-white">
             <div class="flex items-center">
-                <div class="flex items-center justify-center flex-shrink-0 w-12 h-12 mr-4 bg-green-100 rounded-lg">
+                <div class="flex items-center justify-center flex-shrink-0 w-12 h-12 mr-4 bg-green-100 shadow-sm rounded-xl">
                     <i class="text-2xl text-green-600 fas fa-plus-circle"></i>
                 </div>
                 <div>
                     <h3 class="text-xl font-bold text-gray-800">Tambah Produk Baru</h3>
-                    <p class="text-sm text-gray-600">Isi form di bawah untuk menambah produk baru ke dalam daftar</p>
+                    <p class="mt-1 text-sm text-gray-600">Isi form di bawah untuk menambah produk ke dalam daftar</p>
                 </div>
             </div>
         </div>
@@ -48,23 +48,8 @@
         <form action="{{ route('admin.produk.store') }}" method="POST" id="formProduk" enctype="multipart/form-data">
             @csrf
 
-            <div class="p-6">
+            <div class="p-6 space-y-6">
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-
-                    <!-- Kode Produk -->
-                    <div>
-                        <label for="kode_produk" class="block mb-2 text-sm font-semibold text-gray-700">
-                            <i class="mr-1 text-green-600 fas fa-barcode"></i>
-                            Kode Produk
-                        </label>
-                        <input type="text" id="kode_produk" name="kode_produk" value="{{ old('kode_produk') }}"
-                            placeholder="Contoh: BRP-001 / MNG-002"
-                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all @error('kode_produk') border-red-500 @enderror">
-                        @error('kode_produk')
-                            <p class="mt-1 text-sm text-red-500"><i class="mr-1 fas fa-exclamation-circle"></i> {{ $message }}</p>
-                        @enderror
-                        <p class="mt-1 text-xs text-gray-500">Akan otomatis dibuat jika dikosongkan</p>
-                    </div>
 
                     <!-- Nama Produk -->
                     <div>
@@ -72,12 +57,28 @@
                             <i class="mr-1 text-green-600 fas fa-tag"></i>
                             Nama Produk <span class="text-red-500">*</span>
                         </label>
-                        <input type="text" id="nama_produk" name="nama_produk" required value="{{ old('nama_produk') }}"
+                        <input type="text" id="nama_produk" name="nama_produk" required
+                            value="{{ old('nama_produk') }}"
                             placeholder="Contoh: Beras Pandan Premium 5kg"
                             class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all @error('nama_produk') border-red-500 @enderror">
                         @error('nama_produk')
                             <p class="mt-1 text-sm text-red-500"><i class="mr-1 fas fa-exclamation-circle"></i> {{ $message }}</p>
                         @enderror
+                    </div>
+
+                    <!-- Barcode -->
+                    <div>
+                        <label for="barcode" class="block mb-2 text-sm font-semibold text-gray-700">
+                            <i class="mr-1 text-green-600 fas fa-barcode"></i>
+                            Barcode
+                        </label>
+                        <input type="text" id="barcode" name="barcode" value="{{ old('barcode') }}"
+                            placeholder="Akan otomatis dibuat"
+                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all @error('barcode') border-red-500 @enderror">
+                        @error('barcode')
+                            <p class="mt-1 text-sm text-red-500"><i class="mr-1 fas fa-exclamation-circle"></i> {{ $message }}</p>
+                        @enderror
+                        <p class="mt-1 text-xs text-gray-500">Otomatis dari nama jika kosong</p>
                     </div>
 
                     <!-- Kategori -->
@@ -108,7 +109,7 @@
                             <i class="mr-1 text-green-600 fas fa-money-bill-wave"></i>
                             Harga (Rp) <span class="text-red-500">*</span>
                         </label>
-                        <input type="number" id="harga" name="harga" required min="1000" step="100"
+                        <input type="number" id="harga" name="harga" required min="0" step="100"
                             value="{{ old('harga') }}" placeholder="Contoh: 67000"
                             class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all @error('harga') border-red-500 @enderror">
                         @error('harga')
@@ -116,6 +117,7 @@
                         @enderror
                     </div>
 
+                    <!-- Satuan + Gambar -->
                     <div class="grid grid-cols-1 gap-6 md:col-span-2 md:grid-cols-2">
                         <!-- Satuan -->
                         <div>
@@ -126,13 +128,9 @@
                             <select id="satuan" name="satuan" required
                                 class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all @error('satuan') border-red-500 @enderror">
                                 <option hidden value="">-- Pilih Satuan --</option>
-                                <option value="Kg" {{ old('satuan') == 'Kg' ? 'selected' : '' }}>Kg</option>
-                                <option value="Botol" {{ old('satuan') == 'Botol' ? 'selected' : '' }}>Botol</option>
-                                <option value="Pcs" {{ old('satuan') == 'Pcs' ? 'selected' : '' }}>Pcs</option>
-                                <option value="Tray" {{ old('satuan') == 'Tray' ? 'selected' : '' }}>Tray</option>
-                                <option value="Pack" {{ old('satuan') == 'Pack' ? 'selected' : '' }}>Pack</option>
-                                <option value="Sak" {{ old('satuan') == 'Sak' ? 'selected' : '' }}>Sak</option>
-                                <option value="Liter" {{ old('satuan') == 'Liter' ? 'selected' : '' }}>Liter</option>
+                                <option value="kg" {{ old('satuan') == 'kg' ? 'selected' : '' }}>kg</option>
+                                <option value="pcs" {{ old('satuan') == 'pcs' ? 'selected' : '' }}>pcs</option>
+                                <option value="liter" {{ old('satuan') == 'liter' ? 'selected' : '' }}>liter</option>
                             </select>
                             @error('satuan')
                                 <p class="mt-1 text-sm text-red-500"><i class="mr-1 fas fa-exclamation-circle"></i> {{ $message }}</p>
@@ -145,9 +143,9 @@
                                 <i class="mr-1 text-green-600 fas fa-image"></i>
                                 Gambar Produk
                             </label>
-                            <input type="file" id="gambar" name="gambar" accept="image/*"
-                                class="block w-full text-sm text-gray-700 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 @error('gambar') border-red-500 @enderror">
-                            @error('gambar')
+                            <input type="file" id="gambar_produk" name="gambar_produk" accept="image/*"
+                                class="block w-full text-sm text-gray-700 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 @error('gambar_produk') border-red-500 @enderror">
+                            @error('gambar_produk')
                                 <p class="mt-1 text-sm text-red-500"><i class="mr-1 fas fa-exclamation-circle"></i> {{ $message }}</p>
                             @enderror
                             <div id="imagePreview" class="hidden mt-3">
@@ -157,7 +155,7 @@
                     </div>
                 </div>
 
-                <div class="p-4 mt-8 border-l-4 border-green-500 rounded bg-green-50">
+                <div class="p-4 mt-8 border-l-4 border-green-500 rounded-lg bg-green-50">
                     <p class="text-sm text-green-800">
                         <i class="mr-2 fas fa-info-circle"></i>
                         Field bertanda <span class="text-red-500">*</span> wajib diisi. Pastikan data sudah benar sebelum simpan.
@@ -165,17 +163,17 @@
                 </div>
             </div>
 
-            <div class="flex items-center justify-between px-6 py-4 border-t bg-gray-50">
+            <div class="flex items-center justify-between px-6 py-5 border-t bg-gray-50">
                 <a href="{{ route('admin.produk') }}"
-                    class="flex items-center px-6 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                    class="flex items-center px-6 py-3 transition bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
                     <i class="mr-2 fas fa-arrow-left"></i> Kembali
                 </a>
                 <div class="flex gap-4">
-                    <button type="reset" class="px-6 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                    <button type="reset" class="px-6 py-3 transition bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
                         <i class="mr-2 fas fa-redo"></i> Reset
                     </button>
                     <button type="submit"
-                        class="px-6 py-3 text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700">
+                        class="px-6 py-3 text-white transition rounded-lg shadow-md bg-gradient-to-r from-green-600 to-green-500 hover:shadow-lg hover:from-green-700 hover:to-green-600">
                         <i class="mr-2 fas fa-save"></i> Simpan Produk
                     </button>
                 </div>
@@ -187,7 +185,7 @@
 @push('scripts')
     <script>
         // Preview Gambar
-        document.getElementById('gambar').addEventListener('change', function(e) {
+        document.getElementById('gambar_produk')?.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
@@ -201,17 +199,17 @@
             }
         });
 
-        // Auto generate kode produk (simplified)
-        document.getElementById('nama_produk').addEventListener('blur', function() {
-            const kodeInput = document.getElementById('kode_produk');
-            if (!kodeInput.value.trim()) {
+        // Auto generate barcode dari nama produk
+        document.getElementById('nama_produk')?.addEventListener('blur', function() {
+            const barcodeInput = document.getElementById('barcode');
+            if (!barcodeInput.value.trim()) {
                 const nama = this.value.trim();
                 if (nama) {
                     const words = nama.split(/\s+/).slice(0, 3);
                     let prefix = words.map(w => w.charAt(0).toUpperCase()).join('');
                     if (prefix.length < 3) prefix += 'X'.repeat(3 - prefix.length);
                     const num = Math.floor(Math.random() * 900 + 100);
-                    kodeInput.value = `${prefix}-${num}`;
+                    barcodeInput.value = `${prefix}-${num}`;
                 }
             }
         });

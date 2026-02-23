@@ -9,13 +9,13 @@
         <!-- Greeting + Quick Stats -->
         <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-gray-800">Selamat Datang, Admin</h1>
-                <p class="text-gray-600">Ini ringkasan aktivitas toko hari ini (20 Februari 2026)</p>
+                <h1 class="text-2xl font-bold text-gray-800">Selamat Datang, {{ Auth::user()->nama }}</h1>
+                <p class="text-gray-600">Ini ringkasan aktivitas toko hari ini {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y') }}</p>
             </div>
             <div class="flex gap-3">
                 <a href="{{ route('admin.produk.create') }}"
                     class="flex items-center px-4 py-2.5 text-white bg-green-600 rounded-lg shadow hover:bg-green-700 transition">
-                    <i class="mr-2 fas fa-plus"></i> Tambah Produk
+                    <i class="mr-2 fas fa-plus"></i> Tambah Prkoduk
                 </a>
                 <a href="{{ route('admin.stok.create') }}"
                     class="flex items-center px-4 py-2.5 text-white bg-blue-600 rounded-lg shadow hover:bg-blue-700 transition">

@@ -74,7 +74,7 @@
                             <i class="mr-1 text-green-600 fas fa-lock"></i>
                             Password <span class="text-red-500">*</span>
                         </label>
-                        <input type="password" id="password" name="password" required
+                        <input type="password" id="password" name="password" required placeholder="********"
                             class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all @error('password') border-red-500 @enderror">
                         <p class="mt-1 text-xs text-gray-500">Minimal 8 karakter</p>
                     </div>

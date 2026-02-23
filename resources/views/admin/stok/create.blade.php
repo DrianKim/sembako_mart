@@ -71,9 +71,9 @@
                             Jumlah Stok Ditambahkan <span class="text-red-500">*</span>
                         </label>
                         <input type="number" id="stok" name="stok" required min="1" step="1"
-                            value="50" placeholder="Contoh: 50"
+                            value="" placeholder="Contoh: 67"
                             class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
-                        <p class="mt-1 text-xs text-gray-500">Masukkan jumlah stok yang ingin ditambahkan (positif)</p>
+                        <p class="mt-1 text-xs text-gray-500">Masukkan jumlah stok yang ingin ditambahkan</p>
                     </div>
 
                     <!-- Preview Stok Saat Ini (dummy via JS) -->

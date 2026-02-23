@@ -27,15 +27,16 @@
         </ol>
     </nav>
 
-    <div class="overflow-hidden bg-white border border-gray-200 rounded-lg shadow-sm">
-        <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-green-50 to-white">
+    <div class="overflow-hidden bg-white border border-gray-200 shadow-md rounded-xl">
+        <div class="px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-green-50 to-white">
             <div class="flex items-center">
-                <div class="flex items-center justify-center flex-shrink-0 w-12 h-12 mr-4 bg-green-100 rounded-lg">
+                <div
+                    class="flex items-center justify-center flex-shrink-0 w-12 h-12 mr-4 bg-green-100 shadow-sm rounded-xl">
                     <i class="text-2xl text-green-600 fas fa-edit"></i>
                 </div>
                 <div>
                     <h3 class="text-xl font-bold text-gray-800">Edit Produk: Beras Pandan Premium 5kg</h3>
-                    <p class="text-sm text-gray-600">Kode: BRP-001 | Satuan: Kg</p>
+                    <p class="mt-1 text-sm text-gray-600">Kode: BRP-001 | Satuan: kg</p>
                 </div>
             </div>
         </div>
@@ -44,11 +45,21 @@
             @csrf
             @method('PUT')
 
-            <div class="p-6">
+            <div class="p-6 space-y-6">
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
 
-                    <!-- Kode Produk -->
-                    <div class="md:col-span-1">
+                    <!-- Nama Produk -->
+                    <div>
+                        <label for="nama_produk" class="block mb-2 text-sm font-semibold text-gray-700">
+                            <i class="mr-1 text-green-600 fas fa-tag"></i>
+                            Nama Produk <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="nama_produk" name="nama_produk" required value="Beras Pandan Premium 5kg"
+                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
+                    </div>
+
+                    <!-- Kode Produk (readonly) -->
+                    <div>
                         <label for="kode_produk" class="block mb-2 text-sm font-semibold text-gray-700">
                             <i class="mr-1 text-green-600 fas fa-barcode"></i>
                             Kode Produk
@@ -56,17 +67,7 @@
                         <input type="text" id="kode_produk" name="kode_produk" value="BRP-001"
                             class="w-full px-4 py-2.5 bg-gray-100 border border-gray-300 rounded-lg cursor-not-allowed"
                             readonly>
-                        <p class="mt-1 text-xs text-gray-500">Kode produk tidak dapat diubah</p>
-                    </div>
-
-                    <!-- Nama Produk -->
-                    <div class="md:col-span-1">
-                        <label for="nama_produk" class="block mb-2 text-sm font-semibold text-gray-700">
-                            <i class="mr-1 text-green-600 fas fa-tag"></i>
-                            Nama Produk <span class="text-red-500">*</span>
-                        </label>
-                        <input type="text" id="nama_produk" name="nama_produk" required value="Beras Pandan Premium 5kg"
-                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
+                        <p class="mt-1 text-xs text-gray-500">Otomatis dari nama jika kosong</p>
                     </div>
 
                     <!-- Kategori -->
@@ -95,10 +96,11 @@
                             Harga (Rp) <span class="text-red-500">*</span>
                         </label>
                         <input type="number" id="harga" name="harga" required min="1000" step="100"
-                            value="78000"
+                            value="67000"
                             class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
                     </div>
 
+                    <!-- Satuan + Gambar -->
                     <div class="grid grid-cols-1 gap-6 md:col-span-2 md:grid-cols-2">
                         <!-- Satuan -->
                         <div>
@@ -109,13 +111,9 @@
                             <select id="satuan" name="satuan" required
                                 class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
                                 <option hidden value="">-- Pilih Satuan --</option>
-                                <option value="Kg" selected>Kg</option>
-                                <option value="Botol">Botol</option>
-                                <option value="Pcs">Pcs</option>
-                                <option value="Tray">Tray</option>
-                                <option value="Pack">Pack</option>
-                                <option value="Sak">Sak</option>
-                                <option value="Liter">Liter</option>
+                                <option value="kg" selected>kg</option>
+                                <option value="pcs">pcs</option>
+                                <option value="liter">liter</option>
                             </select>
                         </div>
 
@@ -131,8 +129,7 @@
                             <div class="mt-3">
                                 <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=300&h=300&fit=crop"
                                     alt="Preview Gambar Saat Ini" class="object-cover w-32 h-32 rounded-lg shadow">
-                                <p class="mt-1 text-xs text-gray-500">Gambar saat ini. Upload baru jika ingin mengganti.
-                                </p>
+                                <p class="mt-1 text-xs text-gray-500">Gambar saat ini. Upload baru jika ingin mengganti.</p>
                             </div>
                             <!-- Preview Gambar Baru -->
                             <div id="imagePreview" class="hidden mt-3">
@@ -143,7 +140,7 @@
 
                 </div>
 
-                <div class="p-4 mt-8 border-l-4 border-green-500 rounded bg-green-50">
+                <div class="p-4 mt-8 border-l-4 border-green-500 rounded-lg bg-green-50">
                     <p class="text-sm text-green-800">
                         <i class="mr-2 fas fa-info-circle"></i>
                         Mengedit produk hanya mempengaruhi informasi dasar. Stok dan transaksi tidak berubah otomatis.
@@ -151,17 +148,18 @@
                 </div>
             </div>
 
-            <div class="flex items-center justify-between px-6 py-4 border-t bg-gray-50">
+            <div class="flex items-center justify-between px-6 py-5 border-t bg-gray-50">
                 <a href="{{ route('admin.produk') }}"
-                    class="flex items-center px-6 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                    class="flex items-center px-6 py-3 transition bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
                     <i class="mr-2 fas fa-arrow-left"></i> Kembali
                 </a>
                 <div class="flex gap-4">
-                    <button type="reset" class="px-6 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                    <button type="reset"
+                        class="px-6 py-3 transition bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
                         <i class="mr-2 fas fa-redo"></i> Reset
                     </button>
                     <button type="submit"
-                        class="px-6 py-3 text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700">
+                        class="px-6 py-3 text-white transition rounded-lg shadow-md bg-gradient-to-r from-green-600 to-green-500 hover:shadow-lg hover:from-green-700 hover:to-green-600">
                         <i class="mr-2 fas fa-save"></i> Simpan Perubahan
                     </button>
                 </div>
@@ -173,7 +171,7 @@
 @push('scripts')
     <script>
         // Preview Gambar Baru
-        document.getElementById('gambar').addEventListener('change', function(e) {
+        document.getElementById('gambar')?.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();

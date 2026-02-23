@@ -67,16 +67,6 @@
                             class="w-full px-4 py-2.5 bg-gray-100 border border-gray-300 rounded-lg cursor-not-allowed">
                     </div>
 
-                    <!-- No HP -->
-                    <div>
-                        <label for="no_hp" class="block mb-2 text-sm font-semibold text-gray-700">
-                            <i class="mr-1 text-green-600 fas fa-phone"></i>
-                            Nomor HP <span class="text-red-500">*</span>
-                        </label>
-                        <input type="text" id="no_hp" name="no_hp" required value="081234567890"
-                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
-                    </div>
-
                     <!-- Password (opsional) -->
                     <div>
                         <label for="password" class="block mb-2 text-sm font-semibold text-gray-700">
@@ -86,6 +76,16 @@
                         <input type="password" id="password" name="password"
                             class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
                         <p class="mt-1 text-xs text-gray-500">Minimal 8 karakter. Kosongkan jika tidak diubah.</p>
+                    </div>
+
+                    <!-- No HP -->
+                    <div>
+                        <label for="no_hp" class="block mb-2 text-sm font-semibold text-gray-700">
+                            <i class="mr-1 text-green-600 fas fa-phone"></i>
+                            Nomor HP <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="no_hp" name="no_hp" required value="081234567890"
+                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
                     </div>
 
                     <!-- Status -->
