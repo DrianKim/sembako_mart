@@ -1,8 +1,11 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\KasirController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 Route::get('/', function () {
     return view('welcome');
@@ -73,9 +76,28 @@ Route::middleware(['auth', 'role:admin'])->prefix('/admin')->name('admin.')->gro
 
 // Kasir
 Route::middleware(['auth', 'role:kasir'])->prefix('/kasir')->name('kasir.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('kasir.dashboard');
-    })->name('dashboard');
+    // Dashboard
+    Route::get('/dashboard', [KasirController::class, 'dashboard'])->name('dashboard');
+
+    // Transaksi
+    Route::get('/transaksi', [KasirController::class, 'transaksiIndex'])->name('transaksi');
+
+    // Riwayat Transaksi
+    Route::get('/riwayat-transaksi', [KasirController::class, 'riwayatTransaksi'])->name('riwayat');
+
+    Route::get('/kasir/struk/{trxNumber?}', function ($trxNumber = null) {
+        // Nanti kirim data dari session atau query, sekarang dummy
+        return view('kasir.struk', [
+            'trxNumber' => $trxNumber ?? 'TRX-' . now()->format('Ymd') . '-' . rand(100, 999),
+            'kasir' => Auth::user()->nama ?? 'Kasir',
+            'tanggal' => now()->format('d M Y H:i') . ' WIB',
+            'pelanggan' => 'Umum',
+            'items' => session('last_keranjang', []), // nanti simpan keranjang di session sebelum redirect
+            'total' => session('last_total', 0),
+            'bayar' => session('last_bayar', 0),
+            'kembalian' => session('last_kembalian', 0),
+        ]);
+    })->name('struk');
 });
 
 // Owner
