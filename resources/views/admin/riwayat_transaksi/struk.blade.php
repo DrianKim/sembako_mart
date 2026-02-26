@@ -120,7 +120,7 @@
             class="px-8 py-3 text-white transition-all bg-green-600 rounded-lg shadow-md hover:bg-green-700">
             <i class="mr-2 fas fa-print"></i> Cetak Struk
         </button>
-        <a href="{{ route('admin.riwayat_transaksi') }}"
+        <a href="javascript:window.history.back()"
             class="inline-block px-6 py-3 ml-4 text-gray-700 transition-all bg-gray-200 rounded-lg hover:bg-gray-300">
             Kembali
         </a>

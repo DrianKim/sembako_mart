@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Struk Transaksi {{ $trxNumber }}</title>
+    <title>Struk Transaksi {{ $nomor_unik ?? '#TRX-20260226-001' }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @media print {
@@ -41,25 +41,25 @@
         <div class="text-sm">
             <div class="flex justify-between">
                 <span>Nomor Transaksi</span>
-                <span class="font-mono">{{ $trxNumber }}</span>
+                <span class="font-mono">{{ $nomor_unik ?? 'TRX-20260226-001' }}</span>
             </div>
             <div class="flex justify-between">
                 <span>Tanggal</span>
-                <span>{{ $tanggal }}</span>
+                <span>{{ $tanggal ?? '26 Feb 2026 15:00 WIB' }}</span>
             </div>
             <div class="flex justify-between">
                 <span>Kasir</span>
-                <span>{{ $kasir }}</span>
+                <span>{{ $kasir ?? (Auth::user()->nama ?? 'Kasir') }}</span>
             </div>
             <div class="flex justify-between">
                 <span>Pelanggan</span>
-                <span>{{ $pelanggan }}</span>
+                <span>{{ $pelanggan ?? 'Umum' }}</span>
             </div>
         </div>
 
         <hr class="my-3 border-gray-400 border-dashed">
 
-        <!-- Detail Item -->
+        <!-- Detail Item (dummy kalau ga ada data) -->
         <div class="text-sm">
             <table class="w-full">
                 <thead>
@@ -71,18 +71,34 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($items as $item)
+                    @if (isset($items) && count($items) > 0)
+                        @foreach ($items as $item)
+                            <tr>
+                                <td class="py-1">{{ $item['nama'] }}</td>
+                                <td class="py-1 text-center">{{ $item['qty'] }}</td>
+                                <td class="py-1 text-right">Rp {{ number_format($item['harga'], 0, ',', '.') }}</td>
+                                <td class="py-1 font-semibold text-right">Rp
+                                    {{ number_format($item['subtotal'], 0, ',', '.') }}</td>
+                            </tr>
+                        @endforeach
+                    @else
+                        <!-- Dummy kalau belum ada data -->
                         <tr>
-                            <td class="py-1">{{ $item['nama'] }}</td>
-                            <td class="py-1 text-center">{{ $item['qty'] }}</td>
-                            <td class="py-1 text-right">Rp {{ number_format($item['harga'], 0, ',', '.') }}</td>
-                            <td class="py-1 font-semibold text-right">Rp
-                                {{ number_format($item['harga'] * $item['qty'], 0, ',', '.') }}</td>
+                            <td class="py-1">Beras Pandan Premium 5kg</td>
+                            <td class="py-1 text-center">2</td>
+                            <td class="py-1 text-right">Rp 78.000</td>
+                            <td class="py-1 font-semibold text-right">Rp 156.000</td>
                         </tr>
-                    @endforeach
+                        <tr>
+                            <td class="py-1">Minyak Goreng Sania 2L</td>
+                            <td class="py-1 text-center">1</td>
+                            <td class="py-1 text-right">Rp 42.500</td>
+                            <td class="py-1 font-semibold text-right">Rp 42.500</td>
+                        </tr>
+                    @endif
                     <tr class="font-bold border-t border-gray-400">
                         <td colspan="3" class="py-2 text-right">Total</td>
-                        <td class="py-2 text-right">Rp {{ number_format($total, 0, ',', '.') }}</td>
+                        <td class="py-2 text-right">Rp {{ number_format($total ?? 198500, 0, ',', '.') }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -93,11 +109,11 @@
         <div class="text-sm">
             <div class="flex justify-between">
                 <span>Uang Bayar</span>
-                <span>Rp {{ number_format($bayar, 0, ',', '.') }}</span>
+                <span>Rp {{ number_format($uang_bayar ?? 200000, 0, ',', '.') }}</span>
             </div>
             <div class="flex justify-between font-bold">
                 <span>Kembalian</span>
-                <span>Rp {{ number_format($kembalian, 0, ',', '.') }}</span>
+                <span>Rp {{ number_format($kembalian ?? 1500, 0, ',', '.') }}</span>
             </div>
         </div>
 
@@ -117,16 +133,11 @@
             class="px-8 py-3 text-white transition-all bg-green-600 rounded-lg shadow-md hover:bg-green-700">
             <i class="mr-2 fas fa-print"></i> Cetak Struk
         </button>
-        <a href="{{ route('kasir.transaksi') }}"
+        <a href="javascript:window.history.back()"
             class="inline-block px-6 py-3 ml-4 text-gray-700 transition-all bg-gray-200 rounded-lg hover:bg-gray-300">
-            Kembali ke Transaksi
+            Kembali
         </a>
     </div>
-
-    <script>
-        // Auto print opsional (uncomment kalo mau langsung cetak pas buka halaman)
-        // window.onload = function() { window.print(); };
-    </script>
 </body>
 
 </html>

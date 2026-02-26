@@ -83,21 +83,10 @@ Route::middleware(['auth', 'role:kasir'])->prefix('/kasir')->name('kasir.')->gro
     Route::get('/transaksi', [KasirController::class, 'transaksiIndex'])->name('transaksi');
 
     // Riwayat Transaksi
-    Route::get('/riwayat-transaksi', [KasirController::class, 'riwayatTransaksi'])->name('riwayat');
+    Route::get('/riwayat-transaksi', [KasirController::class, 'riwayatTransaksi'])->name('riwayat_transaksi');
 
-    Route::get('/kasir/struk/{trxNumber?}', function ($trxNumber = null) {
-        // Nanti kirim data dari session atau query, sekarang dummy
-        return view('kasir.struk', [
-            'trxNumber' => $trxNumber ?? 'TRX-' . now()->format('Ymd') . '-' . rand(100, 999),
-            'kasir' => Auth::user()->nama ?? 'Kasir',
-            'tanggal' => now()->format('d M Y H:i') . ' WIB',
-            'pelanggan' => 'Umum',
-            'items' => session('last_keranjang', []), // nanti simpan keranjang di session sebelum redirect
-            'total' => session('last_total', 0),
-            'bayar' => session('last_bayar', 0),
-            'kembalian' => session('last_kembalian', 0),
-        ]);
-    })->name('struk');
+    // Struk
+    Route::get('/struk/{id}', [KasirController::class, 'struk'])->name('struk');
 });
 
 // Owner
