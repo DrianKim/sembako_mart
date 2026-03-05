@@ -28,15 +28,16 @@
 
     <!-- Filter & Search -->
     <div class="p-6 mb-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-4">
-            <!-- Search -->
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-5 md:gap-4">
+            <!-- Search - span 2 biar lebar dominan -->
             <div class="md:col-span-2">
                 <label class="block mb-2 text-sm font-semibold text-gray-700">
                     <i class="mr-1 text-green-600 fas fa-search"></i>
                     Cari Transaksi
                 </label>
                 <div class="relative">
-                    <input type="text" id="searchInput" placeholder="Cari nama pelanggan, nomor unik, atau tanggal..."
+                    <input type="text" id="searchInput"
+                        placeholder="Cari nama pelanggan, nomor unik, kasir, atau tanggal..."
                         class="w-full px-4 py-2.5 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <i class="text-gray-400 fas fa-search"></i>
@@ -44,7 +45,7 @@
                 </div>
             </div>
 
-            <!-- Filter Tanggal Range -->
+            <!-- Dari Tanggal -->
             <div class="md:col-span-1">
                 <label class="block mb-2 text-sm font-semibold text-gray-700">
                     <i class="mr-1 text-green-600 fas fa-calendar-alt"></i>
@@ -54,6 +55,7 @@
                     class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
             </div>
 
+            <!-- Sampai Tanggal -->
             <div class="md:col-span-1">
                 <label class="block mb-2 text-sm font-semibold text-gray-700">
                     <i class="mr-1 text-green-600 fas fa-calendar-alt"></i>
@@ -62,17 +64,15 @@
                 <input type="date" id="toDate"
                     class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
             </div>
-        </div>
 
-        <div class="flex flex-col gap-3 mt-4 sm:flex-row">
-            <button id="btnFilter"
-                class="flex items-center justify-center px-6 py-2.5 text-white transition-all bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 shadow-sm">
-                <i class="mr-2 fas fa-search"></i> Terapkan Filter
-            </button>
-            <button id="btnReset"
-                class="flex items-center justify-center px-6 py-2.5 text-gray-700 transition-all bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 shadow-sm">
-                <i class="mr-2 fas fa-redo"></i> Reset
-            </button>
+            <!-- Reset - pojok kanan banget, nempel di ujung grid -->
+            <div class="flex items-end justify-end md:col-span-1">
+                <button id="btnReset"
+                    class="flex items-center px-6 py-2.5 text-gray-700 transition-all duration-200 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 shadow-sm">
+                    <i class="mr-2 fas fa-redo"></i>
+                    Reset
+                </button>
+            </div>
         </div>
     </div>
 

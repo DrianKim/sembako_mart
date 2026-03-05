@@ -100,7 +100,8 @@
                 </div>
                 <div>
                     <h3 class="text-lg font-semibold text-gray-800">Daftar User</h3>
-                    <p class="text-sm text-gray-600">Menampilkan semua admin & kasir</p>
+                    <p class="text-sm text-gray-600">Total: <span id="totalTransaksi"
+                            class="font-semibold text-green-600">7</span> user</p>
                 </div>
             </div>
             <div class="flex gap-2">
