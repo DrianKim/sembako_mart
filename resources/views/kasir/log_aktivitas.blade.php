@@ -1,6 +1,6 @@
-@extends('admin.layouts.app')
+@extends('kasir.layouts.app')
 @section('title', 'Log Aktivitas')
-@section('page-description', 'Riwayat aktivitas Anda sebagai admin.')
+@section('page-description', 'Riwayat aktivitas Anda sebagai kasir.')
 
 @section('content')
     <!-- Breadcrumb & Header -->
@@ -9,7 +9,7 @@
             <nav class="flex mb-4 md:mb-0" aria-label="Breadcrumb">
                 <ol class="inline-flex items-center space-x-1 md:space-x-3">
                     <li class="inline-flex items-center">
-                        <a href="{{ route('admin.dashboard') }}"
+                        <a href="{{ route('kasir.dashboard') }}"
                             class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-green-600">
                             <i class="w-4 h-4 mr-2 fas fa-home"></i>
                             Dashboard
@@ -28,9 +28,9 @@
 
     <!-- Filter & Search Section -->
     <div class="p-6 mb-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-4 md:gap-4">
-            <!-- Search - span 3 biar lebar dominan -->
-            <div class="md:col-span-3">
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <!-- Search -->
+            <div class="md:col-span-2">
                 <label class="block mb-2 text-sm font-semibold text-gray-700">
                     <i class="mr-1 text-green-600 fas fa-search"></i>
                     Cari Aktivitas
@@ -43,15 +43,19 @@
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Reset - satu jajar nempel di kanan search -->
-            <div class="flex items-end justify-end md:col-span-1">
-                <button id="btnReset"
-                    class="flex items-center px-6 py-2.5 text-gray-700 transition-all duration-200 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 shadow-sm">
-                    <i class="mr-2 fas fa-redo"></i>
-                    Reset
-                </button>
-            </div>
+        <div class="flex gap-3 mt-4">
+            <button id="btnFilter"
+                class="flex items-center px-4 py-2 text-white transition-all duration-200 bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+                <i class="mr-2 fas fa-search"></i>
+                Terapkan
+            </button>
+            <button id="btnReset"
+                class="flex items-center px-4 py-2 text-gray-700 transition-all duration-200 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400">
+                <i class="mr-2 fas fa-redo"></i>
+                Reset
+            </button>
         </div>
     </div>
 
@@ -106,73 +110,40 @@
                     <tr class="transition-colors hover:bg-gray-50">
                         <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">1</td>
                         <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">User 'Admin Sembako Mart' melakukan login sebagai Admin</div>
+                            <div class="text-sm text-gray-900">User 'Kasir Sembako Mart' melakukan login sebagai Kasir</div>
                         </td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-20 08:03:32</td>
+                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-26 07:00:00</td>
                     </tr>
 
                     <!-- Dummy Row 2 -->
                     <tr class="transition-colors hover:bg-gray-50">
                         <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">2</td>
                         <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">Menambahkan produk baru: Beras Pandan Premium 5kg (BRP-001)
+                            <div class="text-sm text-gray-900">User 'Kasir Sembako Mart' memproses transaksi TRX20260226001
+dengan total Rp 149.000
                             </div>
                         </td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-20 09:15:47</td>
+                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-26 12:00:00</td>
                     </tr>
 
                     <!-- Dummy Row 3 -->
                     <tr class="transition-colors hover:bg-gray-50">
                         <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">3</td>
                         <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">Mengedit stok produk: Minyak Goreng Sania 2L +100 Botol</div>
+                            <div class="text-sm text-gray-900">User 'Kasir Sembako Mart' memproses transaksi TRX20260226002
+dengan total Rp 188.000</div>
                         </td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-20 10:22:19</td>
+                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-26 13:20:35</td>
                     </tr>
 
                     <!-- Dummy Row 4 -->
                     <tr class="transition-colors hover:bg-gray-50">
                         <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">4</td>
                         <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">Menambahkan kasir baru: Siti Rahayu (siti_kasir01)</div>
+                            <div class="text-sm text-gray-900">User 'Kasir Sembako Mart' memproses transaksi TRX20260226003
+dengan total RP 165.000</div>
                         </td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-20 11:45:03</td>
-                    </tr>
-
-                    <!-- Dummy Row 5 -->
-                    <tr class="transition-colors hover:bg-gray-50">
-                        <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">5</td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">Mengubah status kasir Budi Santoso menjadi Nonaktif</div>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-20 13:10:55</td>
-                    </tr>
-
-                    <!-- Dummy Row 6 -->
-                    <tr class="transition-colors hover:bg-gray-50">
-                        <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">6</td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">Melakukan logout dari sistem</div>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-20 18:30:12</td>
-                    </tr>
-
-                    <!-- Dummy Row 7 -->
-                    <tr class="transition-colors hover:bg-gray-50">
-                        <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">7</td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">User 'Admin Sembako Mart' melakukan login kembali</div>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-21 07:45:28</td>
-                    </tr>
-
-                    <!-- Dummy Row 8 -->
-                    <tr class="transition-colors hover:bg-gray-50">
-                        <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">8</td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">Menambahkan kategori baru: Buah Segar (KTG-004)</div>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-21 09:12:41</td>
+                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-26 16:15:22</td>
                     </tr>
                 </tbody>
             </table>
@@ -181,7 +152,7 @@
         <!-- Table Footer with Pagination -->
         <div class="flex flex-col items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50 sm:flex-row">
             <div class="mb-4 text-sm text-gray-600 sm:mb-0">
-                Menampilkan <span class="font-semibold text-gray-900">1-8</span> dari <span
+                Menampilkan <span class="font-semibold text-gray-900">1-4</span> dari <span
                     class="font-semibold text-gray-900">8</span> aktivitas
             </div>
             <div class="flex items-center gap-2">

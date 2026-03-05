@@ -3,9 +3,16 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\KasirController;
+use App\Http\Controllers\OwnerController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
+
+
+
+Route::get('/coba', function () {
+    return view('index1');
+});
 
 Route::get('/', function () {
     return view('welcome');
@@ -87,11 +94,36 @@ Route::middleware(['auth', 'role:kasir'])->prefix('/kasir')->name('kasir.')->gro
 
     // Struk
     Route::get('/struk/{id}', [KasirController::class, 'struk'])->name('struk');
+
+    // Log Aktivitas
+    Route::get('/log', [KasirController::class, 'logIndex'])->name('log');
 });
 
 // Owner
 Route::middleware(['auth', 'role:owner'])->prefix('/owner')->name('owner.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('owner.dashboard');
-    })->name('dashboard');
+    // Dashboard
+    Route::get('/dashboard', [OwnerController::class, 'dashboard'])->name('dashboard');
+
+    // Produk
+    Route::get('/produk', [OwnerController::class, 'produkIndex'])->name('produk');
+
+    // User
+    Route::get('/user', [OwnerController::class, 'userIndex'])->name('user');
+    Route::get('/user/create', [OwnerController::class, 'userCreate'])->name('user.create');
+    Route::post('/user/store', [OwnerController::class, 'userStore'])->name('user.store');
+    Route::get('/user/{id}/edit', [OwnerController::class, 'userEdit'])->name('user.edit');
+    Route::put('/user/{id}/update', [OwnerController::class, 'userUpdate'])->name('user.update');
+
+    // Riwayat Transaksi
+    Route::get('/riwayat-transaksi', [OwnerController::class, 'riwayatTransaksiIndex'])->name('riwayat_transaksi');
+
+    // Struk
+    Route::get('/struk/{id}', [OwnerController::class, 'struk'])->name('riwayat_transaksi.struk');
+
+    // Laporan Penjualan
+    Route::get('/laporan-penjualan', [OwnerController::class, 'laporanPenjualan'])->name('laporan_penjualan');
+    Route::get('/laporan-penjualan/export', [OwnerController::class, 'exportLaporanPenjualan'])->name('laporan_penjualan.export');
+
+    // Log Aktivitas
+    Route::get('/log', [OwnerController::class, 'logIndex'])->name('log');
 });

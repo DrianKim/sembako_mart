@@ -1,6 +1,6 @@
-@extends('admin.layouts.app')
+@extends('owner.layouts.app')
 @section('title', 'Produk')
-@section('page-description', 'Halaman untuk mengelola produk.')
+@section('page-description', 'Lihat daftar produk dan stok saat ini.')
 
 @section('content')
     <!-- Breadcrumb & Header Section -->
@@ -10,7 +10,7 @@
             <nav class="flex mb-4 md:mb-0" aria-label="Breadcrumb">
                 <ol class="inline-flex items-center space-x-1 md:space-x-3">
                     <li class="inline-flex items-center">
-                        <a href="{{ route('admin.dashboard') }}"
+                        <a href="{{ route('owner.dashboard') }}"
                             class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-green-600">
                             <i class="w-4 h-4 mr-2 fas fa-home"></i>
                             Dashboard
@@ -24,15 +24,6 @@
                     </li>
                 </ol>
             </nav>
-
-            <!-- Create Button -->
-            <a href="{{ route('admin.produk.create') }}"
-                class="flex items-center px-4 py-2.5 text-white transition-all duration-200 bg-gradient-to-r from-green-600 to-green-500 rounded-lg shadow-md hover:shadow-lg hover:from-green-700 hover:to-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                Tambah Produk
-            </a>
         </div>
     </section>
 
@@ -47,14 +38,14 @@
                 </label>
                 <div class="relative">
                     <input type="text" id="searchInput" placeholder="Cari nama, barcode, atau kategori..."
-                        class="w-full px-4 py-2.5 pl-10 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
+                        class="w-full px-4 py-2.5 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <i class="text-gray-400 fas fa-search"></i>
                     </div>
                 </div>
             </div>
 
-            <!-- Reset - satu jajar nempel di kanan search -->
+            <!-- Reset - satu jajar nempel di kanan search, ga jauh -->
             <div class="flex items-end justify-end md:col-span-1">
                 <button id="btnReset"
                     class="flex items-center px-6 py-2.5 text-gray-700 transition-all duration-200 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 shadow-sm">
@@ -100,10 +91,6 @@
             <table class="w-full">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="w-12 px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
-                            <input type="checkbox" id="selectAll"
-                                class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
-                        </th>
                         <th class="w-12 px-4 py-3 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
                             No
                         </th>
@@ -120,23 +107,16 @@
                             Harga
                         </th>
                         <th class="px-4 py-3 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
-                            Stok
-                        </th>
-                        <th class="px-4 py-3 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
                             Satuan
                         </th>
                         <th class="px-4 py-3 text-xs font-semibold tracking-wider text-center text-gray-600 uppercase">
-                            Aksi
+                            Stok Saat Ini
                         </th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200" id="tableBody">
-                    <!-- Dummy Row 1 -->
+                    <!-- Dummy Row 1 (stok >10 → hijau) -->
                     <tr class="transition-colors hover:bg-gray-50">
-                        <td class="w-12 px-6 py-4 whitespace-nowrap">
-                            <input type="checkbox"
-                                class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
-                        </td>
                         <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">1</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=100&h=100&fit=crop"
@@ -148,29 +128,14 @@
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-900">Beras & Tepung</td>
                         <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">Rp 78.000</td>
-                        <td class="px-6 py-4 text-sm font-bold text-green-600 whitespace-nowrap">45</td>
                         <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">kg</td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                            <div class="flex justify-center gap-2">
-                                <a href="{{ route('admin.produk.edit', 1) }}"
-                                    class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
-                                    title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <button class="p-2 text-red-600 transition-colors rounded-lg bg-red-50 hover:bg-red-100"
-                                    title="Hapus">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
+                        <td class="px-6 py-4 font-bold text-center text-green-600 whitespace-nowrap">
+                            45
                         </td>
                     </tr>
 
-                    <!-- Dummy Row 2 -->
+                    <!-- Dummy Row 2 (stok ≤10 & >0 → kuning) -->
                     <tr class="transition-colors hover:bg-gray-50">
-                        <td class="w-12 px-6 py-4 whitespace-nowrap">
-                            <input type="checkbox"
-                                class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
-                        </td>
                         <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">2</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <img src="https://images.unsplash.com/photo-1626957341926-98752fc2ba90?w=100&h=100&fit=crop"
@@ -182,29 +147,14 @@
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-900">Minyak & Mentega</td>
                         <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">Rp 42.500</td>
-                        <td class="px-6 py-4 text-sm font-bold text-green-600 whitespace-nowrap">120</td>
                         <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">liter</td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                            <div class="flex justify-center gap-2">
-                                <a href="{{ route('admin.produk.edit', 2) }}"
-                                    class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
-                                    title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <button class="p-2 text-red-600 transition-colors rounded-lg bg-red-50 hover:bg-red-100"
-                                    title="Hapus">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
+                        <td class="px-6 py-4 font-bold text-center text-yellow-600 whitespace-nowrap">
+                            8
                         </td>
                     </tr>
 
-                    <!-- Dummy Row 3 -->
+                    <!-- Dummy Row 3 (stok 0 → merah + Habis) -->
                     <tr class="transition-colors hover:bg-gray-50">
-                        <td class="w-12 px-6 py-4 whitespace-nowrap">
-                            <input type="checkbox"
-                                class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
-                        </td>
                         <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">3</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <img src="https://images.unsplash.com/photo-1556400666-a8c3349b0a4e?w=100&h=100&fit=crop"
@@ -216,24 +166,13 @@
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-900">Gula & Pemanis</td>
                         <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">Rp 18.000</td>
-                        <td class="px-6 py-4 text-sm font-bold text-red-600 whitespace-nowrap">8</td>
                         <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">kg</td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                            <div class="flex justify-center gap-2">
-                                <a href="{{ route('admin.produk.edit', 3) }}"
-                                    class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
-                                    title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <button class="p-2 text-red-600 transition-colors rounded-lg bg-red-50 hover:bg-red-100"
-                                    title="Hapus">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
+                        <td class="px-6 py-4 font-bold text-center text-red-600 whitespace-nowrap">
+                            0 (Habis)
                         </td>
                     </tr>
 
-                    <!-- Tambahkan row dummy lain sesuai kebutuhan -->
+                    <!-- Tambah dummy lain kalau mau -->
                 </tbody>
             </table>
         </div>
@@ -248,8 +187,7 @@
                 <button
                     class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled>
-                    <i class="fas fa-chevron-left"></i>
-                    Previous
+                    <i class="fas fa-chevron-left"></i> Previous
                 </button>
                 <button
                     class="px-4 py-2 text-sm font-medium text-white transition-colors bg-green-600 border border-green-600 rounded-lg hover:bg-green-700">
@@ -261,35 +199,7 @@
                 </button>
                 <button
                     class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
-                    Next
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bulk Actions -->
-    <div id="bulkActions"
-        class="fixed bottom-0 left-0 right-0 z-50 hidden p-4 transition-all duration-300 transform translate-y-full bg-white border-t-2 border-green-500 shadow-2xl">
-        <div class="container flex items-center justify-between mx-auto">
-            <div class="flex items-center">
-                <div class="flex items-center justify-center w-10 h-10 mr-3 bg-green-100 rounded-lg">
-                    <i class="text-green-600 fas fa-check-circle"></i>
-                </div>
-                <span class="text-sm font-semibold text-gray-800">
-                    <span id="selectedCount">0</span> produk dipilih
-                </span>
-            </div>
-            <div class="flex gap-3">
-                <button
-                    class="flex items-center px-4 py-2 text-white transition-colors bg-red-600 rounded-lg hover:bg-red-700">
-                    <i class="mr-2 fas fa-trash"></i>
-                    Hapus Terpilih
-                </button>
-                <button
-                    class="flex items-center px-4 py-2 text-gray-700 transition-colors bg-gray-200 rounded-lg hover:bg-gray-300">
-                    <i class="mr-2 fas fa-times"></i>
-                    Batal
+                    Next <i class="fas fa-chevron-right"></i>
                 </button>
             </div>
         </div>
@@ -298,35 +208,8 @@
 
 @push('scripts')
     <script>
-        // Select All Checkbox
-        document.getElementById('selectAll').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('#tableBody input[type="checkbox"]');
-            checkboxes.forEach(checkbox => checkbox.checked = this.checked);
-            updateBulkActions();
-        });
-
-        // Individual Checkboxes
-        document.querySelectorAll('#tableBody input[type="checkbox"]').forEach(checkbox => {
-            checkbox.addEventListener('change', updateBulkActions);
-        });
-
-        function updateBulkActions() {
-            const checkedBoxes = document.querySelectorAll('#tableBody input[type="checkbox"]:checked');
-            const bulkActions = document.getElementById('bulkActions');
-            const selectedCount = document.getElementById('selectedCount');
-
-            selectedCount.textContent = checkedBoxes.length;
-
-            if (checkedBoxes.length > 0) {
-                bulkActions.classList.remove('hidden', 'translate-y-full');
-            } else {
-                bulkActions.classList.add('translate-y-full');
-                setTimeout(() => bulkActions.classList.add('hidden'), 300);
-            }
-        }
-
         // Live Search
-        document.getElementById('searchInput').addEventListener('input', function(e) {
+        document.getElementById('searchInput')?.addEventListener('input', function(e) {
             const term = e.target.value.toLowerCase().trim();
             const rows = document.querySelectorAll('#tableBody tr');
 
@@ -337,13 +220,13 @@
         });
 
         // Reset
-        document.getElementById('btnReset').addEventListener('click', function() {
+        document.getElementById('btnReset')?.addEventListener('click', function() {
             document.getElementById('searchInput').value = '';
             document.querySelectorAll('#tableBody tr').forEach(row => row.style.display = '');
         });
 
-        // Terapkan (dummy, karena live search sudah cukup)
-        document.getElementById('btnFilter').addEventListener('click', function() {
+        // Terapkan (dummy, karena live search sudah aktif)
+        document.getElementById('btnFilter')?.addEventListener('click', function() {
             alert('Filter diterapkan! (live search sudah aktif)');
         });
     </script>

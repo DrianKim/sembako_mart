@@ -38,9 +38,9 @@
 
     <!-- Filter & Search Section -->
     <div class="p-6 mb-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <!-- Search -->
-            <div class="md:col-span-2">
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-4 md:gap-4">
+            <!-- Search - span 3 biar lebar dominan -->
+            <div class="md:col-span-3">
                 <label class="block mb-2 text-sm font-semibold text-gray-700">
                     <i class="mr-1 text-green-600 fas fa-search"></i>
                     Cari Kategori
@@ -56,20 +56,15 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Filter Actions -->
-        <div class="flex gap-3 mt-4">
-            <button id="btnFilter"
-                class="flex items-center px-4 py-2 text-white transition-all duration-200 bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
-                <i class="mr-2 fas fa-search"></i>
-                Terapkan Filter
-            </button>
-            <button id="btnReset"
-                class="flex items-center px-4 py-2 text-gray-700 transition-all duration-200 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400">
-                <i class="mr-2 fas fa-redo"></i>
-                Reset
-            </button>
+            <!-- Reset - satu jajar nempel di kanan search -->
+            <div class="flex items-end justify-end md:col-span-1">
+                <button id="btnReset"
+                    class="flex items-center px-6 py-2.5 text-gray-700 transition-all duration-200 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 shadow-sm">
+                    <i class="mr-2 fas fa-redo"></i>
+                    Reset
+                </button>
+            </div>
         </div>
     </div>
 
@@ -145,7 +140,8 @@
                         </td>
                         <td class="px-6 py-4 text-center whitespace-nowrap">
                             <div class="flex justify-center gap-2">
-                                <a href="{{ route('admin.kategori.edit', 1) }}" class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
+                                <a href="{{ route('admin.kategori.edit', 1) }}"
+                                    class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
                                     title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </a>

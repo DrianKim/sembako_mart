@@ -199,6 +199,17 @@
                         </svg>
                         <span class="font-semibold">Riwayat Transaksi</span>
                     </a>
+
+                    <!-- Log Aktivitas -->
+                    <a href="{{ route('kasir.log') }}"
+                        class="flex items-center px-4 py-3 text-gray-700 rounded-lg nav-item {{ request()->routeIs('kasir.log*') ? 'nav-item-active' : '' }}">
+                        <svg class="w-5 h-5 mr-3 {{ request()->routeIs('kasir.log*') ? 'text-green-600' : 'text-gray-500' }}"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span class="font-semibold">Log Aktivitas</span>
+                    </a>
                 </div>
 
                 <!-- Logout -->
@@ -253,7 +264,8 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                                 </svg>
-                                <span class="absolute top-0 right-0 flex w-3 h-3 bg-red-500 rounded-full badge-pulse"></span>
+                                <span
+                                    class="absolute top-0 right-0 flex w-3 h-3 bg-red-500 rounded-full badge-pulse"></span>
                             </button>
 
                             <!-- Notification Dropdown (sama seperti admin) -->
@@ -264,9 +276,12 @@
                                 </div>
                                 <div class="overflow-y-auto max-h-96">
                                     <a href="#" class="flex items-start p-4 transition-colors hover:bg-gray-50">
-                                        <div class="flex items-center justify-center flex-shrink-0 w-10 h-10 mr-3 bg-green-100 rounded-full">
-                                            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        <div
+                                            class="flex items-center justify-center flex-shrink-0 w-10 h-10 mr-3 bg-green-100 rounded-full">
+                                            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
                                         </div>
                                         <div class="flex-1">
@@ -277,7 +292,9 @@
                                     </a>
                                 </div>
                                 <div class="p-3 text-center border-t border-gray-200">
-                                    <a href="#" class="text-sm font-semibold text-green-600 hover:text-green-700">Lihat Semua</a>
+                                    <a href="#"
+                                        class="text-sm font-semibold text-green-600 hover:text-green-700">Lihat
+                                        Semua</a>
                                 </div>
                             </div>
                         </div>
@@ -289,11 +306,14 @@
                                 <img src="https://ui-avatars.com/api/?name={{ Auth::user()->nama ?? 'Kasir' }}&background=22C55E&color=fff&bold=true"
                                     alt="Profile" class="w-10 h-10 border-2 border-green-500 rounded-full">
                                 <div class="hidden text-left md:block">
-                                    <p class="text-sm font-semibold text-gray-800">{{ Auth::user()->nama ?? 'Kasir' }}</p>
+                                    <p class="text-sm font-semibold text-gray-800">{{ Auth::user()->nama ?? 'Kasir' }}
+                                    </p>
                                     <p class="text-xs text-gray-600">Kasir</p>
                                 </div>
-                                <svg class="hidden w-4 h-4 text-gray-500 md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                <svg class="hidden w-4 h-4 text-gray-500 md:block" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
                                 </svg>
                             </button>
 
@@ -301,13 +321,18 @@
                             <div id="profile-dropdown"
                                 class="absolute right-0 z-50 hidden w-56 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl dropdown-menu">
                                 <div class="p-4 border-b border-gray-200">
-                                    <p class="text-sm font-semibold text-gray-800">{{ Auth::user()->nama ?? 'Kasir' }}</p>
-                                    <p class="text-xs text-gray-600">{{ Auth::user()->email ?? 'kasir@sembakomart.com' }}</p>
+                                    <p class="text-sm font-semibold text-gray-800">{{ Auth::user()->nama ?? 'Kasir' }}
+                                    </p>
+                                    <p class="text-xs text-gray-600">
+                                        {{ Auth::user()->email ?? 'kasir@sembakomart.com' }}</p>
                                 </div>
                                 <div class="py-2">
-                                    <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100">
-                                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    <a href="#"
+                                        class="flex items-center px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100">
+                                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                         </svg>
                                         Profil Saya
                                     </a>
@@ -315,7 +340,8 @@
                                 <div class="border-t border-gray-200">
                                     <button type="button" id="logoutBtnProfile"
                                         class="flex items-center w-full px-4 py-2 text-sm text-red-600 transition-colors hover:bg-red-50">
-                                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                                         </svg>
@@ -340,7 +366,8 @@
                 <div class="px-6 py-4">
                     <div class="flex flex-col items-center justify-between space-y-2 md:flex-row md:space-y-0">
                         <p class="text-gray-600 text-l">
-                            Made with <i class="text-red-500 fas fa-heart"></i> by <span class="font-semibold">𝓟</span>
+                            Made with <i class="text-red-500 fas fa-heart"></i> by <span
+                                class="font-semibold">𝓟</span>
                         </p>
                     </div>
                 </div>

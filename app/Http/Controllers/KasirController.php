@@ -54,4 +54,14 @@ class KasirController extends Controller
 
         return view('kasir.struk', compact('transaksi'));
     }
+
+    // Log Aktivitas
+    public function logIndex()
+    {
+        $data = [
+            'title' => 'Log Aktivitas',
+        ];
+
+        return view('kasir.log_aktivitas', $data);
+    }
 }

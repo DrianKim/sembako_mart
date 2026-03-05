@@ -28,7 +28,8 @@
 
     <!-- Filter & Search -->
     <div class="p-6 mb-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-4">
+            <!-- Search -->
             <div class="md:col-span-2">
                 <label class="block mb-2 text-sm font-semibold text-gray-700">
                     <i class="mr-1 text-green-600 fas fa-search"></i>
@@ -42,14 +43,34 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Filter Tanggal Range -->
+            <div class="md:col-span-1">
+                <label class="block mb-2 text-sm font-semibold text-gray-700">
+                    <i class="mr-1 text-green-600 fas fa-calendar-alt"></i>
+                    Dari Tanggal
+                </label>
+                <input type="date" id="fromDate"
+                    class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
+            </div>
+
+            <div class="md:col-span-1">
+                <label class="block mb-2 text-sm font-semibold text-gray-700">
+                    <i class="mr-1 text-green-600 fas fa-calendar-alt"></i>
+                    Sampai Tanggal
+                </label>
+                <input type="date" id="toDate"
+                    class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
+            </div>
         </div>
-        <div class="flex gap-3 mt-4">
+
+        <div class="flex flex-col gap-3 mt-4 sm:flex-row">
             <button id="btnFilter"
-                class="flex items-center px-4 py-2 text-white transition-all bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
-                <i class="mr-2 fas fa-search"></i> Terapkan
+                class="flex items-center justify-center px-6 py-2.5 text-white transition-all bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 shadow-sm">
+                <i class="mr-2 fas fa-search"></i> Terapkan Filter
             </button>
             <button id="btnReset"
-                class="flex items-center px-4 py-2 text-gray-700 transition-all bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400">
+                class="flex items-center justify-center px-6 py-2.5 text-gray-700 transition-all bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 shadow-sm">
                 <i class="mr-2 fas fa-redo"></i> Reset
             </button>
         </div>
@@ -64,8 +85,8 @@
                 </div>
                 <div>
                     <h3 class="text-lg font-semibold text-gray-800">Riwayat Transaksi</h3>
-                    <p class="text-sm text-gray-600">Total: <span class="font-semibold text-green-600">6</span> transaksi
-                    </p>
+                    <p class="text-sm text-gray-600">Total: <span id="totalTransaksi"
+                            class="font-semibold text-green-600">3</span> transaksi</p>
                 </div>
             </div>
             <div class="flex gap-2">
@@ -98,7 +119,7 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200" id="tableBody">
                     <!-- Dummy Row 1 -->
-                    <tr class="transition-colors hover:bg-gray-50">
+                    <tr class="transition-colors hover:bg-gray-50" data-tanggal="2026-02-20">
                         <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">1</td>
                         <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-20 14:45:00</td>
                         <td class="px-6 py-4 text-sm text-gray-900">Budi</td>
@@ -116,11 +137,11 @@
                     </tr>
 
                     <!-- Dummy Row 2 -->
-                    <tr class="transition-colors hover:bg-gray-50">
+                    <tr class="transition-colors hover:bg-gray-50" data-tanggal="2026-02-19">
                         <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">2</td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-20 15:30:22</td>
+                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-19 15:30:22</td>
                         <td class="px-6 py-4 text-sm text-gray-900">Ani</td>
-                        <td class="px-6 py-4 font-mono text-sm text-gray-900">TRX-20260220-002</td>
+                        <td class="px-6 py-4 font-mono text-sm text-gray-900">TRX-20260219-002</td>
                         <td class="px-6 py-4 text-sm font-semibold text-right text-gray-900">Rp 92.500</td>
                         <td class="px-6 py-4 text-center whitespace-nowrap">
                             <div class="flex justify-center gap-2">
@@ -134,11 +155,11 @@
                     </tr>
 
                     <!-- Dummy Row 3 -->
-                    <tr class="transition-colors hover:bg-gray-50">
+                    <tr class="transition-colors hover:bg-gray-50" data-tanggal="2026-02-15">
                         <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">3</td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-20 16:10:55</td>
+                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-15 16:10:55</td>
                         <td class="px-6 py-4 text-sm text-gray-900">Rina</td>
-                        <td class="px-6 py-4 font-mono text-sm text-gray-900">TRX-20260220-003</td>
+                        <td class="px-6 py-4 font-mono text-sm text-gray-900">TRX-20260215-003</td>
                         <td class="px-6 py-4 text-sm font-semibold text-right text-gray-900">Rp 450.000</td>
                         <td class="px-6 py-4 text-center whitespace-nowrap">
                             <div class="flex justify-center gap-2">
@@ -158,7 +179,7 @@
         <div
             class="flex flex-col items-center justify-between px-6 py-4 text-sm text-gray-600 border-t bg-gray-50 sm:flex-row">
             <div class="mb-4 sm:mb-0">Menampilkan <span class="font-semibold text-gray-900">1-3</span> dari <span
-                    class="font-semibold text-gray-900">20</span> transaksi</div>
+                    id="totalShown" class="font-semibold text-gray-900">3</span> transaksi</div>
             <div class="flex items-center gap-2">
                 <button class="px-3 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
                     disabled>
@@ -177,18 +198,63 @@
 
 @push('scripts')
     <script>
-        // Live Search
-        document.getElementById('searchInput')?.addEventListener('input', function(e) {
-            const term = e.target.value.toLowerCase();
-            document.querySelectorAll('#tableBody tr').forEach(row => {
-                row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
-            });
-        });
+        // Fungsi utama filter (search + tanggal range)
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            const fromDateVal = document.getElementById('fromDate').value; // YYYY-MM-DD
+            const toDateVal = document.getElementById('toDate').value;
 
-        // Reset
+            let visibleCount = 0;
+
+            document.querySelectorAll('#tableBody tr').forEach(row => {
+                const text = row.textContent.toLowerCase();
+                const rowTanggal = row.getAttribute('data-tanggal') || ''; // ambil dari attribute
+
+                const matchSearch = text.includes(searchTerm);
+
+                let matchTanggal = true;
+                if (fromDateVal || toDateVal) {
+                    const rowDate = new Date(rowTanggal);
+
+                    if (fromDateVal) {
+                        const fromDate = new Date(fromDateVal);
+                        matchTanggal = matchTanggal && rowDate >= fromDate;
+                    }
+
+                    if (toDateVal) {
+                        const toDate = new Date(toDateVal);
+                        toDate.setHours(23, 59, 59, 999); // sampai akhir hari
+                        matchTanggal = matchTanggal && rowDate <= toDate;
+                    }
+                }
+
+                const show = matchSearch && matchTanggal;
+                row.style.display = show ? '' : 'none';
+                if (show) visibleCount++;
+            });
+
+            // Update total transaksi yang tampil
+            document.getElementById('totalTransaksi').textContent = visibleCount;
+            document.getElementById('totalShown').textContent = visibleCount;
+        }
+
+        // Event listeners
+        document.getElementById('searchInput')?.addEventListener('input', applyFilters);
+        document.getElementById('fromDate')?.addEventListener('change', applyFilters);
+        document.getElementById('toDate')?.addEventListener('change', applyFilters);
+
+        // Tombol Terapkan (manual apply)
+        document.getElementById('btnFilter')?.addEventListener('click', applyFilters);
+
+        // Reset semua filter
         document.getElementById('btnReset')?.addEventListener('click', function() {
             document.getElementById('searchInput').value = '';
-            document.querySelectorAll('#tableBody tr').forEach(row => row.style.display = '');
+            document.getElementById('fromDate').value = '';
+            document.getElementById('toDate').value = '';
+            applyFilters();
         });
+
+        // Initial apply
+        applyFilters();
     </script>
 @endpush

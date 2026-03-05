@@ -1,6 +1,6 @@
-@extends('admin.layouts.app')
+@extends('owner.layouts.app')
 @section('title', 'Riwayat Transaksi')
-@section('page-description', 'Halaman untuk melihat dan mengelola riwayat transaksi.')
+@section('page-description', 'Lihat semua riwayat transaksi di toko.')
 
 @section('content')
     <!-- Breadcrumb & Header -->
@@ -9,7 +9,7 @@
             <nav class="flex mb-4 md:mb-0" aria-label="Breadcrumb">
                 <ol class="inline-flex items-center space-x-1 md:space-x-3">
                     <li class="inline-flex items-center">
-                        <a href="{{ route('admin.dashboard') }}"
+                        <a href="{{ route('owner.dashboard') }}"
                             class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-green-600">
                             <i class="w-4 h-4 mr-2 fas fa-home"></i>
                             Dashboard
@@ -65,7 +65,7 @@
                     class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
             </div>
 
-            <!-- Reset - satu jajar nempel di kanan (kolom ke-5) -->
+            <!-- Reset - nempel di kanan -->
             <div class="flex items-end justify-end md:col-span-1">
                 <button id="btnReset"
                     class="flex items-center px-6 py-2.5 text-gray-700 transition-all duration-200 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 shadow-sm">
@@ -76,7 +76,7 @@
         </div>
     </div>
 
-    <!-- Table -->
+    <!-- Table Riwayat -->
     <div class="overflow-hidden bg-white border border-gray-200 rounded-lg shadow-sm">
         <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gray-50">
             <div class="flex items-center">
@@ -129,12 +129,12 @@
                         <td class="px-6 py-4 text-sm font-semibold text-right text-gray-900">Rp 185.000</td>
                         <td class="px-6 py-4 text-center whitespace-nowrap">
                             <div class="flex justify-center gap-2">
-                                <a href="{{ route('admin.riwayat_transaksi.edit', 1) }}"
+                                {{-- <a href="{{ route('owner.riwayat_transaksi.edit', 1) }}"
                                     class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
                                     title="Edit Transaksi">
                                     <i class="fas fa-edit"></i>
-                                </a>
-                                <a href="{{ route('admin.riwayat_transaksi.struk', 1) }}" target="_blank"
+                                </a> --}}
+                                <a href="{{ route('owner.riwayat_transaksi.struk', 1) }}" target="_blank"
                                     class="p-2 text-green-600 transition-colors rounded-lg bg-green-50 hover:bg-green-100"
                                     title="Cetak Struk">
                                     <i class="fas fa-print"></i>
@@ -153,12 +153,12 @@
                         <td class="px-6 py-4 text-sm font-semibold text-right text-gray-900">Rp 92.500</td>
                         <td class="px-6 py-4 text-center whitespace-nowrap">
                             <div class="flex justify-center gap-2">
-                                <a href="{{ route('admin.riwayat_transaksi.edit', 2) }}"
+                                {{-- <a href="{{ route('owner.riwayat_transaksi.edit', 2) }}"
                                     class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
                                     title="Edit Transaksi">
                                     <i class="fas fa-edit"></i>
-                                </a>
-                                <a href="{{ route('admin.riwayat_transaksi.struk', 2) }}" target="_blank"
+                                </a> --}}
+                                <a href="{{ route('owner.riwayat_transaksi.struk', 2) }}" target="_blank"
                                     class="p-2 text-green-600 transition-colors rounded-lg bg-green-50 hover:bg-green-100"
                                     title="Cetak Struk">
                                     <i class="fas fa-print"></i>
@@ -177,12 +177,12 @@
                         <td class="px-6 py-4 text-sm font-semibold text-right text-gray-900">Rp 450.000</td>
                         <td class="px-6 py-4 text-center whitespace-nowrap">
                             <div class="flex justify-center gap-2">
-                                <a href="{{ route('admin.riwayat_transaksi.edit', 3) }}"
+                                {{-- <a href="{{ route('owner.riwayat_transaksi.edit', 3) }}"
                                     class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
                                     title="Edit Transaksi">
                                     <i class="fas fa-edit"></i>
-                                </a>
-                                <a href="{{ route('admin.riwayat_transaksi.struk', 3) }}" target="_blank"
+                                </a> --}}
+                                <a href="{{ route('owner.riwayat_transaksi.struk', 3) }}" target="_blank"
                                     class="p-2 text-green-600 transition-colors rounded-lg bg-green-50 hover:bg-green-100"
                                     title="Cetak Struk">
                                     <i class="fas fa-print"></i>
@@ -197,8 +197,10 @@
         <!-- Pagination Dummy -->
         <div
             class="flex flex-col items-center justify-between px-6 py-4 text-sm text-gray-600 border-t bg-gray-50 sm:flex-row">
-            <div class="mb-4 sm:mb-0">Menampilkan <span class="font-semibold text-gray-900">1-3</span> dari <span
-                    id="totalShown" class="font-semibold text-gray-900">3</span> transaksi</div>
+            <div class="mb-4 sm:mb-0">
+                Menampilkan <span class="font-semibold text-gray-900">1-3</span> dari
+                <span id="totalShown" class="font-semibold text-gray-900">3</span> transaksi
+            </div>
             <div class="flex items-center gap-2">
                 <button class="px-3 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
                     disabled>
@@ -220,14 +222,14 @@
         // Fungsi filter (search + tanggal range)
         function applyFilters() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-            const fromDateVal = document.getElementById('fromDate').value; // YYYY-MM-DD
+            const fromDateVal = document.getElementById('fromDate').value;
             const toDateVal = document.getElementById('toDate').value;
 
             let visibleCount = 0;
 
             document.querySelectorAll('#tableBody tr').forEach(row => {
                 const text = row.textContent.toLowerCase();
-                const rowTanggal = row.getAttribute('data-tanggal') || ''; // ambil dari attribute data-tanggal
+                const rowTanggal = row.getAttribute('data-tanggal') || '';
 
                 const matchSearch = text.includes(searchTerm);
 
@@ -242,7 +244,7 @@
 
                     if (toDateVal) {
                         const toDate = new Date(toDateVal);
-                        toDate.setHours(23, 59, 59, 999); // sampai akhir hari
+                        toDate.setHours(23, 59, 59, 999);
                         matchTanggal = matchTanggal && rowDate <= toDate;
                     }
                 }
@@ -252,7 +254,6 @@
                 if (show) visibleCount++;
             });
 
-            // Update total transaksi tampil
             document.getElementById('totalTransaksi').textContent = visibleCount;
             document.getElementById('totalShown').textContent = visibleCount;
         }
@@ -261,9 +262,6 @@
         document.getElementById('searchInput')?.addEventListener('input', applyFilters);
         document.getElementById('fromDate')?.addEventListener('change', applyFilters);
         document.getElementById('toDate')?.addEventListener('change', applyFilters);
-
-        // Tombol Terapkan
-        document.getElementById('btnFilter')?.addEventListener('click', applyFilters);
 
         // Reset
         document.getElementById('btnReset')?.addEventListener('click', function() {
