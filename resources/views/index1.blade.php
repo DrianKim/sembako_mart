@@ -1,631 +1,311 @@
-@extends('admin.layouts.app')
+<!DOCTYPE html>
+<html lang="id">
 
-@section('title', 'Kelola User')
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tuangeun by Mimih - Rumah Makan Khas Sunda Autentik</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            padding-bottom: 120px;
+        }
+        @media (min-width: 768px) {
+            body { padding-bottom: 100px; }
+        }
+        html { scroll-behavior: smooth; }
+        .hero-bg {
+            background: linear-gradient(135deg, #d1e8e2 0%, #a7d7c5 50%, #81c3b0 100%);
+        }
+    </style>
+</head>
 
-@section('content')
-    <!-- Import font -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
+<body class="antialiased text-gray-800 bg-gray-50">
 
-    <!-- HEADER -->
-    <div class="mb-6">
-        <h1 class="font-serif text-3xl font-bold leading-tight text-gray-900 md:text-4xl">Kelola Pengguna</h1>
-        <p class="mt-1 text-sm text-gray-600">Manajemen akun & hak akses sistem</p>
-    </div>
+    <!-- ================= NAVBAR ================= -->
+    <nav class="fixed top-0 left-0 right-0 z-50 border-b border-gray-100 shadow-sm bg-white/90 backdrop-blur-lg">
+        <div class="flex items-center justify-between px-6 py-4 mx-auto max-w-7xl md:px-12">
+            <div class="flex items-center gap-3">
+                <img src="{{ asset('images/Logo.jpg') }}" class="object-cover w-10 h-10 rounded-full shadow-md md:w-12 md:h-12" alt="Logo Tuangeun by Mimih">
+                <h1 class="text-xl font-bold md:text-2xl text-emerald-700">Tuangeun by Mimih</h1>
+            </div>
 
-    <!-- FLASH MESSAGES -->
-    @if (session('success'))
-        <div
-            class="flex items-center gap-3 px-5 py-3 mb-6 text-sm font-medium text-green-800 border border-green-200 rounded-xl bg-green-50 animate-fade-in">
-            <i class="text-lg fas fa-circle-check"></i>
-            <span>{{ session('success') }}</span>
-        </div>
-    @endif
-
-    @if (session('error'))
-        <div
-            class="flex items-center gap-3 px-5 py-3 mb-6 text-sm font-medium text-red-800 border border-red-200 rounded-xl bg-red-50 animate-fade-in">
-            <i class="text-lg fas fa-circle-xmark"></i>
-            <span>{{ session('error') }}</span>
-        </div>
-    @endif
-
-    @if ($errors->any())
-        <div class="px-5 py-4 mb-6 border border-orange-200 rounded-xl bg-orange-50 animate-fade-in">
-            <p class="mb-2 text-xs font-bold tracking-wider text-orange-800 uppercase">
-                <i class="mr-1 fas fa-triangle-exclamation"></i> Ada kesalahan:
-            </p>
-            <ul class="pl-6 space-y-1 text-sm text-orange-700 list-disc">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
+            <ul class="items-center hidden gap-8 font-medium text-gray-700 md:flex">
+                <li><a href="#beranda" class="transition hover:text-emerald-600">Beranda</a></li>
+                <li><a href="#menu" class="transition hover:text-emerald-600">Menu</a></li>
+                <li><a href="#tentang" class="transition hover:text-emerald-600">Tentang</a></li>
+                <li><a href="#tentang" class="transition hover:text-emerald-600">Kontak</a></li> <!-- Tetap ada, scroll ke section yang sama -->
+                <li><a href="#lokasi" class="transition hover:text-emerald-600">Lokasi</a></li>
             </ul>
+
+            <a href="{{ route('login') }}"
+               class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-full font-medium shadow-md hover:shadow-lg transition duration-300 transform hover:scale-105">
+                Login
+            </a>
         </div>
-    @endif
+    </nav>
 
-    <!-- FILTER BAR - TOMBOL CREATE ADA DI SINI, SEJAJAR -->
-    <div class="p-5 mb-8 bg-white border border-gray-200 shadow-sm rounded-xl">
-        <form method="GET" action="#" class="flex flex-col flex-wrap items-end gap-4 sm:flex-row sm:items-center">
-            <!-- Search -->
-            <div class="relative flex-1 min-w-[260px]">
-                <input type="text" name="search" id="searchInput" placeholder="Cari nama lengkap atau username..."
-                    value="{{ request('search') }}"
-                    class="w-full pl-10 pr-10 py-2.5 bg-gray-50 border border-gray-300 rounded-xl text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-200/50 transition-all placeholder:text-gray-400"
-                    autocomplete="off">
-                <i
-                    class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none"></i>
-                <button type="button" id="searchClear"
-                    class="absolute hidden text-gray-400 transition-colors -translate-y-1/2 right-3 top-1/2 hover:text-red-500">
-                    <i class="text-sm fas fa-times"></i>
-                </button>
-            </div>
-
-            <!-- Role -->
-            <select name="role" id="roleFilter"
-                class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-xl focus:ring-teal-500 focus:border-teal-500 block py-2.5 pl-3.5 pr-10 custom-select-arrow min-w-[160px]">
-                <option value="">Semua Role</option>
-                <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-                <option value="kasir" {{ request('role') == 'kasir' ? 'selected' : '' }}>Kasir</option>
-                <option value="owner" {{ request('role') == 'owner' ? 'selected' : '' }}>Owner</option>
-            </select>
-
-            <!-- Tombol Filter, Reset, Tambah Pengguna -->
-            <div class="flex flex-wrap gap-3">
-                <button type="submit"
-                    class="inline-flex items-center gap-2 px-5 py-2.5 text-white text-sm font-medium rounded-xl bg-gradient-to-r from-teal-600 to-teal-700 shadow-md hover:shadow-lg transition-all">
-                    <i class="text-xs fas fa-filter"></i> Filter
-                </button>
-
-                <a href="#"
-                    class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-teal-700 bg-white border border-teal-200 rounded-xl hover:bg-teal-50 transition-all">
-                    <i class="text-xs fas fa-undo-alt"></i> Reset
-                </a>
-
-                <!-- TOMBOL TAMBAH ADA DI SINI -->
-                <button type="button"
-                    class="inline-flex items-center gap-2 px-5 py-2.5 text-white text-sm font-medium rounded-xl bg-gradient-to-r from-teal-500 to-teal-600 shadow-md hover:shadow-lg transition-all"
-                    data-bs-toggle="modal" data-bs-target="#createModal">
-                    <i class="text-xs fas fa-user-plus"></i> Tambah Pengguna
-                </button>
-            </div>
-        </form>
-
-        <!-- Active tags -->
-        @if (request('search') || request('role'))
-            <div class="flex flex-wrap gap-2 mt-4">
-                @if (request('search'))
-                    <span
-                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-teal-50 border border-teal-200 text-teal-700 text-xs font-medium">
-                        <i class="text-xs fas fa-search"></i> "{{ request('search') }}"
-                        <a href="{{ route('admin.users.index', array_merge(request()->except('search'), ['role' => request('role')])) }}"
-                            class="ml-1 font-bold text-teal-400 hover:text-rose-500">&times;</a>
-                    </span>
-                @endif
-                @if (request('role'))
-                    <span
-                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-teal-50 border border-teal-200 text-teal-700 text-xs font-medium">
-                        <i class="text-xs fas fa-tag"></i> {{ ucfirst(request('role')) }}
-                        <a href="{{ route('admin.users.index', array_merge(request()->except('role'), ['search' => request('search')])) }}"
-                            class="ml-1 font-bold text-teal-400 hover:text-rose-500">&times;</a>
-                    </span>
-                @endif
-            </div>
-        @endif
-    </div>
-
-    <!-- TABEL -->
-    <div class="overflow-hidden bg-white border border-gray-200 shadow-sm rounded-xl">
-        <div class="p-4 border-b border-gray-200">
-            <p class="text-sm text-gray-600">
-                <span class="font-bold text-gray-900">2</span> pengguna ditemukan
-                @if (request('search') || request('role'))
-                    <span class="mx-2 text-gray-400">·</span>
-                    <a href="{{ route('admin.users.index') }}" class="font-medium text-rose-500 hover:text-rose-700">Hapus
-                        filter</a>
-                @endif
-            </p>
+    <!-- ================= HERO (DITAMBAH TAGLINE) ================= -->
+    <section id="beranda" class="relative min-h-screen pt-32 pb-20 overflow-hidden hero-bg md:pt-40">
+        <div class="absolute inset-0 pointer-events-none opacity-10">
+            <div class="absolute rounded-full -top-20 -right-20 w-96 h-96 bg-emerald-300 blur-3xl"></div>
+            <div class="absolute rounded-full bottom-10 left-10 w-80 h-80 bg-amber-300 blur-3xl"></div>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-                <thead class="text-xs tracking-wider text-white uppercase bg-gradient-to-r from-teal-800 to-teal-700">
-                    <tr>
-                        <th class="w-16 px-6 py-4 text-center">No</th>
-                        <th class="px-6 py-4">Nama Lengkap</th>
-                        <th class="px-6 py-4">Username</th>
-                        <th class="px-6 py-4 text-center">Role</th>
-                        <th class="px-6 py-4 text-center">Status</th>
-                        <th class="px-6 py-4 text-center">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100">
-                    {{-- @forelse($users as $user) --}}
-                    <tr class="transition-colors duration-150 hover:bg-teal-50/30">
-                        <td class="px-6 py-4 font-medium text-center text-gray-600">1</td>
-                        <td class="px-6 py-4 font-semibold text-gray-900">aduy</td>
-                        <td class="px-6 py-4 text-gray-600">aduy1</td>
-                        <td class="px-6 py-4 text-center">
-                            {{-- @if ($user->role === 'admin') --}}
-                            <span
-                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 border border-purple-200">
-                                <i class="text-xs fas fa-shield-halved"></i> Admin
-                            </span>
-                            {{-- @elseif ($user->role === 'kasir') --}}
-                            <span
-                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200">
-                                <i class="text-xs fas fa-cash-register"></i> Kasir
-                            </span>
-                            {{-- @else --}}
-                            <span
-                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 border border-amber-200">
-                                <i class="text-xs fas fa-crown"></i> Owner
-                            </span>
-                            {{-- @endif --}}
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            {{-- @if ($user->role === 'kasir') --}}
-                            <form action="#" method="POST" class="inline">
-                                @csrf
-                                <button type="submit"
-                                    class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-medium transition-all hover:scale-105
-                                                       2">
-                                    <span class="2"></span>
-                                    2
-                                </button>
-                            </form>
-                            {{-- @else --}}
-                            <span
-                                class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-medium
-                                                 2">
-                                <span class="2"></span>
-                                2
-                            </span>
-                            {{-- @endif --}}
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            {{-- <div class="flex flex-wrap items-center justify-center gap-2">
-                                    <button type="button"
-                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-green-50 text-green-700 border border-green-200 rounded-lg hover:bg-green-100 transition-all"
-                                            data-bs-toggle="modal" data-bs-target="#detailModal"
-                                            data-nama="{{ $user->nama }}" data-username="{{ $user->username }}"
-                                            data-nohp="{{ $user->no_hp ?? '-' }}" data-alamat="{{ $user->alamat ?? '-' }}"
-                                            data-role="{{ $user->role }}" data-status="{{ $user->status }}">
-                                        <i class="text-xs fas fa-eye"></i> Detail
-                                    </button>
+        <div class="relative z-10 grid items-center gap-12 px-6 mx-auto max-w-7xl md:grid-cols-2">
+            <div>
+                <p class="text-lg font-medium md:text-xl text-emerald-700">Hoyong Tuang??</p>
+                <h1 class="mt-3 text-5xl font-extrabold leading-tight text-gray-900 md:text-6xl lg:text-7xl">
+                    Tong Hilap!!
+                </h1>
+                <p class="mt-6 text-xl leading-relaxed text-gray-800 md:text-2xl">
+                    Mampir ka rumah makan <br>
+                    <span class="font-bold text-emerald-700">Tuangeun by Mimih</span> ayeuna keneh!
+                </p>
 
-                                    <button type="button"
-                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200 rounded-lg hover:bg-amber-100 transition-all"
-                                            data-bs-toggle="modal" data-bs-target="#editModal"
-                                            data-id="{{ $user->id }}" data-nama="{{ $user->nama }}"
-                                            data-username="{{ $user->username }}" data-nohp="{{ $user->no_hp ?? '' }}"
-                                            data-alamat="{{ $user->alamat ?? '' }}" data-role="{{ $user->role }}"
-                                            data-status="{{ $user->status }}">
-                                        <i class="text-xs fas fa-pen"></i> Edit
-                                    </button>
+                <!-- Tagline baru -->
+                <p class="mt-8 text-2xl italic font-semibold md:text-3xl text-emerald-800">
+                    "Cita Rasa Autentik Sunda, Harga Ramah Kantong, Bikin Kangen Rumah!"
+                </p>
 
-                                    @if ($user->id !== auth()->id())
-                                        <button type="button"
-                                                class="btn-hapus inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-red-50 text-red-700 border border-red-200 rounded-lg hover:bg-red-100 transition-all"
-                                                data-id="{{ $user->id }}">
-                                            <i class="text-xs fas fa-trash-can"></i> Hapus
-                                        </button>
-                                    @endif
-                                </div> --}}
-                        </td>
-                    </tr>
-                    {{-- @empty --}}
-                    <tr>
-                        <td colspan="6" class="py-16 text-center text-gray-500">
-                            <i class="block mb-4 text-5xl fas fa-users-slash opacity-30"></i>
-                            <p class="text-sm font-medium">
-                                @if (request('search') || request('role'))
-                                    Tidak ada pengguna yang cocok dengan filter
-                                @else
-                                    Belum ada data pengguna
-                                @endif
-                            </p>
-                        </td>
-                    </tr>
-                    {{-- @endforelse --}}
-                </tbody>
-            </table>
+                <div class="flex flex-wrap gap-4 mt-10">
+                    <a href="#menu" class="px-8 py-4 font-semibold text-white transition transform rounded-full shadow-lg bg-emerald-600 hover:bg-emerald-700 hover:scale-105">
+                        Lihat Menu
+                    </a>
+                    <a href="#tentang" class="px-8 py-4 font-semibold transition bg-white border-2 rounded-full text-emerald-700 border-emerald-600 hover:bg-emerald-50">
+                        Tentang & Kontak
+                    </a>
+                </div>
+            </div>
+
+            <div class="relative">
+                <img src="{{ asset('images/Liwet.jpg') }}"
+                     class="object-cover w-full max-w-lg mx-auto transition duration-500 transform shadow-2xl rounded-3xl rotate-3 hover:rotate-0"
+                     alt="Nasi Liwet Khas Sunda">
+                <img src="{{ asset('images/Logo.jpg') }}"
+                     class="absolute object-cover w-48 border-8 border-white shadow-xl -bottom-12 -right-12 md:w-64 rounded-2xl"
+                     alt="Logo">
+            </div>
         </div>
-    </div>
+    </section>
 
-    <!-- MODAL CREATE (mirip edit, header teal) -->
-    <div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content rounded-2xl">
-                <div class="p-5 text-white modal-header bg-gradient-to-r from-teal-600 to-teal-500 rounded-t-2xl">
-                    <div class="flex items-center gap-4">
-                        <div class="flex items-center justify-center w-10 h-10 text-xl rounded-xl bg-white/15">
-                            <i class="fas fa-user-plus"></i>
-                        </div>
-                        <div>
-                            <h5 class="m-0 text-xl font-bold">Tambah Pengguna</h5>
-                            <p class="mt-1 text-sm opacity-80">Field bertanda <span class="text-rose-200">*</span> wajib
-                                diisi</p>
+    <!-- ================= MENU (8 CARD DUMMY) ================= -->
+    <section id="menu" class="py-20 bg-white md:py-28">
+        <div class="px-6 mx-auto text-center max-w-7xl">
+            <h2 class="mb-4 text-4xl font-bold md:text-5xl text-emerald-700">Menu Favorit</h2>
+            <p class="max-w-2xl mx-auto mb-12 text-lg text-gray-600 md:text-xl">Pilihan hidangan khas Sunda autentik dengan cita rasa rumahan yang bikin kangen</p>
+
+            <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                <!-- 6 Makanan -->
+                <div class="overflow-hidden transition-all duration-300 bg-white shadow-xl group rounded-3xl hover:shadow-2xl hover:-translate-y-2">
+                    <img src="https://picsum.photos/id/29/600/400" class="object-cover w-full h-56" alt="Nasi Liwet">
+                    <div class="p-6">
+                        <span class="inline-block px-3 py-1 text-xs rounded-full bg-emerald-100 text-emerald-700">Makanan</span>
+                        <h3 class="mt-3 text-xl font-semibold">Nasi Liwet</h3>
+                        <p class="mt-1 text-2xl font-bold text-emerald-600">Rp 25.000</p>
+                    </div>
+                </div>
+
+                <div class="overflow-hidden transition-all duration-300 bg-white shadow-xl group rounded-3xl hover:shadow-2xl hover:-translate-y-2">
+                    <img src="https://picsum.photos/id/201/600/400" class="object-cover w-full h-56" alt="Ayam Goreng">
+                    <div class="p-6">
+                        <span class="inline-block px-3 py-1 text-xs rounded-full bg-emerald-100 text-emerald-700">Makanan</span>
+                        <h3 class="mt-3 text-xl font-semibold">Ayam Goreng</h3>
+                        <p class="mt-1 text-2xl font-bold text-emerald-600">Rp 18.000</p>
+                    </div>
+                </div>
+
+                <div class="overflow-hidden transition-all duration-300 bg-white shadow-xl group rounded-3xl hover:shadow-2xl hover:-translate-y-2">
+                    <img src="https://picsum.photos/id/318/600/400" class="object-cover w-full h-56" alt="Ikan Bakar">
+                    <div class="p-6">
+                        <span class="inline-block px-3 py-1 text-xs rounded-full bg-emerald-100 text-emerald-700">Makanan</span>
+                        <h3 class="mt-3 text-xl font-semibold">Ikan Bakar</h3>
+                        <p class="mt-1 text-2xl font-bold text-emerald-600">Rp 35.000</p>
+                    </div>
+                </div>
+
+                <div class="overflow-hidden transition-all duration-300 bg-white shadow-xl group rounded-3xl hover:shadow-2xl hover:-translate-y-2">
+                    <img src="https://picsum.photos/id/251/600/400" class="object-cover w-full h-56" alt="Sayur Asem">
+                    <div class="p-6">
+                        <span class="inline-block px-3 py-1 text-xs rounded-full bg-emerald-100 text-emerald-700">Makanan</span>
+                        <h3 class="mt-3 text-xl font-semibold">Sayur Asem</h3>
+                        <p class="mt-1 text-2xl font-bold text-emerald-600">Rp 12.000</p>
+                    </div>
+                </div>
+
+                <div class="overflow-hidden transition-all duration-300 bg-white shadow-xl group rounded-3xl hover:shadow-2xl hover:-translate-y-2">
+                    <img src="https://picsum.photos/id/292/600/400" class="object-cover w-full h-56" alt="Karedok">
+                    <div class="p-6">
+                        <span class="inline-block px-3 py-1 text-xs rounded-full bg-emerald-100 text-emerald-700">Makanan</span>
+                        <h3 class="mt-3 text-xl font-semibold">Karedok</h3>
+                        <p class="mt-1 text-2xl font-bold text-emerald-600">Rp 15.000</p>
+                    </div>
+                </div>
+
+                <div class="overflow-hidden transition-all duration-300 bg-white shadow-xl group rounded-3xl hover:shadow-2xl hover:-translate-y-2">
+                    <img src="https://picsum.photos/id/1015/600/400" class="object-cover w-full h-56" alt="Sate Maranggi">
+                    <div class="p-6">
+                        <span class="inline-block px-3 py-1 text-xs rounded-full bg-emerald-100 text-emerald-700">Makanan</span>
+                        <h3 class="mt-3 text-xl font-semibold">Sate Maranggi</h3>
+                        <p class="mt-1 text-2xl font-bold text-emerald-600">Rp 22.000</p>
+                    </div>
+                </div>
+
+                <!-- 2 Minuman -->
+                <div class="overflow-hidden transition-all duration-300 bg-white shadow-xl group rounded-3xl hover:shadow-2xl hover:-translate-y-2">
+                    <img src="https://picsum.photos/id/106/600/400" class="object-cover w-full h-56" alt="Es Teh Manis">
+                    <div class="p-6">
+                        <span class="inline-block px-3 py-1 text-xs rounded-full bg-amber-100 text-amber-700">Minuman</span>
+                        <h3 class="mt-3 text-xl font-semibold">Es Teh Manis</h3>
+                        <p class="mt-1 text-2xl font-bold text-emerald-600">Rp 8.000</p>
+                    </div>
+                </div>
+
+                <div class="overflow-hidden transition-all duration-300 bg-white shadow-xl group rounded-3xl hover:shadow-2xl hover:-translate-y-2">
+                    <img src="https://picsum.photos/id/160/600/400" class="object-cover w-full h-56" alt="Wedang Jahe">
+                    <div class="p-6">
+                        <span class="inline-block px-3 py-1 text-xs rounded-full bg-amber-100 text-amber-700">Minuman</span>
+                        <h3 class="mt-3 text-xl font-semibold">Wedang Jahe</h3>
+                        <p class="mt-1 text-2xl font-bold text-emerald-600">Rp 10.000</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= TENTANG + KONTAK (Tentang Kiri, Kontak Kanan) ================= -->
+    <section id="tentang" class="py-20 md:py-28 bg-gradient-to-br from-emerald-50 to-teal-50">
+        <div class="px-6 mx-auto max-w-7xl">
+            <h2 class="mb-12 text-4xl font-bold text-center md:text-5xl text-emerald-700">Tentang Kami & Kontak</h2>
+
+            <div class="grid items-start gap-12 md:grid-cols-2">
+                <!-- Kiri: Tentang Kami -->
+                <div class="space-y-8">
+                    <div class="relative">
+                        <img src="{{ asset('images/Liwet.jpg') }}"
+                             class="object-cover w-full shadow-2xl rounded-3xl"
+                             alt="Suasana Rumah Makan">
+                        <div class="absolute -bottom-6 -right-6 bg-white rounded-2xl shadow-xl p-6 max-w-[220px]">
+                            <p class="text-sm font-medium text-emerald-600">Sejak 2022</p>
+                            <p class="text-4xl font-bold text-emerald-700">100K+</p>
+                            <p class="text-gray-600">Pelanggan Puas</p>
                         </div>
                     </div>
-                    <button type="button" class="text-2xl text-white hover:text-gray-200" data-bs-dismiss="modal">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <form action="#" method="POST">
-                    @csrf
-                    <div class="p-6 modal-body">
-                        <div class="mb-6">
-                            <h6 class="mb-3 text-sm font-bold tracking-wider text-teal-700 uppercase">INFORMASI PRIBADI
-                            </h6>
-                            <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Lengkap *</label>
-                                    <input type="text" name="nama" required value="{{ old('nama') }}"
-                                        placeholder="Nama Lengkap"
-                                        class="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:border-teal-500 focus:ring-2 focus:ring-teal-200/30">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">No. Handphone</label>
-                                    <input type="text" name="no_hp" value="{{ old('no_hp') }}"
-                                        placeholder="No. Handphone"
-                                        class="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:border-teal-500 focus:ring-2 focus:ring-teal-200/30">
-                                </div>
-                                <div class="md:col-span-2">
-                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Alamat</label>
-                                    <textarea name="alamat" rows="2" placeholder="Alamat"
-                                        class="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg resize-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200/30">{{ old('alamat') }}</textarea>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="mb-6">
-                            <h6 class="mb-3 text-sm font-bold tracking-wider text-teal-700 uppercase">AKUN & HAK AKSES</h6>
-                            <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Username *</label>
-                                    <input type="text" name="username" required value="{{ old('username') }}"
-                                        placeholder="Username"
-                                        class="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:border-teal-500 focus:ring-2 focus:ring-teal-200/30">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Password *</label>
-                                    <div class="relative">
-                                        <input type="password" name="password" id="c_pw" required
-                                            placeholder="Min. 6 karakter"
-                                            class="w-full px-4 py-2 pr-10 text-sm border border-gray-300 rounded-lg focus:border-teal-500 focus:ring-2 focus:ring-teal-200/30">
-                                        <button type="button"
-                                            class="absolute text-gray-500 -translate-y-1/2 right-3 top-1/2 hover:text-teal-600"
-                                            onclick="togglePw('c_pw', this)">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Role *</label>
-                                    <select name="role" required
-                                        class="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:border-teal-500 focus:ring-2 focus:ring-teal-200/30 custom-select-arrow">
-                                        <option value="" disabled>Pilih Role</option>
-                                        <option value="kasir">Kasir</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Status *</label>
-                                    <select name="status" required
-                                        class="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:border-teal-500 focus:ring-2 focus:ring-teal-200/30 custom-select-arrow">
-                                        <option value="aktif">Aktif</option>
-                                        <option value="nonaktif">Nonaktif</option>
-                                    </select>
-                                </div>
+                    <p class="text-lg leading-relaxed text-gray-700 md:text-xl">
+                        Tuangeun by Mimih adalah rumah makan khas Sunda yang menyajikan hidangan autentik dengan suasana nyaman dan harga terjangkau.
+                        Berawal dari produk makanan ringan di Instagram, kini kami bangga menyajikan cita rasa asli Sunda untuk keluarga Anda.
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="p-6 bg-white shadow rounded-2xl">
+                            <span class="text-3xl">🍲</span>
+                            <h4 class="mt-3 font-semibold">Bahan Segar</h4>
+                            <p class="text-sm text-gray-600">Setiap hari bahan pilihan langsung dari petani lokal</p>
+                        </div>
+                        <div class="p-6 bg-white shadow rounded-2xl">
+                            <span class="text-3xl">🏠</span>
+                            <h4 class="mt-3 font-semibold">Suasana Rumah</h4>
+                            <p class="text-sm text-gray-600">Makan seperti di rumah sendiri, ramah & hangat</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kanan: Kontak Elegan -->
+                <div class="p-10 bg-white border shadow-2xl rounded-3xl border-emerald-100">
+                    <h3 class="mb-8 text-3xl font-semibold text-center text-emerald-700">Hubungi Kami</h3>
+                    <div class="space-y-8 text-lg">
+                        <div class="flex items-center gap-5">
+                            <span class="text-5xl">📍</span>
+                            <p class="font-medium text-gray-800">Subang, Jawa Barat</p>
+                        </div>
+                        <div class="flex items-center gap-5">
+                            <span class="text-5xl">📞</span>
+                            <p class="font-medium text-gray-800">0812-3456-7890</p>
+                        </div>
+                        <div class="flex items-center gap-5">
+                            <span class="text-5xl">📸</span>
+                            <a href="https://instagram.com/tuangeun_by_mimih" target="_blank" class="font-medium text-emerald-600 hover:underline">@tuangeun_by_mimih</a>
+                        </div>
+                        <div class="flex items-center gap-5">
+                            <span class="text-5xl">📧</span>
+                            <a href="mailto:tuangeunbymimih@gmail.com" class="font-medium text-emerald-600 hover:underline">tuangeunbymimih@gmail.com</a>
+                        </div>
+                    </div>
+
+                    <a href="https://wa.me/6281234567890" target="_blank"
+                       class="block py-4 mt-10 font-semibold text-center text-white transition transform bg-green-500 shadow-lg hover:bg-green-600 rounded-2xl hover:scale-105">
+                        Chat WhatsApp Sekarang
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= LOKASI ================= -->
+    <section id="lokasi" class="py-20 bg-white md:py-28">
+        <div class="px-6 mx-auto max-w-7xl">
+            <h2 class="mb-12 text-4xl font-bold text-center md:text-5xl text-emerald-700">Lokasi Kami</h2>
+
+            <div class="grid items-start gap-8 lg:grid-cols-12">
+                <div class="overflow-hidden border border-gray-100 shadow-2xl lg:col-span-7 rounded-3xl">
+                    <iframe
+                        class="w-full h-[520px]"
+                        loading="lazy"
+                        allowfullscreen
+                        referrerpolicy="no-referrer-when-downgrade"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15839.000000000000!2d107.75000000000000!3d-6.56670000000000!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e691e353e7c1d0d%3A0x0!2sSubang%2C%20Jawa%20Barat!5e0!3m2!1sid!2sid!4v1730000000000!5m2!1sid!2sid">
+                    </iframe>
+                </div>
+
+                <div class="space-y-6 lg:col-span-5">
+                    <div class="p-8 bg-white border shadow-xl rounded-3xl border-emerald-100">
+                        <h3 class="flex items-center gap-3 mb-4 text-2xl font-semibold text-emerald-700">
+                            📍 Alamat Lengkap
+                        </h3>
+                        <p class="leading-relaxed text-gray-700">
+                            Jl. Raya Subang No. 45, Kec. Subang, Kabupaten Subang, Jawa Barat 41211<br>
+                            <span class="text-xs text-emerald-500">(Depan Pasar Tradisional Subang)</span>
+                        </p>
+                    </div>
+
+                    <div class="p-8 bg-white border shadow-xl rounded-3xl border-emerald-100">
+                        <h3 class="flex items-center gap-3 mb-4 text-2xl font-semibold text-emerald-700">
+                            ⏰ Jam Operasional
+                        </h3>
+                        <div class="space-y-3 text-gray-700">
+                            <div class="flex justify-between">
+                                <span>Senin - Sabtu</span>
+                                <span class="font-medium">08.00 - 21.00 WIB</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Minggu & Hari Libur</span>
+                                <span class="font-medium">07.30 - 22.00 WIB</span>
                             </div>
                         </div>
                     </div>
-                    <div class="flex justify-end gap-3 px-6 py-4 modal-footer bg-gray-50 rounded-b-2xl">
-                        <button type="button"
-                            class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all text-sm font-medium"
-                            data-bs-dismiss="modal">Batal</button>
-                        <button type="submit"
-                            class="px-5 py-2.5 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-all text-sm font-medium flex items-center gap-2">
-                            <i class="fas fa-floppy-disk"></i> Simpan Pengguna
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL DETAIL (mirip edit, header navy) -->
-    <div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 460px">
-            <div class="modal-content rounded-2xl">
-                <div class="p-5 text-white modal-header bg-gradient-to-r from-gray-800 to-gray-900 rounded-t-2xl">
-                    <div class="flex items-center gap-4">
-                        <div class="flex items-center justify-center w-10 h-10 text-xl rounded-xl bg-white/15">
-                            <i class="fas fa-address-card"></i>
-                        </div>
-                        <div>
-                            <h5 class="m-0 text-xl font-bold">Detail Pengguna</h5>
-                            <p class="mt-1 text-sm opacity-80">Informasi lengkap akun</p>
-                        </div>
-                    </div>
-                    <button type="button" class="text-2xl text-white hover:text-gray-200" data-bs-dismiss="modal">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="p-6 modal-body" id="detailBody">
-                    <!-- Content diisi via JS -->
-                </div>
-                <div class="flex justify-end px-6 py-4 modal-footer bg-gray-50 rounded-b-2xl">
-                    <button type="button"
-                        class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all text-sm font-medium"
-                        data-bs-dismiss="modal">Tutup</button>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- MODAL EDIT (sudah sesuai screenshot) -->
-    <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content rounded-2xl">
-                <div class="p-5 text-white modal-header bg-gradient-to-r from-amber-600 to-amber-500 rounded-t-2xl">
-                    <div class="flex items-center gap-4">
-                        <div class="flex items-center justify-center w-10 h-10 text-xl rounded-xl bg-white/15">
-                            <i class="fas fa-user-pen"></i>
-                        </div>
-                        <div>
-                            <h5 class="m-0 text-xl font-bold">Edit Pengguna</h5>
-                            <p class="mt-1 text-sm opacity-80" id="editSubtitle">Mengediting: Admin</p>
-                        </div>
-                    </div>
-                    <button type="button" class="text-2xl text-white hover:text-gray-200" data-bs-dismiss="modal">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <form id="editForm" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <div class="p-6 modal-body">
-                        <div class="mb-6">
-                            <h6 class="mb-3 text-sm font-bold tracking-wider uppercase text-amber-800">INFORMASI PRIBADI
-                            </h6>
-                            <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Lengkap *</label>
-                                    <input type="text" name="nama" required
-                                        class="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:border-amber-500 focus:ring-2 focus:ring-amber-200/30">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">No. Handphone</label>
-                                    <input type="text" name="no_hp"
-                                        class="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:border-amber-500 focus:ring-2 focus:ring-amber-200/30">
-                                </div>
-                                <div class="md:col-span-2">
-                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Alamat</label>
-                                    <textarea name="alamat" rows="2"
-                                        class="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg resize-none focus:border-amber-500 focus:ring-2 focus:ring-amber-200/30"></textarea>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mb-6">
-                            <h6 class="mb-3 text-sm font-bold tracking-wider uppercase text-amber-800">AKUN & HAK AKSES
-                            </h6>
-                            <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Username *</label>
-                                    <input type="text" name="username" required
-                                        class="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:border-amber-500 focus:ring-2 focus:ring-amber-200/30">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Password Baru</label>
-                                    <div class="relative">
-                                        <input type="password" name="password" id="e_pw"
-                                            placeholder="Kosongkan jika tidak diubah"
-                                            class="w-full px-4 py-2 pr-10 text-sm border border-gray-300 rounded-lg focus:border-amber-500 focus:ring-2 focus:ring-amber-200/30">
-                                        <button type="button"
-                                            class="absolute -translate-y-1/2 right-3 top-1/2 text-amber-500 hover:text-amber-600"
-                                            onclick="togglePw('e_pw', this)">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </div>
-                                    <p class="mt-1 text-xs italic text-amber-500">Biarkan kosong jika tidak ingin mengubah
-                                    </p>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Role</label>
-                                    <input type="text" value="{{ ucfirst(old('role', $user->role ?? '')) }}"
-                                        class="w-full px-4 py-2 text-sm bg-gray-100 border border-gray-300 rounded-lg"
-                                        readonly>
-                                    <input type="hidden" name="role"
-                                        value="{{ old('role', $user->role ?? 'kasir') }}">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Status</label>
-                                    <select name="status" id="editStatus"
-                                        class="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:border-amber-500 focus:ring-2 focus:ring-amber-200/30 custom-select-arrow">
-                                        <option value="aktif">Aktif</option>
-                                        <option value="nonaktif">Nonaktif</option>
-                                    </select>
-                                    <p class="mt-1 text-xs italic text-amber-500" id="statusHint"></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex justify-end gap-3 px-6 py-4 modal-footer bg-gray-50 rounded-b-2xl">
-                        <button type="button"
-                            class="px-5 py-2.5 bg-gray-100 text-amber-700 rounded-lg hover:bg-gray-200 transition-all text-sm font-medium"
-                            data-bs-dismiss="modal">Batal</button>
-                        <button type="submit"
-                            class="px-5 py-2.5 bg-gradient-to-r from-amber-600 to-amber-500 text-white rounded-lg hover:shadow-lg transition-all text-sm font-medium flex items-center gap-2">
-                            <i class="fas fa-floppy-disk"></i> Simpan Perubahan
-                        </button>
-                    </div>
-                </form>
+    <!-- ================= FOOTER FIXED ================= -->
+    <footer class="fixed bottom-0 left-0 right-0 z-40 py-5 text-white shadow-2xl bg-emerald-800">
+        <div class="flex flex-col items-center justify-between gap-4 px-6 mx-auto text-center max-w-7xl md:flex-row md:text-left">
+            <div class="flex items-center gap-3">
+                <img src="{{ asset('images/Logo.jpg') }}" class="object-cover w-10 h-10 rounded-full" alt="Logo">
+                <p class="text-lg font-medium">Tuangeun by Mimih</p>
+            </div>
+            <p class="text-sm md:text-base">&copy; {{ date('Y') }} All rights reserved. Makan kenyang, hati senang!</p>
+            <div class="flex gap-6">
+                <a href="#tentang" class="transition hover:text-emerald-300">Tentang & Kontak</a>
+                <a href="#lokasi" class="transition hover:text-emerald-300">Lokasi</a>
+                <a href="https://instagram.com/tuangeun_by_mimih" target="_blank" class="transition hover:text-emerald-300">Instagram</a>
             </div>
         </div>
-    </div>
+    </footer>
 
-@endsection
-
-{{-- @section('scripts')
-    <script>
-        // Toggle password visibility
-        function togglePw(id, btn) {
-            const input = document.getElementById(id);
-            const icon = btn.querySelector('i');
-            input.type = input.type === 'password' ? 'text' : 'password';
-            icon.className = input.type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
-        }
-
-        // Re-open create modal on validation error
-        @if ($errors->any())
-            document.addEventListener('DOMContentLoaded', () => {
-                new bootstrap.Modal(document.getElementById('createModal')).show();
-            });
-        @endif
-
-        // Search clear button
-        const searchInput = document.getElementById('searchInput');
-        const searchClear = document.getElementById('searchClear');
-
-        function syncClearButton() {
-            searchClear.classList.toggle('hidden', searchInput.value.trim() === '');
-        }
-
-        searchInput.addEventListener('input', syncClearButton);
-        searchClear.addEventListener('click', () => {
-            searchInput.value = '';
-            syncClearButton();
-            searchInput.focus();
-            if (window.location.search.includes('search=')) document.querySelector('form').submit();
-        });
-        syncClearButton();
-
-        // Auto submit role filter
-        document.getElementById('roleFilter')?.addEventListener('change', function() {
-            this.form.submit();
-        });
-
-        // Detail modal dynamic content
-        const detailConfig = {
-            nama:   { icon: 'fa-user',       color: 'bg-green-100 text-green-700' },
-            user:   { icon: 'fa-at',         color: 'bg-blue-100 text-blue-700' },
-            pw:     { icon: 'fa-key',        color: 'bg-purple-100 text-purple-700' },
-            phone:  { icon: 'fa-phone',      color: 'bg-teal-100 text-teal-700' },
-            alamat: { icon: 'fa-map-pin',    color: 'bg-amber-100 text-amber-700' },
-            role:   { icon: 'fa-shield-halved', color: 'bg-slate-100 text-slate-700' },
-            status: { icon: 'fa-circle-dot', color: 'bg-green-100 text-green-700' },
-        };
-
-        function buildDetailRow(key, label, value) {
-            const cfg = detailConfig[key] || { icon: 'fa-question', color: 'bg-gray-100 text-gray-700' };
-            return `
-                <div class="flex items-start gap-4 py-3 border-b border-gray-100 last:border-0">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-base ${cfg.color} flex-shrink-0">
-                        <i class="fas ${cfg.icon}"></i>
-                    </div>
-                    <div class="flex-1">
-                        <p class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-0.5">${label}</p>
-                        <p class="text-sm font-medium text-gray-900 break-words">${value}</p>
-                    </div>
-                </div>`;
-        }
-
-        document.querySelectorAll('[data-bs-target="#detailModal"]').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const data = this.dataset;
-                const roleBadges = {
-                    admin: `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 border border-purple-200"><i class="text-xs fas fa-shield-halved"></i> Admin</span>`,
-                    kasir: `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200"><i class="text-xs fas fa-cash-register"></i> Kasir</span>`,
-                    owner: `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 border border-amber-200"><i class="text-xs fas fa-crown"></i> Owner</span>`,
-                };
-
-                const statusBadge = data.status === 'aktif'
-                    ? `<span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200"><span class="inline-block w-2.5 h-2.5 rounded-full bg-green-500 ring-2 ring-green-500/30"></span>Aktif</span>`
-                    : `<span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200"><span class="inline-block w-2.5 h-2.5 rounded-full bg-red-500 ring-2 ring-red-500/30"></span>Nonaktif</span>`;
-
-                document.getElementById('detailBody').innerHTML = `
-                    <div class="mb-6">
-                        <h6 class="mb-3 text-sm font-bold tracking-wider text-gray-700 uppercase">INFORMASI PRIBADI</h6>
-                        <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
-                            ${buildDetailRow('nama', 'Nama Lengkap', data.nama)}
-                            ${buildDetailRow('phone', 'No. Handphone', data.nohp)}
-                            ${buildDetailRow('alamat', 'Alamat', data.alamat)}
-                        </div>
-                    </div>
-                    <div>
-                        <h6 class="mb-3 text-sm font-bold tracking-wider text-gray-700 uppercase">AKUN & HAK AKSES</h6>
-                        <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
-                            ${buildDetailRow('user', 'Username', data.username)}
-                            ${buildDetailRow('pw', 'Password', '••••••••')}
-                            ${buildDetailRow('role', 'Role', roleBadges[data.role] || data.role)}
-                            ${buildDetailRow('status', 'Status', statusBadge)}
-                        </div>
-                    </div>
-                `;
-            });
-        });
-
-        // Edit modal data fill
-        document.querySelectorAll('[data-bs-target="#editModal"]').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const d = this.dataset;
-                const form = document.getElementById('editForm');
-
-                form.action = `/admin/users/${d.id}`;
-                form.querySelector('[name="nama"]').value     = d.nama;
-                form.querySelector('[name="username"]').value = d.username;
-                form.querySelector('[name="no_hp"]').value    = d.nohp;
-                form.querySelector('[name="alamat"]').value   = d.alamat;
-                form.querySelector('[name="password"]').value = '';
-
-                document.getElementById('editSubtitle').textContent = 'Mengediting: ' + d.nama;
-
-                const statusEl = document.getElementById('editStatus');
-                const hintEl   = document.getElementById('statusHint');
-                statusEl.value = d.status.toLowerCase();
-
-                const isKasir = d.role.toLowerCase() === 'kasir';
-                statusEl.disabled = !isKasir;
-                statusEl.style.opacity = isKasir ? '1' : '0.45';
-                statusEl.style.cursor  = isKasir ? 'pointer' : 'not-allowed';
-
-                hintEl.textContent = isKasir
-                    ? 'Status kasir bisa diubah di sini atau via toggle di tabel.'
-                    : 'Status Admin & Owner tidak bisa diubah dari sini.';
-            });
-        });
-
-        // Delete confirmation
-        document.querySelectorAll('.btn-hapus').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const id = this.dataset.id;
-                Swal.fire({
-                    title: 'Yakin hapus pengguna?',
-                    text: 'Data akan dihapus permanen!',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#ef4444',
-                    cancelButtonColor: '#10b981',
-                    confirmButtonText: '<i class="mr-2 fas fa-trash-can"></i> Ya, hapus!',
-                    cancelButtonText: 'Batal',
-                    customClass: {
-                        popup: 'rounded-2xl',
-                        confirmButton: 'rounded-xl px-6 py-3',
-                        cancelButton: 'rounded-xl px-6 py-3'
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        const form = document.createElement('form');
-                        form.method = 'POST';
-                        form.action = `/admin/users/${id}`;
-                        form.innerHTML = '@csrf @method("DELETE")';
-                        document.body.appendChild(form);
-                        form.submit();
-                    }
-                });
-            });
-        });
-    </script>
-@endsection --}}
+</body>
+</html>

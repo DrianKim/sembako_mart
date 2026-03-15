@@ -118,11 +118,11 @@ class OwnerController extends Controller
             'title' => 'Struk Transaksi',
         ];
 
-        return view('admin.riwayat_transaksi.struk', $data);
+        return view('owner.laporan_penjualan.struk', $data);
     }
 
     // Laporan Penjualan
-    public function laporan()
+    public function laporanPenjualan()
     {
         $data = [
             'title' => 'Laporan Penjualan Owner',

@@ -15,7 +15,9 @@
                 <div class="flex items-center">
                     <i class="w-6 h-6 text-gray-400 fas fa-chevron-right"></i>
                     <a href="{{ route('admin.kategori') }}"
-                        class="ml-1 text-sm font-medium text-gray-700 hover:text-green-600 md:ml-2">Kategori Produk</a>
+                        class="ml-1 text-sm font-medium text-gray-700 hover:text-green-600 md:ml-2">
+                        Kategori Produk
+                    </a>
                 </div>
             </li>
             <li aria-current="page">
@@ -35,50 +37,49 @@
                 </div>
                 <div>
                     <h3 class="text-xl font-bold text-gray-800">Tambah Kategori Baru</h3>
-                    <p class="text-sm text-gray-600">Isi form di bawah untuk menambah kategori baru</p>
+                    <p class="text-sm text-gray-600">Isi form di bawah untuk menambah kategori produk baru</p>
                 </div>
             </div>
         </div>
 
-        <form action="#" method="POST" id="formKategori">
+        <form action="{{ route('admin.kategori.store') }}" method="POST" id="formKategori">
             @csrf
-
             <div class="p-6">
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-
-                    <!-- Nama Kategori -->
                     <div class="md:col-span-2">
                         <label for="nama_kategori" class="block mb-2 text-sm font-semibold text-gray-700">
                             <i class="mr-1 text-green-600 fas fa-tag"></i>
                             Nama Kategori <span class="text-red-500">*</span>
                         </label>
-                        <input type="text" id="nama_kategori" name="nama_kategori" required
+                        <input type="text" id="nama_kategori" name="nama_kategori" required autofocus
                             value="{{ old('nama_kategori') }}" placeholder="Contoh: Beras & Tepung"
                             class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
+                        @error('nama_kategori')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
-
                 </div>
 
                 <div class="p-4 mt-8 border-l-4 border-green-500 rounded bg-green-50">
                     <p class="text-sm text-green-800">
                         <i class="mr-2 fas fa-info-circle"></i>
-                        Field bertanda <span class="text-red-500">*</span> wajib diisi. Pastikan data sudah benar sebelum
-                        simpan.
+                        Field bertanda <span class="text-red-500">*</span> wajib diisi. Pastikan data sudah benar sebelum simpan.
                     </p>
                 </div>
             </div>
 
             <div class="flex items-center justify-between px-6 py-4 border-t bg-gray-50">
                 <a href="{{ route('admin.kategori') }}"
-                    class="flex items-center px-6 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                    class="flex items-center px-6 py-3 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
                     <i class="mr-2 fas fa-arrow-left"></i> Kembali
                 </a>
                 <div class="flex gap-4">
-                    <button type="reset" class="px-6 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                    <button type="reset"
+                        class="px-6 py-3 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
                         <i class="mr-2 fas fa-redo"></i> Reset
                     </button>
                     <button type="submit"
-                        class="px-6 py-3 text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700">
+                        class="px-6 py-3 text-white transition-colors bg-green-600 rounded-lg shadow-md hover:bg-green-700">
                         <i class="mr-2 fas fa-save"></i> Simpan Kategori
                     </button>
                 </div>
@@ -89,29 +90,43 @@
 
 @push('scripts')
     <script>
-        // Auto-generate Kode Kategori
-        document.getElementById('nama_kategori').addEventListener('blur', function() {
-            const kodeInput = document.getElementById('kode_kategori');
-            if (!kodeInput.value.trim()) {
-                const nama = this.value.trim();
-                if (nama) {
-                    const words = nama.split(/\s+/).slice(0, 2);
-                    let prefix = words.map(w => w.charAt(0).toUpperCase()).join('');
-                    if (prefix.length < 3) prefix += 'X'.repeat(3 - prefix.length);
-                    const num = Math.floor(Math.random() * 900 + 100);
-                    kodeInput.value = `KTG-${prefix}${num}`;
-                }
-            }
-        });
+        // SweetAlert untuk success/error dari session
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                timer: 2500,
+                showConfirmButton: false,
+                position: 'top-end',
+                toast: true
+            });
+        @endif
 
-        // Form Validation
+        @if (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: '{{ session('error') }}',
+                timer: 3000,
+                showConfirmButton: false,
+                position: 'top-end',
+                toast: true
+            });
+        @endif
+
+        // Client-side validation sederhana
         document.getElementById('formKategori').addEventListener('submit', function(e) {
-            const namaKategori = document.getElementById('nama_kategori').value.trim();
-            if (!namaKategori) {
+            const nama = document.getElementById('nama_kategori').value.trim();
+            if (!nama) {
                 e.preventDefault();
-                alert('Nama kategori wajib diisi!');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Perhatian',
+                    text: 'Nama kategori wajib diisi!',
+                    confirmButtonColor: '#10b981'
+                });
                 document.getElementById('nama_kategori').focus();
-                return false;
             }
         });
     </script>

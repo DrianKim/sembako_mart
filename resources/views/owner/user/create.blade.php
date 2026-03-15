@@ -102,7 +102,7 @@
                     </div>
 
                     <!-- Status -->
-                    <div>
+                    {{-- <div>
                         <label class="block mb-2 text-sm font-semibold text-gray-700">
                             <i class="mr-1 text-green-600 fas fa-toggle-on"></i>
                             Status <span class="text-red-500">*</span>
@@ -122,7 +122,7 @@
                         @error('status')
                             <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                         @enderror
-                    </div>
+                    </div> --}}
 
                     <!-- Role -->
                     <div>

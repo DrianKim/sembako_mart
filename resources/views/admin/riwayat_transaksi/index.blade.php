@@ -89,7 +89,7 @@
                             class="font-semibold text-green-600">3</span> transaksi</p>
                 </div>
             </div>
-            <div class="flex gap-2">
+            {{-- <div class="flex gap-2">
                 <button class="p-2 text-gray-600 transition-colors rounded-lg hover:bg-gray-100 hover:text-green-600"
                     title="Export Excel">
                     <i class="fas fa-file-excel"></i>
@@ -102,7 +102,7 @@
                     title="Print">
                     <i class="fas fa-print"></i>
                 </button>
-            </div>
+            </div> --}}
         </div>
 
         <div class="overflow-x-auto">

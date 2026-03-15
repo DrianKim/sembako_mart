@@ -58,8 +58,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('/admin')->name('admin.')->gro
 
     // Stok
     Route::get('/stok', [AdminController::class, 'stokIndex'])->name('stok');
-    Route::get('/stok/create', [AdminController::class, 'stokCreate'])->name('stok.create');
-    Route::post('/stok/store', [AdminController::class, 'stokStore'])->name('stok.store');
+    Route::get('/stok/{id}/create', [AdminController::class, 'stokCreate'])->name('stok.create');
+    Route::post('/stok/{id}/store', [AdminController::class, 'stokStore'])->name('stok.store');
     Route::get('/stok/{id}/edit', [AdminController::class, 'stokEdit'])->name('stok.edit');
     Route::put('/stok/{id}/update', [AdminController::class, 'stokUpdate'])->name('stok.update');
 
@@ -118,7 +118,7 @@ Route::middleware(['auth', 'role:owner'])->prefix('/owner')->name('owner.')->gro
     Route::get('/riwayat-transaksi', [OwnerController::class, 'riwayatTransaksiIndex'])->name('riwayat_transaksi');
 
     // Struk
-    Route::get('/struk/{id}', [OwnerController::class, 'struk'])->name('riwayat_transaksi.struk');
+    Route::get('/struk/{id}', [OwnerController::class, 'struk'])->name('laporan_penjualan.struk');
 
     // Laporan Penjualan
     Route::get('/laporan-penjualan', [OwnerController::class, 'laporanPenjualan'])->name('laporan_penjualan');

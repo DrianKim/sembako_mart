@@ -46,7 +46,7 @@
                     Cari Produk
                 </label>
                 <div class="relative">
-                    <input type="text" id="searchInput" placeholder="Cari nama, barcode, atau kategori..."
+                    <input type="text" id="searchInput" placeholder="Cari nama produk, barcode, atau kategori..."
                         class="w-full px-4 py-2.5 pl-10 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <i class="text-gray-400 fas fa-search"></i>
@@ -76,10 +76,10 @@
                 <div>
                     <h3 class="text-lg font-semibold text-gray-800">Daftar Produk</h3>
                     <p class="text-sm text-gray-600">Total: <span id="totalData"
-                            class="font-semibold text-green-600">8</span> produk</p>
+                            class="font-semibold text-green-600">{{ $produks->total() }}</span> produk</span></p>
                 </div>
             </div>
-            <div class="flex gap-2">
+            {{-- <div class="flex gap-2">
                 <button class="p-2 text-gray-600 transition-colors rounded-lg hover:bg-gray-100 hover:text-green-600"
                     title="Export Excel">
                     <i class="fas fa-file-excel"></i>
@@ -92,7 +92,7 @@
                     title="Print">
                     <i class="fas fa-print"></i>
                 </button>
-            </div>
+            </div> --}}
         </div>
 
         <!-- Table -->
@@ -100,10 +100,6 @@
             <table class="w-full">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="w-12 px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
-                            <input type="checkbox" id="selectAll"
-                                class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
-                        </th>
                         <th class="w-12 px-4 py-3 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
                             No
                         </th>
@@ -117,10 +113,10 @@
                             Kategori
                         </th>
                         <th class="px-4 py-3 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
-                            Harga
+                            Harga Beli
                         </th>
                         <th class="px-4 py-3 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
-                            Stok
+                            Harga Jual
                         </th>
                         <th class="px-4 py-3 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
                             Satuan
@@ -131,201 +127,150 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200" id="tableBody">
-                    <!-- Dummy Row 1 -->
-                    <tr class="transition-colors hover:bg-gray-50">
-                        <td class="w-12 px-6 py-4 whitespace-nowrap">
-                            <input type="checkbox"
-                                class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
-                        </td>
-                        <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">1</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=100&h=100&fit=crop"
-                                alt="Beras Pandan" class="object-cover w-10 h-10 rounded">
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm font-semibold text-gray-900">Beras Pandan Premium 5kg</div>
-                            <div class="text-xs text-gray-500">Barcode: BRP-001</div>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-900">Beras & Tepung</td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">Rp 78.000</td>
-                        <td class="px-6 py-4 text-sm font-bold text-green-600 whitespace-nowrap">45</td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">kg</td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                            <div class="flex justify-center gap-2">
-                                <a href="{{ route('admin.produk.edit', 1) }}"
-                                    class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
-                                    title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <button class="p-2 text-red-600 transition-colors rounded-lg bg-red-50 hover:bg-red-100"
-                                    title="Hapus">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <!-- Dummy Row 2 -->
-                    <tr class="transition-colors hover:bg-gray-50">
-                        <td class="w-12 px-6 py-4 whitespace-nowrap">
-                            <input type="checkbox"
-                                class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
-                        </td>
-                        <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">2</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <img src="https://images.unsplash.com/photo-1626957341926-98752fc2ba90?w=100&h=100&fit=crop"
-                                alt="Minyak" class="object-cover w-10 h-10 rounded">
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm font-semibold text-gray-900">Minyak Goreng Sania 2L</div>
-                            <div class="text-xs text-gray-500">Barcode: MNG-002</div>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-900">Minyak & Mentega</td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">Rp 42.500</td>
-                        <td class="px-6 py-4 text-sm font-bold text-green-600 whitespace-nowrap">120</td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">liter</td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                            <div class="flex justify-center gap-2">
-                                <a href="{{ route('admin.produk.edit', 2) }}"
-                                    class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
-                                    title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <button class="p-2 text-red-600 transition-colors rounded-lg bg-red-50 hover:bg-red-100"
-                                    title="Hapus">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <!-- Dummy Row 3 -->
-                    <tr class="transition-colors hover:bg-gray-50">
-                        <td class="w-12 px-6 py-4 whitespace-nowrap">
-                            <input type="checkbox"
-                                class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
-                        </td>
-                        <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">3</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <img src="https://images.unsplash.com/photo-1556400666-a8c3349b0a4e?w=100&h=100&fit=crop"
-                                alt="Gula" class="object-cover w-10 h-10 rounded">
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm font-semibold text-gray-900">Gula Pasir Gulaku 1kg</div>
-                            <div class="text-xs text-gray-500">Barcode: GLP-003</div>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-900">Gula & Pemanis</td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">Rp 18.000</td>
-                        <td class="px-6 py-4 text-sm font-bold text-red-600 whitespace-nowrap">8</td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">kg</td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                            <div class="flex justify-center gap-2">
-                                <a href="{{ route('admin.produk.edit', 3) }}"
-                                    class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
-                                    title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <button class="p-2 text-red-600 transition-colors rounded-lg bg-red-50 hover:bg-red-100"
-                                    title="Hapus">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <!-- Tambahkan row dummy lain sesuai kebutuhan -->
+                    @forelse ($produks as $index => $produk)
+                        <tr class="transition-colors hover:bg-gray-50">
+                            <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
+                                {{ $produks->firstItem() + $index }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @if ($produk->foto)
+                                    <img src="https://yexkxhepiviphofpsymz.supabase.co/storage/v1/object/public/{{ $produk->foto }}"
+                                        alt="{{ $produk->nama_produk }}"
+                                        class="object-cover w-10 h-10 bg-gray-100 rounded-lg">
+                                @else
+                                    <div class="flex items-center justify-center w-10 h-10 bg-gray-200 rounded-lg">
+                                        <i class="text-sm text-gray-500 fas fa-image"></i>
+                                    </div>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm font-semibold text-gray-900">{{ $produk->nama_produk }}</div>
+                                <div class="text-xs text-gray-500">Barcode: {{ $produk->barcode ?? '-' }}</div>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-900">
+                                {{ $produk->kategori->nama_kategori ?? '-' }}
+                            </td>
+                            <td class="px-6 py-4 text-sm font-semibold text-orange-600 whitespace-nowrap">
+                                Rp {{ number_format($produk->harga_beli, 0, ',', '.') }}
+                            </td>
+                            <td class="px-6 py-4 text-sm font-semibold text-green-600 whitespace-nowrap">
+                                Rp {{ number_format($produk->harga_jual, 0, ',', '.') }}
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
+                                {{ $produk->satuan }}
+                            </td>
+                            <td class="px-6 py-4 text-center whitespace-nowrap">
+                                <div class="flex justify-center gap-2">
+                                    <a href="{{ route('admin.produk.edit', $produk->id) }}"
+                                        class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
+                                        title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="{{ route('admin.produk.delete', $produk->id) }}" method="POST"
+                                        class="inline delete-form">
+                                        @csrf @method('DELETE')
+                                        <button type="submit"
+                                            class="p-2 text-red-600 transition-colors rounded-lg bg-red-50 hover:bg-red-100"
+                                            title="Hapus">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="8" class="py-10 text-center text-gray-500">
+                                Belum ada data produk.
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
 
-        <!-- Table Footer with Pagination -->
         <div class="flex flex-col items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50 sm:flex-row">
             <div class="mb-4 text-sm text-gray-600 sm:mb-0">
-                Menampilkan <span class="font-semibold text-gray-900">1-3</span> dari <span
-                    class="font-semibold text-gray-900">8</span> produk
+                Menampilkan <span id="pageInfo" class="font-semibold text-gray-900">
+                    {{ $produks->firstItem() }}-{{ $produks->lastItem() }}
+                </span> dari
+                <span id="totalData" class="font-semibold text-gray-900">{{ $produks->total() }}</span>
+                produk
             </div>
-            <div class="flex items-center gap-2">
-                <button
-                    class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled>
-                    <i class="fas fa-chevron-left"></i>
-                    Previous
-                </button>
-                <button
-                    class="px-4 py-2 text-sm font-medium text-white transition-colors bg-green-600 border border-green-600 rounded-lg hover:bg-green-700">
-                    1
-                </button>
-                <button
-                    class="px-4 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
-                    2
-                </button>
-                <button
-                    class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
-                    Next
-                    <i class="fas fa-chevron-right"></i>
-                </button>
+            <div class="flex items-center gap-2" id="paginationContainer">
+                {{-- Custom Pagination Buttons --}}
+                @if ($produks->onFirstPage())
+                    <button
+                        class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled>
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </button>
+                @else
+                    <a href="{{ $produks->previousPageUrl() }}"
+                        class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </a>
+                @endif
+
+                {{-- Page Numbers --}}
+                @foreach ($produks->getUrlRange(1, $produks->lastPage()) as $page => $url)
+                    @if ($page == $produks->currentPage())
+                        <a href="{{ $url }}"
+                            class="px-4 py-2 text-sm font-medium text-white transition-colors bg-green-600 border border-green-600 rounded-lg hover:bg-green-700">{{ $page }}</a>
+                    @else
+                        <a href="{{ $url }}"
+                            class="px-4 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50">{{ $page }}</a>
+                    @endif
+                @endforeach
+
+                @if ($produks->hasMorePages())
+                    <a href="{{ $produks->nextPageUrl() }}"
+                        class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </a>
+                @else
+                    <button
+                        class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled>
+                        Next <i class="fas fa-chevron-right"></i>
+                    </button>
+                @endif
             </div>
         </div>
     </div>
 
-    <!-- Bulk Actions -->
-    <div id="bulkActions"
-        class="fixed bottom-0 left-0 right-0 z-50 hidden p-4 transition-all duration-300 transform translate-y-full bg-white border-t-2 border-green-500 shadow-2xl">
-        <div class="container flex items-center justify-between mx-auto">
-            <div class="flex items-center">
-                <div class="flex items-center justify-center w-10 h-10 mr-3 bg-green-100 rounded-lg">
-                    <i class="text-green-600 fas fa-check-circle"></i>
-                </div>
-                <span class="text-sm font-semibold text-gray-800">
-                    <span id="selectedCount">0</span> produk dipilih
-                </span>
-            </div>
-            <div class="flex gap-3">
-                <button
-                    class="flex items-center px-4 py-2 text-white transition-colors bg-red-600 rounded-lg hover:bg-red-700">
-                    <i class="mr-2 fas fa-trash"></i>
-                    Hapus Terpilih
-                </button>
-                <button
-                    class="flex items-center px-4 py-2 text-gray-700 transition-colors bg-gray-200 rounded-lg hover:bg-gray-300">
-                    <i class="mr-2 fas fa-times"></i>
-                    Batal
-                </button>
-            </div>
-        </div>
-    </div>
 @endsection
 
 @push('scripts')
     <script>
-        // Select All Checkbox
-        document.getElementById('selectAll').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('#tableBody input[type="checkbox"]');
-            checkboxes.forEach(checkbox => checkbox.checked = this.checked);
-            updateBulkActions();
-        });
+        // SweetAlert session messages
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Sukses!',
+                text: '{{ session('success') }}',
+                showConfirmButton: true,
+                confirmButtonColor: '#10b981',
+                background: '#ffffff',
+                color: '#1f2937',
+                iconColor: '#A5DC86'
+            });
+        @endif
 
-        // Individual Checkboxes
-        document.querySelectorAll('#tableBody input[type="checkbox"]').forEach(checkbox => {
-            checkbox.addEventListener('change', updateBulkActions);
-        });
+        @if (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: '{{ session('error') }}',
+                showConfirmButton: true,
+                confirmButtonColor: '#ef4444',
+                background: '#ffffff',
+                color: '#1f2937',
+                iconColor: '#ef4444'
+            });
+        @endif
 
-        function updateBulkActions() {
-            const checkedBoxes = document.querySelectorAll('#tableBody input[type="checkbox"]:checked');
-            const bulkActions = document.getElementById('bulkActions');
-            const selectedCount = document.getElementById('selectedCount');
-
-            selectedCount.textContent = checkedBoxes.length;
-
-            if (checkedBoxes.length > 0) {
-                bulkActions.classList.remove('hidden', 'translate-y-full');
-            } else {
-                bulkActions.classList.add('translate-y-full');
-                setTimeout(() => bulkActions.classList.add('hidden'), 300);
-            }
-        }
-
-        // Live Search
+        // 1. Live Search
         document.getElementById('searchInput').addEventListener('input', function(e) {
             const term = e.target.value.toLowerCase().trim();
             const rows = document.querySelectorAll('#tableBody tr');
@@ -336,15 +281,32 @@
             });
         });
 
-        // Reset
+        // 2. Reset
         document.getElementById('btnReset').addEventListener('click', function() {
             document.getElementById('searchInput').value = '';
             document.querySelectorAll('#tableBody tr').forEach(row => row.style.display = '');
         });
 
-        // Terapkan (dummy, karena live search sudah cukup)
-        document.getElementById('btnFilter').addEventListener('click', function() {
-            alert('Filter diterapkan! (live search sudah aktif)');
+        // 3. DELETE CONFIRMATION
+        document.querySelectorAll('.delete-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Yakin hapus produk?',
+                    text: "Data produk akan dihapus permanen!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#10b981',
+                    cancelButtonColor: '#ef4444',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
         });
     </script>
 @endpush

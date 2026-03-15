@@ -15,7 +15,9 @@
                 <div class="flex items-center">
                     <i class="w-6 h-6 text-gray-400 fas fa-chevron-right"></i>
                     <a href="{{ route('admin.kategori') }}"
-                        class="ml-1 text-sm font-medium text-gray-700 hover:text-green-600 md:ml-2">Kategori Produk</a>
+                        class="ml-1 text-sm font-medium text-gray-700 hover:text-green-600 md:ml-2">
+                        Kategori Produk
+                    </a>
                 </div>
             </li>
             <li aria-current="page">
@@ -34,30 +36,33 @@
                     <i class="text-2xl text-green-600 fas fa-edit"></i>
                 </div>
                 <div>
-                    <h3 class="text-xl font-bold text-gray-800">Edit Kategori: Beras & Tepung</h3>
-                    <p class="text-sm text-gray-600">Kode: KTG-001</p>
+                    <h3 class="text-xl font-bold text-gray-800">
+                        Edit Kategori: {{ $kategori->nama_kategori ?? 'Makanan Instan' }}
+                    </h3>
+                    <p class="text-sm text-gray-600">
+                        Isi form di bawah untuk mengedit kategori
+                    </p>
                 </div>
             </div>
         </div>
 
-        <form action="#" method="POST" id="formKategori">
+        <form action="{{ route('admin.kategori.update', $kategori->id) }}" method="POST" id="formKategori">
             @csrf
             @method('PUT')
-
             <div class="p-6">
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-
-                    <!-- Nama Kategori -->
                     <div class="md:col-span-2">
                         <label for="nama_kategori" class="block mb-2 text-sm font-semibold text-gray-700">
                             <i class="mr-1 text-green-600 fas fa-tag"></i>
                             Nama Kategori <span class="text-red-500">*</span>
                         </label>
-                        <input type="text" id="nama_kategori" name="nama_kategori" required
-                            value="Beras & Tepung"
+                        <input type="text" id="nama_kategori" name="nama_kategori" required autofocus
+                            value="{{ old('nama_kategori', $kategori->nama_kategori) }}"
                             class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
+                        @error('nama_kategori')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
-
                 </div>
 
                 <div class="p-4 mt-8 border-l-4 border-green-500 rounded bg-green-50">
@@ -70,15 +75,16 @@
 
             <div class="flex items-center justify-between px-6 py-4 border-t bg-gray-50">
                 <a href="{{ route('admin.kategori') }}"
-                    class="flex items-center px-6 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                    class="flex items-center px-6 py-3 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
                     <i class="mr-2 fas fa-arrow-left"></i> Kembali
                 </a>
                 <div class="flex gap-4">
-                    <button type="reset" class="px-6 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                    <button type="reset"
+                        class="px-6 py-3 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
                         <i class="mr-2 fas fa-redo"></i> Reset
                     </button>
                     <button type="submit"
-                        class="px-6 py-3 text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700">
+                        class="px-6 py-3 text-white transition-colors bg-green-600 rounded-lg shadow-md hover:bg-green-700">
                         <i class="mr-2 fas fa-save"></i> Simpan Perubahan
                     </button>
                 </div>
@@ -86,3 +92,47 @@
         </form>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        // SweetAlert untuk success/error
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                timer: 2500,
+                showConfirmButton: false,
+                position: 'top-end',
+                toast: true
+            });
+        @endif
+
+        @if (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: '{{ session('error') }}',
+                timer: 3000,
+                showConfirmButton: false,
+                position: 'top-end',
+                toast: true
+            });
+        @endif
+
+        // Validasi client-side
+        document.getElementById('formKategori').addEventListener('submit', function(e) {
+            const nama = document.getElementById('nama_kategori').value.trim();
+            if (!nama) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Perhatian',
+                    text: 'Nama kategori wajib diisi!',
+                    confirmButtonColor: '#10b981'
+                });
+                document.getElementById('nama_kategori').focus();
+            }
+        });
+    </script>
+@endpush

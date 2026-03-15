@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('kategori_id')->constrained('kategori')->onDelete('restrict');
             $table->string('nama_produk');
-            $table->decimal('harga', 12, 2);
+            $table->decimal('harga_beli', 12, 2);
+            $table->decimal('harga_jual', 12, 2);
             $table->integer('stok')->default(0);
             $table->string('foto')->nullable();
             $table->string('barcode')->unique();
