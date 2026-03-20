@@ -17,7 +17,7 @@
                     class="flex items-center px-4 py-2.5 text-white bg-green-600 rounded-lg shadow hover:bg-green-700 transition">
                     <i class="mr-2 fas fa-plus"></i> Tambah Prkoduk
                 </a>
-                <a href="{{ route('admin.stok.create') }}"
+                <a href="{{ route('admin.stok') }}"
                     class="flex items-center px-4 py-2.5 text-white bg-blue-600 rounded-lg shadow hover:bg-blue-700 transition">
                     <i class="mr-2 fas fa-boxes"></i> Tambah Stok
                 </a>

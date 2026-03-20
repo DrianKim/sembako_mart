@@ -69,6 +69,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('/admin')->name('admin.')->gro
     Route::post('/kasir/store', [AdminController::class, 'kasirStore'])->name('kasir.store');
     Route::get('/kasir/{id}/edit', [AdminController::class, 'kasirEdit'])->name('kasir.edit');
     Route::put('/kasir/{id}/update', [AdminController::class, 'kasirUpdate'])->name('kasir.update');
+    Route::get('/kasir/{id}/toggle-status', [AdminController::class, 'kasirToggleStatus'])->name('kasir.toggle-status');
 
     // Riwayat Transaksi
     Route::get('/riwayat-transaksi', [AdminController::class, 'riwayatTransaksiIndex'])->name('riwayat_transaksi');

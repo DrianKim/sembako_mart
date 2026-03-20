@@ -28,53 +28,79 @@
     </nav>
 
     <div class="overflow-hidden bg-white border border-gray-200 rounded-lg shadow-sm">
+        <!-- Header -->
         <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-green-50 to-white">
             <div class="flex items-center">
                 <div class="flex items-center justify-center flex-shrink-0 w-12 h-12 mr-4 bg-green-100 rounded-lg">
                     <i class="text-2xl text-green-600 fas fa-user-edit"></i>
                 </div>
                 <div>
-                    <h3 class="text-xl font-bold text-gray-800">Edit Data Kasir: Andi Susanto</h3>
-                    <p class="text-sm text-gray-600">Username: andi_kasir</p>
+                    <h3 class="text-xl font-bold text-gray-800">Edit Kasir: {{ $kasir->nama }}</h3>
+                    <p class="text-sm text-gray-600">Username: <span class="font-mono">{{ $kasir->username }}</span></p>
                 </div>
             </div>
         </div>
 
-        <form action="#" method="POST" id="formKasirEdit">
+        <!-- FORM -->
+        <form action="{{ route('admin.kasir.update', $kasir->id) }}" method="POST" id="formKasirEdit">
             @csrf
             @method('PUT')
 
             <div class="p-6">
-                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <!-- ERROR SUMMARY -->
+                @if ($errors->any())
+                    <div class="p-4 mb-6 border border-red-200 rounded-lg bg-red-50">
+                        <div class="flex items-start">
+                            <i class="mt-1 mr-3 text-lg text-red-500 fas fa-exclamation-triangle"></i>
+                            <div>
+                                <p class="mb-1 text-sm font-semibold text-red-700">Periksa kembali:</p>
+                                <ul class="space-y-1 text-sm text-red-700">
+                                    @foreach ($errors->all() as $error)
+                                        <li>• {{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                @endif
 
+                <!-- FORM FIELDS -->
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <!-- Nama -->
                     <div>
                         <label for="nama" class="block mb-2 text-sm font-semibold text-gray-700">
                             <i class="mr-1 text-green-600 fas fa-user"></i>
                             Nama Lengkap <span class="text-red-500">*</span>
                         </label>
-                        <input type="text" id="nama" name="nama" required value="Andi Susanto"
-                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
+                        <input type="text" id="nama" name="nama" required value="{{ old('nama', $kasir->nama) }}"
+                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all @error('nama') border-red-500 ring-2 ring-red-200 @enderror">
+                        @error('nama')
+                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
-                    <!-- Username (readonly) -->
+                    <!-- Username (READONLY) -->
                     <div>
-                        <label for="username" class="block mb-2 text-sm font-semibold text-gray-700">
+                        <label class="block mb-2 text-sm font-semibold text-gray-700">
                             <i class="mr-1 text-green-600 fas fa-at"></i>
                             Username
                         </label>
-                        <input type="text" id="username" name="username" value="andi_kasir" readonly
-                            class="w-full px-4 py-2.5 bg-gray-100 border border-gray-300 rounded-lg cursor-not-allowed">
+                        <input type="text" name="username" value="{{ old('username', $kasir->username) }}" readonly
+                            class="w-full px-4 py-2.5 bg-gray-100 border border-gray-300 rounded-lg cursor-not-allowed text-gray-500">
                     </div>
 
-                    <!-- Password (opsional) -->
+                    <!-- Password (OPTIONAL) -->
                     <div>
                         <label for="password" class="block mb-2 text-sm font-semibold text-gray-700">
                             <i class="mr-1 text-green-600 fas fa-lock"></i>
                             Password Baru (kosongkan jika tidak ingin ubah)
                         </label>
                         <input type="password" id="password" name="password"
-                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
+                            placeholder="Kosongkan untuk tetap password lama"
+                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all @error('password') border-red-500 ring-2 ring-red-200 @enderror">
+                        @error('password')
+                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                        @enderror
                         <p class="mt-1 text-xs text-gray-500">Minimal 8 karakter. Kosongkan jika tidak diubah.</p>
                     </div>
 
@@ -84,49 +110,38 @@
                             <i class="mr-1 text-green-600 fas fa-phone"></i>
                             Nomor HP <span class="text-red-500">*</span>
                         </label>
-                        <input type="text" id="no_hp" name="no_hp" required value="081234567890"
-                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
+                        <input type="text" id="no_hp" name="no_hp" required
+                            value="{{ old('no_hp', $kasir->no_hp) }}"
+                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all @error('no_hp') border-red-500 ring-2 ring-red-200 @enderror">
+                        @error('no_hp')
+                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
-
-                    <!-- Status -->
-                    <div class="md:col-span-2">
-                        <label class="block mb-2 text-sm font-semibold text-gray-700">
-                            <i class="mr-1 text-green-600 fas fa-toggle-on"></i>
-                            Status <span class="text-red-500">*</span>
-                        </label>
-                        <div class="flex gap-6">
-                            <label class="flex items-center">
-                                <input type="radio" name="status" value="aktif" checked class="w-5 h-5 text-green-600">
-                                <span class="ml-2 text-gray-700">Aktif</span>
-                            </label>
-                            <label class="flex items-center">
-                                <input type="radio" name="status" value="nonaktif" class="w-5 h-5 text-red-600">
-                                <span class="ml-2 text-gray-700">Nonaktif</span>
-                            </label>
-                        </div>
-                    </div>
-
                 </div>
 
+                <!-- INFO TIP -->
                 <div class="p-4 mt-8 border-l-4 border-green-500 rounded bg-green-50">
                     <p class="text-sm text-green-800">
                         <i class="mr-2 fas fa-info-circle"></i>
-                        Field bertanda <span class="text-red-500">*</span> wajib diisi. Password hanya diubah jika diisi.
+                        Field bertanda <span class="text-red-500">*</span> wajib diisi. Username tidak bisa diubah. Password
+                        hanya diubah jika diisi.
                     </p>
                 </div>
             </div>
 
+            <!-- BUTTONS -->
             <div class="flex items-center justify-between px-6 py-4 border-t bg-gray-50">
                 <a href="{{ route('admin.kasir') }}"
-                    class="flex items-center px-6 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                    class="flex items-center px-6 py-3 text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
                     <i class="mr-2 fas fa-arrow-left"></i> Kembali
                 </a>
-                <div class="flex gap-4">
-                    <button type="reset" class="px-6 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                <div class="flex gap-3">
+                    <button type="reset"
+                        class="px-6 py-3 text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
                         <i class="mr-2 fas fa-redo"></i> Reset
                     </button>
                     <button type="submit"
-                        class="px-6 py-3 text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700">
+                        class="flex items-center px-6 py-3 text-white transition-all bg-green-600 rounded-lg shadow-md hover:bg-green-700 hover:shadow-lg focus:ring-4 focus:ring-green-300">
                         <i class="mr-2 fas fa-save"></i> Simpan Perubahan
                     </button>
                 </div>

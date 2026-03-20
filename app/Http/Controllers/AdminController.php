@@ -393,10 +393,29 @@ class AdminController extends Controller
     }
 
     // Kasir
-    public function kasirIndex()
+    public function kasirIndex(Request $request)
     {
+        $search = $request->get('search');
+        $statusFilter = $request->get('status');
+
+        $query = User::where('role', 'kasir')
+            ->when($search, function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                    ->orWhere('username', 'like', "%{$search}%")
+                    ->orWhere('no_hp', 'like', "%{$search}%");
+            })
+            ->when($statusFilter, function ($q) use ($statusFilter) {
+                $q->where('status', $statusFilter);
+            })
+            ->orderBy('nama');
+
+        $kasirs = $query->paginate(10);
+
         $data = [
             'title' => 'Kasir',
+            'kasirs' => $kasirs,
+            'search' => $search,
+            'status' => $statusFilter
         ];
 
         return view('admin.kasir.index', $data);
@@ -404,23 +423,16 @@ class AdminController extends Controller
 
     public function kasirCreate()
     {
-        $data = [
-            'title' => 'Tambah Transaksi',
-        ];
-
-        return view('admin.kasir.create', $data);
+        return view('admin.kasir.create');
     }
 
     public function kasirStore(Request $request)
     {
-        // create role kasir saja
         $request->validate([
             'nama' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username',
             'password' => 'required|string|min:8',
-            'no_hp' => 'required|string|max:20',
-            'role' => 'required|enum:admin,kasir',
-            'status' => 'required|enum:aktif,nonaktif',
+            'no_hp' => 'required|string|max:20|regex:/^08[0-9]{8,12}$/',
         ]);
 
         User::create([
@@ -428,47 +440,56 @@ class AdminController extends Controller
             'username' => $request->username,
             'password' => Hash::make($request->password),
             'no_hp' => $request->no_hp,
-            'role' => $request->role,
-            'status' => $request->status,
+            'role' => 'kasir',
+            'status' => 'aktif',
         ]);
 
-        return redirect()->route('admin.kasir')->with('success', 'Kasir berhasil ditambahkan!');
+        return redirect()->route('admin.kasir')->with('success', "Kasir {$request->nama} berhasil ditambahkan!");
     }
 
     public function kasirEdit($id)
     {
-        $kasir = User::findOrFail($id);
+        $kasir = User::where('role', 'kasir')->findOrFail($id);
 
-        $data = [
-            'title' => 'Edit Kasir',
-            'kasir' => $kasir,
-        ];
-
-        return view('admin.kasir.edit', $data);
+        return view('admin.kasir.edit', compact('kasir'));
     }
 
     public function kasirUpdate(Request $request, $id)
     {
+        $kasir = User::where('role', 'kasir')->findOrFail($id);
+
         $request->validate([
             'nama' => 'required|string|max:255',
-            'username' => 'required|string|max:255|unique:users,username,' . $id,
+            'no_hp' => 'required|string|max:20|regex:/^08[0-9]{8,12}$/',
             'password' => 'nullable|string|min:8',
-            'no_hp' => 'required|string|max:20',
-            'role' => 'required|enum:admin,kasir',
-            'status' => 'required|enum:aktif,nonaktif',
+            'username' => 'required|string|max:255|unique:users,username,' . $id,
         ]);
 
-        $kasir = User::findOrFail($id);
-        $kasir->update([
+        $updateData = [
             'nama' => $request->nama,
-            'username' => $request->username,
-            'password' => $request->password ? Hash::make($request->password) : $kasir->password,
             'no_hp' => $request->no_hp,
-            'role' => $request->role,
-            'status' => $request->status,
-        ]);
+        ];
 
-        return redirect()->route('admin.kasir')->with('success', 'Kasir berhasil diperbarui!');
+        if ($request->filled('password')) {
+            $updateData['password'] = Hash::make($request->password);
+        }
+
+        $kasir->update($updateData);
+
+        return redirect()->route('admin.kasir')
+            ->with('success', "Kasir {$kasir->nama} berhasil diperbarui!");
+    }
+
+    public function kasirToggleStatus($id)
+    {
+        $kasir = User::where('role', 'kasir')->findOrFail($id);
+
+        $kasir->status = $kasir->status == 'aktif' ? 'nonaktif' : 'aktif';
+        $kasir->save();
+
+        $oldStatus = $kasir->status == 'aktif' ? 'nonaktif' : 'aktif';
+        return redirect()->route('admin.kasir')
+            ->with('success', "Status kasir {$kasir->nama} berhasil diubah menjadi {$kasir->status}");
     }
 
     // Riwayat Transaksi
