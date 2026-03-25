@@ -119,10 +119,10 @@ class KasirController extends Controller
                     ->decrement('stok', $item['qty']);
             }
 
-            // Catat log (opsional)
+            // Catat log
             Log::create([
                 'id_user'   => $kasirId,
-                'aktivitas' => "Melakukan transaksi {$nomorUnik} sebesar Rp " . number_format($request->total_harga),
+                'aktivitas' => "User " . auth()->user()->nama . " Melakukan transaksi {$nomorUnik} sebesar Rp " . number_format($request->total_harga),
                 'waktu'     => now(),
             ]);
 
@@ -161,10 +161,32 @@ class KasirController extends Controller
     }
 
     // Log Aktivitas
-    public function logIndex()
+    public function logIndex(Request $request)
     {
+        $search = $request->get('search');
+
+        $logs = Log::with('user:id,nama,role')
+            ->where('id_user', auth()->id())
+            ->when($search, function ($query, $search) {
+                $query->where('aktivitas', 'like', "%{$search}%");
+            })
+            ->orderBy('waktu', 'desc')
+            ->paginate(10);
+
+        if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+            return response()->json([
+                'html'       => view('kasir._log_table', compact('logs'))->render(),
+                'pagination' => view('kasir._log_pagination', compact('logs'))->render(),
+                'total'      => $logs->total(),
+                'from'       => $logs->firstItem() ?? 0,
+                'to'         => $logs->lastItem() ?? 0,
+            ]);
+        }
+
         $data = [
-            'title' => 'Log Aktivitas',
+            'title'  => 'Log Aktivitas',
+            'logs'   => $logs,
+            'search' => $search,
         ];
 
         return view('kasir.log_aktivitas', $data);

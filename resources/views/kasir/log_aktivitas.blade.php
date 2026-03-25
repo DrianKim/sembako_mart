@@ -11,8 +11,7 @@
                     <li class="inline-flex items-center">
                         <a href="{{ route('kasir.dashboard') }}"
                             class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-green-600">
-                            <i class="w-4 h-4 mr-2 fas fa-home"></i>
-                            Dashboard
+                            <i class="w-4 h-4 mr-2 fas fa-home"></i> Dashboard
                         </a>
                     </li>
                     <li aria-current="page">
@@ -29,27 +28,25 @@
     <!-- Filter & Search Section -->
     <div class="p-6 mb-6 bg-white border border-gray-200 rounded-lg shadow-sm">
         <div class="grid grid-cols-1 gap-4 md:grid-cols-4 md:gap-4">
-            <!-- Search - span 3 biar lebar dominan -->
+            <!-- Search -->
             <div class="md:col-span-3">
                 <label class="block mb-2 text-sm font-semibold text-gray-700">
-                    <i class="mr-1 text-green-600 fas fa-search"></i>
-                    Cari Aktivitas
+                    <i class="mr-1 text-green-600 fas fa-search"></i> Cari Aktivitas
                 </label>
                 <div class="relative">
                     <input type="text" id="searchInput" placeholder="Cari berdasarkan deskripsi aktivitas..."
+                        value="{{ $search ?? '' }}"
                         class="w-full px-4 py-2.5 pl-10 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <i class="text-gray-400 fas fa-search"></i>
                     </div>
                 </div>
             </div>
-
-            <!-- Reset - pojok kanan banget, nempel di ujung grid -->
+            <!-- Reset -->
             <div class="flex items-end justify-end md:col-span-1">
                 <button id="btnReset"
                     class="flex items-center px-6 py-2.5 text-gray-700 transition-all duration-200 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 shadow-sm">
-                    <i class="mr-2 fas fa-redo"></i>
-                    Reset
+                    <i class="mr-2 fas fa-redo"></i> Reset
                 </button>
             </div>
         </div>
@@ -57,7 +54,7 @@
 
     <!-- Table Section -->
     <div class="overflow-hidden bg-white border border-gray-200 rounded-lg shadow-sm">
-        <!-- Table Header with Info -->
+        <!-- Table Header -->
         <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gray-50">
             <div class="flex items-center">
                 <div class="flex items-center justify-center w-10 h-10 mr-3 bg-green-100 rounded-lg">
@@ -66,22 +63,8 @@
                 <div>
                     <h3 class="text-lg font-semibold text-gray-800">Riwayat Aktivitas Saya</h3>
                     <p class="text-sm text-gray-600">Total: <span id="totalData"
-                            class="font-semibold text-green-600">8</span> aktivitas</p>
+                            class="font-semibold text-green-600">{{ $logs->total() }}</span> aktivitas</p>
                 </div>
-            </div>
-            <div class="flex gap-2">
-                <button class="p-2 text-gray-600 transition-colors rounded-lg hover:bg-gray-100 hover:text-green-600"
-                    title="Export Excel">
-                    <i class="fas fa-file-excel"></i>
-                </button>
-                <button class="p-2 text-gray-600 transition-colors rounded-lg hover:bg-gray-100 hover:text-green-600"
-                    title="Export PDF">
-                    <i class="fas fa-file-pdf"></i>
-                </button>
-                <button class="p-2 text-gray-600 transition-colors rounded-lg hover:bg-gray-100 hover:text-green-600"
-                    title="Print">
-                    <i class="fas fa-print"></i>
-                </button>
             </div>
         </div>
 
@@ -90,112 +73,112 @@
             <table class="w-full">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="w-12 px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
-                            No
+                        <th class="w-12 px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">No
                         </th>
-                        <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
-                            Aktivitas
-                        </th>
-                        <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
-                            Waktu
-                        </th>
+                        <th class="w-4/5 px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
+                            Aktivitas</th>
+                        <th class="w-1/5 px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
+                            Waktu</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200" id="tableBody">
-                    <!-- Dummy Row 1 -->
-                    <tr class="transition-colors hover:bg-gray-50">
-                        <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">1</td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">User 'Kasir Sembako Mart' melakukan login sebagai Kasir</div>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-26 07:00:00</td>
-                    </tr>
-
-                    <!-- Dummy Row 2 -->
-                    <tr class="transition-colors hover:bg-gray-50">
-                        <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">2</td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">User 'Kasir Sembako Mart' memproses transaksi TRX20260226001
-                                dengan total Rp 149.000
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-26 12:00:00</td>
-                    </tr>
-
-                    <!-- Dummy Row 3 -->
-                    <tr class="transition-colors hover:bg-gray-50">
-                        <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">3</td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">User 'Kasir Sembako Mart' memproses transaksi TRX20260226002
-                                dengan total Rp 188.000</div>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-26 13:20:35</td>
-                    </tr>
-
-                    <!-- Dummy Row 4 -->
-                    <tr class="transition-colors hover:bg-gray-50">
-                        <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">4</td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">User 'Kasir Sembako Mart' memproses transaksi TRX20260226003
-                                dengan total RP 165.000</div>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-26 16:15:22</td>
-                    </tr>
+                    @include('kasir._log_table')
                 </tbody>
+                <div
+                    class="flex flex-col items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50 sm:flex-row">
+                    <div class="mb-4 text-sm text-gray-600 sm:mb-0">
+                        Menampilkan <span id="pageInfo" class="font-semibold text-gray-900">
+                            {{ $logs->firstItem() }}-{{ $logs->lastItem() }}
+                        </span> dari
+                        <span id="totalData" class="font-semibold text-gray-900">{{ $logs->total() }}</span>
+                        aktivitas
+                    </div>
+                    <div class="flex items-center gap-2" id="paginationContainer">
+                        @include('kasir._log_pagination')
+                    </div>
+                </div>
             </table>
         </div>
-
-        <!-- Table Footer with Pagination -->
-        <div class="flex flex-col items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50 sm:flex-row">
-            <div class="mb-4 text-sm text-gray-600 sm:mb-0">
-                Menampilkan <span class="font-semibold text-gray-900">1-4</span> dari <span
-                    class="font-semibold text-gray-900">8</span> aktivitas
-            </div>
-            <div class="flex items-center gap-2">
-                <button
-                    class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled>
-                    <i class="fas fa-chevron-left"></i>
-                    Previous
-                </button>
-                <button
-                    class="px-4 py-2 text-sm font-medium text-white transition-colors bg-green-600 border border-green-600 rounded-lg hover:bg-green-700">
-                    1
-                </button>
-                <button
-                    class="px-4 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
-                    2
-                </button>
-                <button
-                    class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
-                    Next
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-            </div>
-        </div>
     </div>
-
 @endsection
 
 @push('scripts')
     <script>
-        // Live Search
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const rows = document.querySelectorAll('#tableBody tr');
+        let currentPage = 1;
+        let currentSearch = '';
+        let searchTimer = null;
 
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(searchTerm) ? '' : 'none';
+        function loadData(page = 1, search = '') {
+            currentPage = page;
+            currentSearch = search;
+
+            $.ajax({
+                url: '{{ route('kasir.log') }}',
+                method: 'GET',
+                data: {
+                    page,
+                    search
+                },
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                beforeSend: function() {
+                    $('#tableBody').html(`
+                        <tr>
+                            <td colspan="3" class="py-12 text-center text-gray-500">
+                                <i class="mr-2 fas fa-spinner fa-spin"></i> Memuat data...
+                            </td>
+                        </tr>
+                    `);
+                },
+                success: function(res) {
+                    $('#tableBody').html(res.html);
+                    $('#paginationContainer').html(res.pagination);
+                    $('#totalData').text(res.total);
+
+                    if (res.from && res.to) {
+                        $('#pageInfo').text(res.from + '-' + res.to);
+                    } else {
+                        $('#pageInfo').text('0-0');
+                    }
+
+                    bindPagination();
+                },
+                error: function() {
+                    $('#tableBody').html(`
+                        <tr>
+                            <td colspan="3" class="py-12 text-center text-red-500">
+                                Gagal memuat data. Silakan coba lagi.
+                            </td>
+                        </tr>
+                    `);
+                }
             });
+        }
+
+        function bindPagination() {
+            $(document).off('click', '.pagination-link')
+                .on('click', '.pagination-link', function(e) {
+                    e.preventDefault();
+                    const page = $(this).data('page');
+                    if (page) loadData(page, currentSearch);
+                });
+        }
+
+        $('#searchInput').on('input', function() {
+            clearTimeout(searchTimer);
+            const term = $(this).val().trim();
+            searchTimer = setTimeout(() => loadData(1, term), 400);
         });
 
-        // Reset functionality
-        document.getElementById('btnReset').addEventListener('click', function() {
-            document.getElementById('searchInput').value = '';
-            document.querySelectorAll('#tableBody tr').forEach(row => {
-                row.style.display = '';
-            });
+        $('#btnReset').on('click', function() {
+            $('#searchInput').val('');
+            currentSearch = '';
+            loadData(1, '');
+        });
+
+        $(document).ready(function() {
+            loadData(1, '{{ $search ?? '' }}');
         });
     </script>
 @endpush
