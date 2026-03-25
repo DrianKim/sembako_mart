@@ -76,9 +76,9 @@
                     <tr>
                         <th class="w-12 px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">No
                         </th>
-                        <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
+                        <th class="w-4/5 px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
                             Aktivitas</th>
-                        <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase ">
+                        <th class="w-1/5 px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
                             Waktu</th>
                     </tr>
                 </thead>

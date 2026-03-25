@@ -56,7 +56,7 @@ class AuthController extends Controller
 
         Log::create([
             'id_user' => $user->id,
-            'aktivitas' => "User '" . $user->nama . "' berhasil login sebagai '" . $user->role . "'",
+            'aktivitas' => "User " . $user->nama . " berhasil login sebagai '" . $user->role . "'",
             'waktu' => now(),
         ]);
 
@@ -74,8 +74,8 @@ class AuthController extends Controller
     {
         if (Auth::check()) {
             Log::create([
-                'id_user' => Auth::id(),
-                'aktivitas' => "User '" . Auth::user()->nama . "' melakukan logout sebagai '" . Auth::user()->role . "'",
+                'id_user' => auth()->id(),
+                'aktivitas' => "User " . auth()->user()->nama . " berhasil logout",
                 'waktu' => now(),
             ]);
         }
