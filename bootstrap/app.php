@@ -16,7 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'hide.login' => \App\Http\Middleware\HideLoginPage::class,
         ]);
 
-    })
+    })  
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();

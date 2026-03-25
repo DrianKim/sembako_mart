@@ -820,11 +820,21 @@
     </script>
     <script>
         let clickCount = 0;
+        let clickTimer = null;
         const logo = document.getElementById('logo');
 
         logo.addEventListener('click', () => {
             clickCount++;
+
+            clearTimeout(clickTimer);
+            clickTimer = setTimeout(() => {
+                clickCount = 0;
+            }, 1200);
+
             if (clickCount === 3) {
+                clickCount = 0;
+                clearTimeout(clickTimer);
+
                 fetch('/allow-login', {
                         method: 'POST',
                         headers: {
@@ -832,19 +842,14 @@
                             'Content-Type': 'application/json',
                         },
                     })
-                    .then(response => {
-                        if (response.ok) {
-                            window.location.href = '/login';
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.token) {
+                            window.location.href = '/auth/' + data.token; // redirect ke URL dengan token
                         }
                     })
                     .catch(err => console.error(err));
-
-                clickCount = 0;
             }
-
-            setTimeout(() => {
-                clickCount = 0;
-            }, 1200);
         });
     </script>
 </body>

@@ -10,26 +10,34 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function showLoginForm()
+    public function showLoginForm(string $token)
     {
         if (Auth::check()) {
             $user = Auth::user();
-
             $dashboard = match ($user->role) {
                 'admin' => route('admin.dashboard'),
                 'kasir' => route('kasir.dashboard'),
                 'owner' => route('owner.dashboard'),
-                default => route('login'),
+                default => '/',
             };
-
             return redirect($dashboard);
         }
 
-        return view('auth.login');
+        // Validasi token
+        if (!session()->has('login_token') || session('login_token') !== $token) {
+            return redirect('/')->with('error', 'Akses ditolak');
+        }
+
+        return view('auth.login', ['token' => $token]);
     }
 
-    public function login(Request $request)
+    public function login(Request $request, string $token)
     {
+        // Validasi token
+        if (!session()->has('login_token') || session('login_token') !== $token) {
+            return redirect('/')->with('error', 'Akses ditolak');
+        }
+
         $request->validate([
             'username' => 'required|string',
             'password' => 'required|string',
@@ -40,11 +48,7 @@ class AuthController extends Controller
 
         $user = User::where('username', $request->username)->first();
 
-        if (!$user) {
-            return back()->with('error', 'Username atau password salah!')->withInput();
-        }
-
-        if (!Hash::check($request->password, $user->password)) {
+        if (!$user || !Hash::check($request->password, $user->password)) {
             return back()->with('error', 'Username atau password salah!')->withInput();
         }
 
@@ -53,6 +57,7 @@ class AuthController extends Controller
         }
 
         Auth::login($user);
+        session()->forget('login_token');
 
         Log::create([
             'id_user' => $user->id,
@@ -64,7 +69,7 @@ class AuthController extends Controller
             'admin' => route('admin.dashboard'),
             'kasir' => route('kasir.dashboard'),
             'owner' => route('owner.dashboard'),
-            default => route('login'),
+            default => '/',
         };
 
         return redirect($dashboard)->with('success', 'Anda Berhasil Login!');
@@ -84,6 +89,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')->with('success', 'Berhasil logout!');
+        return redirect('/')->with('success', 'Berhasil logout!');
     }
 }

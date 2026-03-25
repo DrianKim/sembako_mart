@@ -7,6 +7,7 @@ use App\Http\Controllers\OwnerController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
+use Illuminate\Support\Str;
 
 
 
@@ -18,18 +19,17 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Halaman Login
-
-Route::get('/login', [AuthController::class, 'showLoginForm'])
-    ->name('login')
-    ->middleware('hide.login');
-
 Route::post('/allow-login', function () {
-    session(['allow_login_access' => true]);
-    return response()->json(['success' => true]);
+    $token = Str::random(40);
+    session(['login_token' => $token]);
+    return response()->json(['token' => $token]); 
 })->middleware('web');
 
-Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
+Route::get('/auth/{token}', [AuthController::class, 'showLoginForm'])
+    ->name('login');
+
+Route::post('/auth/{token}', [AuthController::class, 'login'])
+    ->name('login.submit');
 
 // Logout
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

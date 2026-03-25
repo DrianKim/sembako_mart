@@ -10,11 +10,21 @@ class HideLoginPage
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!session()->has('allow_login_access') || session('allow_login_access') !== true) {
+        $hasAccess = session()->has('allow_login_access');
+        $formOpened = session()->has('login_form_opened');
+
+        if (!$hasAccess && !$formOpened) {
             return redirect('/')->with('error', 'Akses ditolak');
         }
 
-        session()->forget('allow_login_access');
+        if ($request->isMethod('GET') && $hasAccess) {
+            session()->forget('allow_login_access');
+            session(['login_form_opened' => true]);
+        }
+
+        if ($request->isMethod('POST') && !$formOpened) {
+            return redirect('/')->with('error', 'Akses ditolak');
+        }
 
         return $next($request);
     }
