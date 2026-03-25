@@ -22,7 +22,7 @@
             <li aria-current="page">
                 <div class="flex items-center">
                     <i class="w-6 h-6 text-gray-400 fas fa-chevron-right"></i>
-                    <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">Edit {{ $produk->nama_produk }}</span>
+                    <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">Edit Produk</span>
                 </div>
             </li>
         </ol>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kategori;
+use App\Models\Log;
 use App\Models\Produk;
 use App\Models\Transaksi;
 use App\Models\User;
@@ -58,8 +59,6 @@ class AdminController extends Controller
         curl_close($curl);
     }
 
-
-
     // dashboard
     public function dashboard()
     {
@@ -114,6 +113,12 @@ class AdminController extends Controller
             'nama_kategori' => $request->nama_kategori,
         ]);
 
+        Log::create([
+            'id_user'   => auth()->id(),
+            'aktivitas' => "User " . auth()->user()->nama . " Menambahkan kategori baru: '{$request->nama_kategori}'",
+            'waktu'     => now(),
+        ]);
+
         return redirect()->route('admin.kategori')
             ->with('success', 'Kategori berhasil ditambahkan!');
     }
@@ -145,6 +150,12 @@ class AdminController extends Controller
             'nama_kategori' => $request->nama_kategori,
         ]);
 
+        Log::create([
+            'id_user'   => auth()->id(),
+            'aktivitas' => "User " . auth()->user()->nama . " Memperbarui kategori: '{$request->nama_kategori}'",
+            'waktu'     => now(),
+        ]);
+
         return redirect()->route('admin.kategori')
             ->with('success', 'Kategori berhasil diperbarui!');
     }
@@ -159,6 +170,12 @@ class AdminController extends Controller
         }
 
         $kategori->delete();
+
+        Log::create([
+            'id_user'   => auth()->id(),
+            'aktivitas' => "User " . auth()->user()->nama . " Menghapus kategori: '{$kategori->nama_kategori}'",
+            'waktu'     => now(),
+        ]);
 
         return redirect()->route('admin.kategori')
             ->with('success', 'Kategori berhasil dihapus!');
@@ -223,6 +240,12 @@ class AdminController extends Controller
             'satuan' => $request->satuan,
         ]);
 
+        Log::create([
+            'id_user'   => auth()->id(),
+            'aktivitas' => "User " . auth()->user()->nama . " Menambahkan produk baru: '{$request->nama_produk}'",
+            'waktu'     => now(),
+        ]);
+
         return redirect()->route('admin.produk')->with('success', 'Produk berhasil ditambahkan!');
     }
 
@@ -270,6 +293,12 @@ class AdminController extends Controller
             'satuan' => $request->satuan,
         ]);
 
+        Log::create([
+            'id_user'   => auth()->id(),
+            'aktivitas' => "User " . auth()->user()->nama . " Memperbarui produk: '{$request->nama_produk}'",
+            'waktu'     => now(),
+        ]);
+
         return redirect()->route('admin.produk')->with('success', 'Produk berhasil diperbarui!');
     }
 
@@ -283,6 +312,12 @@ class AdminController extends Controller
         }
 
         $produk->delete();
+
+        Log::create([
+            'id_user'   => auth()->id(),
+            'aktivitas' => "User " . auth()->user()->nama . " Menghapus produk: '{$produk->nama_produk}'",
+            'waktu'     => now(),
+        ]);
 
         return redirect()->route('admin.produk')->with('success', 'Produk berhasil dihapus!');
     }
@@ -350,6 +385,12 @@ class AdminController extends Controller
             'stok' => $produk->stok + $request->stok,
         ]);
 
+        Log::create([
+            'id_user'   => auth()->id(),
+            'aktivitas' => "User " . auth()->user()->nama . " Menambahkan stok untuk produk '{$produk->nama_produk}': Stok lama: {$stokLama}, Stok ditambahkan: {$request->stok}, Total stok sekarang: {$produk->stok}",
+            'waktu'     => now(),
+        ]);
+
         return redirect()->route('admin.stok')->with(
             'success',
             "Stok produk berhasil diperbarui! Stok lama: {$stokLama}, Stok ditambahkan: {$request->stok}, Total stok sekarang: {$produk->stok}"
@@ -383,6 +424,12 @@ class AdminController extends Controller
 
         $produk->update([
             'stok' => $request->stok,
+        ]);
+
+        Log::create([
+            'id_user'   => auth()->id(),
+            'aktivitas' => "User " . auth()->user()->nama . " Memperbarui stok untuk produk '{$produk->nama_produk}': Stok lama: {$stokLama}, Stok baru: {$request->stok}",
+            'waktu'     => now(),
         ]);
 
         return redirect()->route('admin.stok')->with(
@@ -444,6 +491,12 @@ class AdminController extends Controller
             'status' => 'aktif',
         ]);
 
+        Log::create([
+            'id_user'   => auth()->id(),
+            'aktivitas' => "User " . auth()->user()->nama . " Menambahkan kasir baru: '{$request->nama}'",
+            'waktu'     => now(),
+        ]);
+
         return redirect()->route('admin.kasir')->with('success', "Kasir {$request->nama} berhasil ditambahkan!");
     }
 
@@ -476,6 +529,12 @@ class AdminController extends Controller
 
         $kasir->update($updateData);
 
+        Log::create([
+            'id_user'   => auth()->id(),
+            'aktivitas' => "User " . auth()->user()->nama . " Memperbarui kasir: '{$request->nama}'",
+            'waktu'     => now(),
+        ]);
+
         return redirect()->route('admin.kasir')
             ->with('success', "Kasir {$kasir->nama} berhasil diperbarui!");
     }
@@ -488,6 +547,12 @@ class AdminController extends Controller
         $kasir->save();
 
         $oldStatus = $kasir->status == 'aktif' ? 'nonaktif' : 'aktif';
+        Log::create([
+            'id_user'   => auth()->id(),
+            'aktivitas' => "User " . auth()->user()->nama . " Mengubah status kasir (Kasir: {$kasir->nama}): {$oldStatus} -> {$kasir->status}",
+            'waktu'     => now(),
+        ]);
+
         return redirect()->route('admin.kasir')
             ->with('success', "Status kasir {$kasir->nama} berhasil diubah menjadi {$kasir->status}");
     }
@@ -544,10 +609,22 @@ class AdminController extends Controller
     }
 
     // Log Aktivitas
-    public function logIndex()
+    public function logIndex(Request $request)
     {
+        $search = $request->get('search');
+
+        $logs = Log::with('user:id,nama,role')
+            ->where('id_user', auth()->id())
+            ->when($search, function ($query, $search) {
+                $query->where('aktivitas', 'like', "%{$search}%");
+            })
+            ->orderBy('waktu', 'desc')
+            ->paginate(10);
+
         $data = [
             'title' => 'Log Aktivitas',
+            'logs' => $logs,
+            'search' => $search,
         ];
 
         return view('admin.log.log_aktivitas', $data);

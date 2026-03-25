@@ -55,9 +55,9 @@ class AuthController extends Controller
         Auth::login($user);
 
         Log::create([
-            'id_user'   => $user->id,
-            'aktivitas' => "User '{$user->nama}' melakukan login sebagai '{$user->role}'",
-            'waktu'     => now(),
+            'id_user' => $user->id,
+            'aktivitas' => "User '" . $user->nama . "' berhasil login sebagai '" . $user->role . "'",
+            'waktu' => now(),
         ]);
 
         $dashboard = match ($user->role) {
