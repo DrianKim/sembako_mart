@@ -74,18 +74,29 @@ class AdminController extends Controller
     {
         $search = $request->query('search', '');
 
-        $query = Kategori::query();
+        $kategoris = Kategori::query()
+            ->when($search, function ($query, $search) {
+                $lower = strtolower($search);
+                $query->whereRaw('LOWER(nama_kategori) LIKE ?', ["%{$lower}%"]);
+            })
+            ->latest('id')
+            ->paginate(3)
+            ->appends(['search' => $search]);
 
-        if ($search !== '') {
-            $query->where('nama_kategori', 'like', "%{$search}%");
+        if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+            return response()->json([
+                'html'       => view('admin.kategori._table', compact('kategoris'))->render(),
+                'pagination' => view('admin.kategori._pagination', compact('kategoris'))->render(),
+                'total'      => $kategoris->total(),
+                'from'       => $kategoris->firstItem() ?? 0,
+                'to'         => $kategoris->lastItem() ?? 0,
+            ]);
         }
 
-        $kategoris = $query->latest('id')->paginate(3);
-
         $data = [
-            'title'     => 'Kategori Produk',
+            'title' => 'Produk',
             'kategoris' => $kategoris,
-            'search'    => $search,
+            'search' => $search,
         ];
 
         return view('admin.kategori.index', $data);
@@ -185,15 +196,31 @@ class AdminController extends Controller
     public function produkIndex(Request $request)
     {
         $search = $request->query('search', '');
+
         $produks = Produk::with('kategori')
             ->when($search, function ($query, $search) {
-                $query->where('nama_produk', 'like', "%{$search}%")
-                    ->orWhere('barcode', 'like', "%{$search}%")
-                    ->orWhereHas('kategori', fn($q) => $q->where('nama_kategori', 'like', "%{$search}%"));
+                $lower = strtolower($search);
+                $query->whereRaw('LOWER(nama_produk) LIKE ?', ["%{$lower}%"])
+                    ->orWhereRaw('LOWER(barcode) LIKE ?', ["%{$lower}%"])
+                    ->orWhereHas(
+                        'kategori',
+                        fn($q) =>
+                        $q->whereRaw('LOWER(nama_kategori) LIKE ?', ["%{$lower}%"])
+                    );
             })
             ->latest()
             ->paginate(3)
             ->appends(['search' => $search]);
+
+        if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+            return response()->json([
+                'html'       => view('admin.produk._table', compact('produks'))->render(),
+                'pagination' => view('admin.produk._pagination', compact('produks'))->render(),
+                'total'      => $produks->total(),
+                'from'       => $produks->firstItem() ?? 0,
+                'to'         => $produks->lastItem() ?? 0,
+            ]);
+        }
 
         $data = [
             'title' => 'Produk',
@@ -330,8 +357,14 @@ class AdminController extends Controller
 
         $query = Produk::with('kategori')
             ->when($search, function ($q) use ($search) {
-                $q->where('nama_produk', 'like', "%{$search}%")
-                    ->orWhere('barcode', 'like', "%{$search}%");
+                $lower = strtolower($search);
+                $q->whereRaw('LOWER(nama_produk) LIKE ?', ["%{$lower}%"])
+                    ->orWhereRaw('LOWER(barcode) LIKE ?', ["%{$lower}%"])
+                    ->orWhereHas(
+                        'kategori',
+                        fn($q) =>
+                        $q->whereRaw('LOWER(nama_kategori) LIKE ?', ["%{$lower}%"])
+                    );
             })
             ->when($stokFilter, function ($q) use ($stokFilter) {
                 if ($stokFilter == 'aman') {
@@ -346,8 +379,18 @@ class AdminController extends Controller
 
         $produks = $query->paginate(3);
 
+        if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+            return response()->json([
+                'html'       => view('admin.stok._table', compact('produks'))->render(),
+                'pagination' => view('admin.stok._pagination', compact('produks'))->render(),
+                'total'      => $produks->total(),
+                'from'       => $produks->firstItem() ?? 0,
+                'to'         => $produks->lastItem() ?? 0,
+            ]);
+        }
+
         $data = [
-            'title' => 'Stok Produk',
+            'title' => 'Stok',
             'produks' => $produks,
             'search' => $search,
             'stok_filter' => $stokFilter
@@ -447,19 +490,32 @@ class AdminController extends Controller
 
         $query = User::where('role', 'kasir')
             ->when($search, function ($q) use ($search) {
-                $q->where('nama', 'like', "%{$search}%")
-                    ->orWhere('username', 'like', "%{$search}%")
-                    ->orWhere('no_hp', 'like', "%{$search}%");
+                $lower = strtolower($search);
+                $q->where(function ($sub) use ($lower) {
+                    $sub->whereRaw('LOWER(nama) LIKE ?', ["%{$lower}%"])
+                        ->orWhereRaw('LOWER(username) LIKE ?', ["%{$lower}%"])
+                        ->orWhereRaw('LOWER(no_hp) LIKE ?', ["%{$lower}%"]);
+                });
             })
             ->when($statusFilter, function ($q) use ($statusFilter) {
                 $q->where('status', $statusFilter);
             })
             ->orderBy('nama');
 
-        $kasirs = $query->paginate(10);
+        $kasirs = $query->paginate(2);
+
+        if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+            return response()->json([
+                'html'       => view('admin.kasir._table', compact('kasirs'))->render(),
+                'pagination' => view('admin.kasir._pagination', compact('kasirs'))->render(),
+                'total'      => $kasirs->total(),
+                'from'       => $kasirs->firstItem() ?? 0,
+                'to'         => $kasirs->lastItem() ?? 0,
+            ]);
+        }
 
         $data = [
-            'title' => 'Kasir',
+            'title'  => 'Data Kasir',
             'kasirs' => $kasirs,
             'search' => $search,
             'status' => $statusFilter
@@ -615,15 +671,29 @@ class AdminController extends Controller
 
         $logs = Log::with('user:id,nama,role')
             ->where('id_user', auth()->id())
-            ->when($search, function ($query, $search) {
-                $query->where('aktivitas', 'like', "%{$search}%");
+            ->when($search, function ($query) use ($search) {
+                $lower = strtolower($search);
+
+                $query->where(function ($q) use ($lower) {
+                    $q->whereRaw('LOWER(aktivitas) LIKE ?', ["%{$lower}%"]);
+                });
             })
             ->orderBy('waktu', 'desc')
             ->paginate(10);
 
+        if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+            return response()->json([
+                'html'       => view('admin.log._table', compact('logs'))->render(),
+                'pagination' => view('admin.log._pagination', compact('logs'))->render(),
+                'total'      => $logs->total(),
+                'from'       => $logs->firstItem() ?? 0,
+                'to'         => $logs->lastItem() ?? 0,
+            ]);
+        }
+
         $data = [
-            'title' => 'Log Aktivitas',
-            'logs' => $logs,
+            'title'  => 'Log Aktivitas',
+            'logs'   => $logs,
             'search' => $search,
         ];
 

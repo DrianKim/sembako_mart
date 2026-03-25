@@ -15,6 +15,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700;800&display=swap"
         rel="stylesheet">
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <!-- SweetAlert2 CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -376,7 +378,7 @@
                                 <img src="https://ui-avatars.com/api/?name={{ Auth::user()->name ?? 'Admin' }}&background=22C55E&color=fff&bold=true"
                                     alt="Profile" class="w-10 h-10 border-2 border-green-500 rounded-full">
                                 <div class="hidden text-left md:block">
-                                    <p class="text-sm font-semibold text-gray-800">{{ Auth::user()->name ?? 'Admin' }}
+                                    <p class="text-sm font-semibold text-gray-800">{{ Auth::user()->nama ?? 'Admin' }}
                                     </p>
                                     <p class="text-xs text-gray-600">Administrator</p>
                                 </div>

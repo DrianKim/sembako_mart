@@ -79,20 +79,6 @@
                             class="font-semibold text-green-600">{{ $produks->total() }}</span> produk</span></p>
                 </div>
             </div>
-            {{-- <div class="flex gap-2">
-                <button class="p-2 text-gray-600 transition-colors rounded-lg hover:bg-gray-100 hover:text-green-600"
-                    title="Export Excel">
-                    <i class="fas fa-file-excel"></i>
-                </button>
-                <button class="p-2 text-gray-600 transition-colors rounded-lg hover:bg-gray-100 hover:text-green-600"
-                    title="Export PDF">
-                    <i class="fas fa-file-pdf"></i>
-                </button>
-                <button class="p-2 text-gray-600 transition-colors rounded-lg hover:bg-gray-100 hover:text-green-600"
-                    title="Print">
-                    <i class="fas fa-print"></i>
-                </button>
-            </div> --}}
         </div>
 
         <!-- Table -->
@@ -127,64 +113,7 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200" id="tableBody">
-                    @forelse ($produks as $index => $produk)
-                        <tr class="transition-colors hover:bg-gray-50">
-                            <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
-                                {{ $produks->firstItem() + $index }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                @if ($produk->foto)
-                                    <img src="https://yexkxhepiviphofpsymz.supabase.co/storage/v1/object/public/{{ $produk->foto }}"
-                                        alt="{{ $produk->nama_produk }}"
-                                        class="object-cover w-10 h-10 bg-gray-100 rounded-lg">
-                                @else
-                                    <div class="flex items-center justify-center w-10 h-10 bg-gray-200 rounded-lg">
-                                        <i class="text-sm text-gray-500 fas fa-image"></i>
-                                    </div>
-                                @endif
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm font-semibold text-gray-900">{{ $produk->nama_produk }}</div>
-                                <div class="text-xs text-gray-500">Barcode: {{ $produk->barcode ?? '-' }}</div>
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-900">
-                                {{ $produk->kategori->nama_kategori ?? '-' }}
-                            </td>
-                            <td class="px-6 py-4 text-sm font-semibold text-orange-600 whitespace-nowrap">
-                                Rp {{ number_format($produk->harga_beli, 0, ',', '.') }}
-                            </td>
-                            <td class="px-6 py-4 text-sm font-semibold text-green-600 whitespace-nowrap">
-                                Rp {{ number_format($produk->harga_jual, 0, ',', '.') }}
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
-                                {{ $produk->satuan }}
-                            </td>
-                            <td class="px-6 py-4 text-center whitespace-nowrap">
-                                <div class="flex justify-center gap-2">
-                                    <a href="{{ route('admin.produk.edit', $produk->id) }}"
-                                        class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
-                                        title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <form action="{{ route('admin.produk.delete', $produk->id) }}" method="POST"
-                                        class="inline delete-form">
-                                        @csrf @method('DELETE')
-                                        <button type="submit"
-                                            class="p-2 text-red-600 transition-colors rounded-lg bg-red-50 hover:bg-red-100"
-                                            title="Hapus">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="8" class="py-10 text-center text-gray-500">
-                                Belum ada data produk.
-                            </td>
-                        </tr>
-                    @endforelse
+                    @include('admin.produk._table')
                 </tbody>
             </table>
         </div>
@@ -199,42 +128,7 @@
             </div>
             <div class="flex items-center gap-2" id="paginationContainer">
                 {{-- Custom Pagination Buttons --}}
-                @if ($produks->onFirstPage())
-                    <button
-                        class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                        disabled>
-                        <i class="fas fa-chevron-left"></i> Previous
-                    </button>
-                @else
-                    <a href="{{ $produks->previousPageUrl() }}"
-                        class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
-                        <i class="fas fa-chevron-left"></i> Previous
-                    </a>
-                @endif
-
-                {{-- Page Numbers --}}
-                @foreach ($produks->getUrlRange(1, $produks->lastPage()) as $page => $url)
-                    @if ($page == $produks->currentPage())
-                        <a href="{{ $url }}"
-                            class="px-4 py-2 text-sm font-medium text-white transition-colors bg-green-600 border border-green-600 rounded-lg hover:bg-green-700">{{ $page }}</a>
-                    @else
-                        <a href="{{ $url }}"
-                            class="px-4 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50">{{ $page }}</a>
-                    @endif
-                @endforeach
-
-                @if ($produks->hasMorePages())
-                    <a href="{{ $produks->nextPageUrl() }}"
-                        class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
-                        Next <i class="fas fa-chevron-right"></i>
-                    </a>
-                @else
-                    <button
-                        class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                        disabled>
-                        Next <i class="fas fa-chevron-right"></i>
-                    </button>
-                @endif
+                @include('admin.produk._pagination')
             </div>
         </div>
     </div>
@@ -243,70 +137,124 @@
 
 @push('scripts')
     <script>
-        // SweetAlert session messages
-        @if (session('success'))
-            Swal.fire({
-                icon: 'success',
-                title: 'Sukses!',
-                text: '{{ session('success') }}',
-                showConfirmButton: true,
-                confirmButtonColor: '#10b981',
-                background: '#ffffff',
-                color: '#1f2937',
-                iconColor: '#A5DC86'
-            });
-        @endif
+        let currentPage = 1;
+        let currentSearch = '';
+        let searchTimer = null;
 
-        @if (session('error'))
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal!',
-                text: '{{ session('error') }}',
-                showConfirmButton: true,
-                confirmButtonColor: '#ef4444',
-                background: '#ffffff',
-                color: '#1f2937',
-                iconColor: '#ef4444'
-            });
-        @endif
+        function loadData(page = 1, search = '') {
+            currentPage = page;
+            currentSearch = search;
 
-        // 1. Live Search
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            const term = e.target.value.toLowerCase().trim();
-            const rows = document.querySelectorAll('#tableBody tr');
+            $.ajax({
+                url: '{{ route('admin.produk') }}',
+                method: 'GET',
+                data: {
+                    page,
+                    search
+                },
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                beforeSend: function() {
+                    $('#tableBody').html(`
+                    <tr>
+                        <td colspan="8" class="py-12 text-center text-gray-500">
+                            <i class="mr-2 fas fa-spinner fa-spin"></i> Memuat data...
+                        </td>
+                    </tr>
+                `);
+                },
+                success: function(res) {
+                    $('#tableBody').html(res.html);
+                    $('#paginationContainer').html(res.pagination);
+                    $('#totalData').text(res.total);
 
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(term) ? '' : 'none';
-            });
-        });
-
-        // 2. Reset
-        document.getElementById('btnReset').addEventListener('click', function() {
-            document.getElementById('searchInput').value = '';
-            document.querySelectorAll('#tableBody tr').forEach(row => row.style.display = '');
-        });
-
-        // 3. DELETE CONFIRMATION
-        document.querySelectorAll('.delete-form').forEach(form => {
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                Swal.fire({
-                    title: 'Yakin hapus produk?',
-                    text: "Data produk akan dihapus permanen!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#10b981',
-                    cancelButtonColor: '#ef4444',
-                    confirmButtonText: 'Ya, hapus!',
-                    cancelButtonText: 'Batal',
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
+                    if (res.from && res.to) {
+                        $('#pageInfo').text(res.from + '-' + res.to);
                     }
-                });
+
+                    bindDeleteForms();
+                    bindPagination();
+                },
+                error: function() {
+                    $('#tableBody').html(`
+                    <tr>
+                        <td colspan="8" class="py-12 text-center text-red-500">
+                            <i class="mr-2 fas fa-exclamation-triangle"></i>
+                            Gagal memuat data. Silakan refresh halaman.
+                        </td>
+                    </tr>
+                `);
+                }
             });
+        }
+
+        function bindPagination() {
+            $(document).off('click', '.pagination-link')
+                .on('click', '.pagination-link', function(e) {
+                    e.preventDefault();
+                    const page = $(this).data('page');
+                    if (page) loadData(page, currentSearch);
+                });
+        }
+
+        function bindDeleteForms() {
+            $(document).off('submit', '.delete-form')
+                .on('submit', '.delete-form', function(e) {
+                    e.preventDefault();
+                    const form = this;
+
+                    Swal.fire({
+                        title: 'Yakin hapus produk?',
+                        text: "Data akan dihapus permanen!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#10b981',
+                        cancelButtonColor: '#ef4444',
+                        confirmButtonText: 'Ya, Hapus!',
+                        cancelButtonText: 'Batal',
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed) form.submit();
+                    });
+                });
+        }
+
+        // Search dengan debounce
+        $('#searchInput').on('input', function() {
+            clearTimeout(searchTimer);
+            const term = $(this).val().trim();
+            searchTimer = setTimeout(() => loadData(1, term), 400);
+        });
+
+        // Reset
+        $('#btnReset').on('click', function() {
+            $('#searchInput').val('');
+            loadData(1, '');
+        });
+
+        // Initial Load
+        $(document).ready(function() {
+            loadData(1, '');
+
+            // SweetAlert Session
+            @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sukses!',
+                    text: '{{ session('success') }}',
+                    confirmButtonColor: '#10b981'
+                });
+            @endif
+
+            @if (session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: '{{ session('error') }}',
+                    confirmButtonColor: '#ef4444'
+                });
+            @endif
         });
     </script>
 @endpush

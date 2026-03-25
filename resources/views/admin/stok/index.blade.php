@@ -11,8 +11,7 @@
                     <li class="inline-flex items-center">
                         <a href="{{ route('admin.dashboard') }}"
                             class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-green-600">
-                            <i class="w-4 h-4 mr-2 fas fa-home"></i>
-                            Dashboard
+                            <i class="w-4 h-4 mr-2 fas fa-home"></i> Dashboard
                         </a>
                     </li>
                     <li aria-current="page">
@@ -23,12 +22,6 @@
                     </li>
                 </ol>
             </nav>
-
-            {{-- <a href="{{ route('admin.stok.create') }}"
-                class="flex items-center px-4 py-2.5 text-white bg-gradient-to-r from-green-600 to-green-500 rounded-lg shadow-md hover:shadow-lg hover:from-green-700 hover:to-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200">
-                <i class="mr-2 fas fa-plus"></i>
-                Tambah Stok
-            </a> --}}
         </div>
     </section>
 
@@ -88,8 +81,10 @@
                 </div>
                 <div>
                     <h3 class="text-lg font-semibold text-gray-800">Daftar Stok Produk</h3>
-                    <p class="text-sm text-gray-600">Total: <span id="totalData"
-                            class="font-semibold text-green-600">{{ $produks->total() }}</span> produk</p>
+                    <p class="text-sm text-gray-600">
+                        Total: <span id="totalData" class="font-semibold text-green-600">{{ $produks->total() }}</span>
+                        produk
+                    </p>
                 </div>
             </div>
         </div>
@@ -107,255 +102,135 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200" id="tableBody">
-                    @forelse ($produks as $index => $produk)
-                        <tr class="transition-colors hover:bg-gray-50">
-                            <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
-                                {{ $produks->firstItem() + $index }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                @if ($produk->foto)
-                                    <img src="https://yexkxhepiviphofpsymz.supabase.co/storage/v1/object/public/{{ $produk->foto }}"
-                                        alt="{{ $produk->nama_produk }}"
-                                        class="object-cover w-10 h-10 bg-gray-100 rounded-lg">
-                                @else
-                                    <div class="flex items-center justify-center w-10 h-10 bg-gray-200 rounded-lg">
-                                        <i class="text-sm text-gray-500 fas fa-image"></i>
-                                    </div>
-                                @endif
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm font-semibold text-gray-900">{{ $produk->nama_produk }}</div>
-                                <div class="text-xs text-gray-500">Barcode: {{ $produk->barcode ?? '-' }}</div>
-                            </td>
-                            <td class="px-6 py-4 text-center whitespace-nowrap">
-                                @if ($produk->stok > 15)
-                                    <span class="px-2 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded-full">
-                                        {{ number_format($produk->stok) }}
-                                    </span>
-                                @elseif($produk->stok > 5)
-                                    <span
-                                        class="px-2 py-1 text-xs font-semibold text-yellow-800 bg-yellow-100 rounded-full">
-                                        {{ number_format($produk->stok) }}
-                                    </span>
-                                @else
-                                    <span class="px-2 py-1 text-xs font-semibold text-red-800 bg-red-100 rounded-full">
-                                        {{ number_format($produk->stok) }}
-                                    </span>
-                                @endif
-                            </td>
-                            <td class="px-6 py-4 text-center whitespace-nowrap">
-                                <div class="flex justify-center gap-2">
-                                    <!-- Tambah Stok -->
-                                    <a href="{{ route('admin.stok.create', $produk->id) }}"
-                                        class="p-2 text-green-600 transition-colors rounded-lg bg-green-50 hover:bg-green-100"
-                                        title="Tambah Stok">
-                                        <i class="fas fa-plus"></i>
-                                    </a>
-
-                                    <!-- Edit Produk -->
-                                    <a href="{{ route('admin.stok.edit', $produk->id) }}"
-                                        class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
-                                        title="Edit Produk">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="py-12 text-center text-gray-500">
-                                <i class="mb-2 text-3xl fas fa-boxes"></i>
-                                <p>Belum ada data stok produk</p>
-                            </td>
-                        </tr>
-                    @endforelse
+                    @include('admin.stok._table')
                 </tbody>
             </table>
         </div>
 
-        <!-- Pagination -->
         <div class="flex flex-col items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50 sm:flex-row">
             <div class="mb-4 text-sm text-gray-600 sm:mb-0">
                 Menampilkan <span id="pageInfo" class="font-semibold text-gray-900">
-                    {{ $produks->firstItem() }}-{{ $produks->lastItem() }}
+                    {{ $produks->firstItem() ?? 0 }}-{{ $produks->lastItem() ?? 0 }}
                 </span> dari
-                <span id="totalData" class="font-semibold text-gray-900">{{ $produks->total() }}</span>
-                produk
+                <span id="totalData" class="font-semibold text-gray-900">{{ $produks->total() }}</span> produk
             </div>
             <div class="flex items-center gap-2" id="paginationContainer">
-                {{-- Previous --}}
-                @if ($produks->onFirstPage())
-                    <button
-                        class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                        disabled>
-                        <i class="fas fa-chevron-left"></i> Previous
-                    </button>
-                @else
-                    <a href="{{ $produks->previousPageUrl() }}"
-                        class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
-                        onclick="updatePageInfo()">
-                        <i class="fas fa-chevron-left"></i> Previous
-                    </a>
-                @endif
-
-                {{-- Page Numbers --}}
-                @foreach ($produks->getUrlRange(1, $produks->lastPage()) as $page => $url)
-                    @if ($page == $produks->currentPage())
-                        <a href="{{ $url }}"
-                            class="px-4 py-2 text-sm font-medium text-white transition-colors bg-green-600 border border-green-600 rounded-lg hover:bg-green-700">
-                            {{ $page }}
-                        </a>
-                    @else
-                        <a href="{{ $url }}"
-                            class="px-4 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
-                            onclick="updatePageInfo()">
-                            {{ $page }}
-                        </a>
-                    @endif
-                @endforeach
-
-                {{-- Next --}}
-                @if ($produks->hasMorePages())
-                    <a href="{{ $produks->nextPageUrl() }}"
-                        class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
-                        onclick="updatePageInfo()">
-                        Next <i class="fas fa-chevron-right"></i>
-                    </a>
-                @else
-                    <button
-                        class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                        disabled>
-                        Next <i class="fas fa-chevron-right"></i>
-                    </button>
-                @endif
+                @include('admin.stok._pagination')
             </div>
         </div>
-
     </div>
 @endsection
 
 @push('scripts')
     <script>
-        // Filter variables
+        let currentPage = 1;
         let currentSearch = '{{ $search ?? '' }}';
         let currentStokFilter = '{{ $stok_filter ?? '' }}';
+        let searchTimer = null;
 
-        // Live Search - client-side INSTANT
-        document.getElementById('searchInput').addEventListener('input', debounce(function(e) {
-            currentSearch = e.target.value;
-            applyFilters();
-        }, 300));
+        function loadData(page = 1, search = '', stokFilter = '') {
+            currentPage = page;
+            currentSearch = search;
+            currentStokFilter = stokFilter;
 
-        // Stok Filter - client-side INSTANT
-        document.getElementById('stokFilter').addEventListener('change', function() {
-            currentStokFilter = this.value;
-            applyFilters();
+            $.ajax({
+                url: '{{ route('admin.stok') }}',
+                method: 'GET',
+                data: {
+                    page: page,
+                    search: search,
+                    stok_filter: stokFilter
+                },
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                beforeSend: function() {
+                    $('#tableBody').html(`
+                    <tr>
+                        <td colspan="5" class="py-12 text-center text-gray-500">
+                            <i class="mr-2 fas fa-spinner fa-spin"></i> Memuat data...
+                        </td>
+                    </tr>
+                `);
+                },
+                success: function(res) {
+                    $('#tableBody').html(res.html);
+                    $('#paginationContainer').html(res.pagination);
+                    $('#totalData').text(res.total);
+
+                    if (res.from && res.to) {
+                        $('#pageInfo').text(res.from + '-' + res.to);
+                    }
+
+                    bindPagination();
+                },
+                error: function() {
+                    $('#tableBody').html(`
+                    <tr>
+                        <td colspan="5" class="py-12 text-center text-red-500">
+                            Gagal memuat data. Silakan coba lagi.
+                        </td>
+                    </tr>
+                `);
+                }
+            });
+        }
+
+        function bindPagination() {
+            $(document).off('click', '.pagination-link').on('click', '.pagination-link', function(e) {
+                e.preventDefault();
+                const page = $(this).data('page');
+                if (page) {
+                    loadData(page, currentSearch, currentStokFilter);
+                }
+            });
+        }
+
+        // Search dengan debounce
+        $('#searchInput').on('input', function() {
+            clearTimeout(searchTimer);
+            const term = $(this).val().trim();
+            searchTimer = setTimeout(() => {
+                loadData(1, term, currentStokFilter);
+            }, 400);
         });
 
-        // Server-side Filter (Ctrl+Enter atau double-click)
-        document.getElementById('stokFilter').addEventListener('dblclick', function() {
-            window.location.href =
-                `{{ route('admin.stok') }}?search=${encodeURIComponent(currentSearch)}&stok_filter=${currentStokFilter}`;
+        // Stok Filter Change
+        $('#stokFilter').on('change', function() {
+            currentStokFilter = $(this).val();
+            loadData(1, currentSearch, currentStokFilter);
         });
 
-        // Reset - clear semua filters
-        document.getElementById('btnReset').addEventListener('click', function() {
-            document.getElementById('searchInput').value = '';
-            document.getElementById('stokFilter').value = '';
+        // Reset Button
+        $('#btnReset').on('click', function() {
+            $('#searchInput').val('');
+            $('#stokFilter').val('');
             currentSearch = '';
             currentStokFilter = '';
-            const rows = document.querySelectorAll('#tableBody tr');
-            let visibleCount = 0;
-
-            rows.forEach(row => {
-                const noDataCell = row.querySelector('td[colspan]');
-                if (!noDataCell) {
-                    row.style.display = '';
-                    visibleCount++;
-                }
-            });
-            document.getElementById('totalData').textContent = visibleCount || '{{ $produks->total() }}';
+            loadData(1, '', '');
         });
 
-        // Debounce function
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
+        // Initial Load
+        $(document).ready(function() {
+            loadData(1, currentSearch, currentStokFilter);
 
-        // Apply client-side filters (INSTANT preview)
-        function applyFilters() {
-            const term = currentSearch.toLowerCase().trim();
-            const stokFilter = currentStokFilter;
-            const rows = document.querySelectorAll('#tableBody tr');
-            let visibleCount = 0;
+            @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sukses!',
+                    text: '{{ session('success') }}',
+                    confirmButtonColor: '#10b981'
+                });
+            @endif
 
-            rows.forEach(row => {
-                const noDataCell = row.querySelector('td[colspan]');
-                if (noDataCell) return;
-
-                const text = row.textContent.toLowerCase();
-                const stokCell = row.cells[3]; // Stok column (index 3)
-                const stokText = stokCell.textContent.trim();
-                const stokNum = parseInt(stokText.replace(/\D/g, '')) || 0;
-
-                let showRow = true;
-
-                // Search filter
-                if (term && !text.includes(term)) {
-                    showRow = false;
-                }
-
-                // Stok filter
-                if (stokFilter) {
-                    if (stokFilter === 'aman' && stokNum <= 15) showRow = false;
-                    if (stokFilter === 'peringatan' && (stokNum <= 5 || stokNum > 15)) showRow = false;
-                    if (stokFilter === 'kritis' && stokNum > 5) showRow = false;
-                }
-
-                row.style.display = showRow ? '' : 'none';
-                if (showRow) visibleCount++;
-            });
-
-            document.getElementById('totalData').textContent = visibleCount || '{{ $produks->total() }}';
-        }
-
-        function updatePageInfo() {
-            setTimeout(() => {
-                const pageInfo = document.getElementById('pageInfo');
-                const totalData = document.getElementById('totalData');
-                if (pageInfo && totalData) {
-                    // Update akan terjadi otomatis setelah page load
-                }
-            }, 100);
-        }
-
-        // SweetAlert messages
-        @if (session('success'))
-            Swal.fire({
-                icon: 'success',
-                title: 'Sukses!',
-                text: '{{ session('success') }}',
-                confirmButtonColor: '#10b981',
-                iconColor: '#A5DC86'
-            });
-        @endif
-
-        @if (session('error'))
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal!',
-                text: '{{ session('error') }}',
-                confirmButtonColor: '#ef4444',
-                iconColor: '#ef4444'
-            });
-        @endif
+            @if (session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: '{{ session('error') }}',
+                    confirmButtonColor: '#ef4444'
+                });
+            @endif
+        });
     </script>
 @endpush

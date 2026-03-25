@@ -83,31 +83,7 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200" id="tableBody">
-                    @forelse($logs as $index => $log)
-                        <tr class="transition-colors hover:bg-gray-50" data-log-id="{{ $log->id }}">
-                            <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
-                                {{ $logs->firstItem() + $index }}
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm text-gray-900">{{ $log->aktivitas }}</div>
-                                @if ($log->user)
-                                    <div class="mt-1 text-xs text-gray-500">
-                                        <i class="mr-1 fas fa-user"></i> {{ $log->user->nama }}
-                                    </div>
-                                @endif
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
-                                {{ $log->waktu->format('d M Y H:i:s') }}
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="3" class="py-12 text-center text-gray-500">
-                                <i class="mb-2 text-3xl fas fa-history"></i>
-                                <p>Belum ada aktivitas yang tercatat</p>
-                            </td>
-                        </tr>
-                    @endforelse
+                    @include('admin.log._table')
                 </tbody>
 
                 <div
@@ -120,104 +96,96 @@
                         aktivitas
                     </div>
                     <div class="flex items-center gap-2" id="paginationContainer">
-                        {{-- Previous --}}
-                        @if ($logs->onFirstPage())
-                            <button
-                                class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                                disabled>
-                                <i class="fas fa-chevron-left"></i> Previous
-                            </button>
-                        @else
-                            <a href="{{ $logs->previousPageUrl() }}"
-                                class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
-                                <i class="fas fa-chevron-left"></i> Previous
-                            </a>
-                        @endif
-
-                        {{-- Page Numbers --}}
-                        @foreach ($logs->getUrlRange(1, $logs->lastPage()) as $page => $url)
-                            @if ($page == $logs->currentPage())
-                                <a href="{{ $url }}"
-                                    class="px-4 py-2 text-sm font-medium text-white transition-colors bg-green-600 border border-green-600 rounded-lg hover:bg-green-700">{{ $page }}</a>
-                            @else
-                                <a href="{{ $url }}"
-                                    class="px-4 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50">{{ $page }}</a>
-                            @endif
-                        @endforeach
-
-                        {{-- Next --}}
-                        @if ($logs->hasMorePages())
-                            <a href="{{ $logs->nextPageUrl() }}"
-                                class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
-                                Next <i class="fas fa-chevron-right"></i>
-                            </a>
-                        @else
-                            <button
-                                class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                                disabled>
-                                Next <i class="fas fa-chevron-right"></i>
-                            </button>
-                        @endif
+                        @include('admin.log._pagination')
                     </div>
                 </div>
-
             </table>
         </div>
-
     </div>
 @endsection
 
 @push('scripts')
     <script>
-        let currentSearch = '{{ $search ?? '' }}';
+        let currentPage = 1;
+        let currentSearch = '';
+        let searchTimer = null;
 
-        // Live Search (client-side)
-        document.getElementById('searchInput').addEventListener('input', debounce(function(e) {
-            currentSearch = e.target.value;
-            applyFilters();
-        }, 300));
+        function loadData(page = 1, search = '') {
+            currentPage = page;
+            currentSearch = search;
 
-        // Server-side search on Enter
-        document.getElementById('searchInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                window.location.href = `{{ route('admin.log') }}?search=${encodeURIComponent(this.value)}`;
-            }
+            $.ajax({
+                url: '{{ route('admin.log') }}',
+                method: 'GET',
+                data: {
+                    page,
+                    search
+                },
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                beforeSend: function() {
+                    $('#tableBody').html(`
+                        <tr>
+                            <td colspan="3" class="py-12 text-center text-gray-500">
+                                <i class="mr-2 fas fa-spinner fa-spin"></i> Memuat data...
+                            </td>
+                        </tr>
+                    `);
+                },
+                success: function(res) {
+                    $('#tableBody').html(res.html);
+                    $('#paginationContainer').html(res.pagination);
+                    $('#totalData').text(res.total);
+
+                    if (res.from && res.to) {
+                        $('#pageInfo').text(res.from + '-' + res.to);
+                    } else {
+                        $('#pageInfo').text('0-0');
+                    }
+
+                    bindPagination();
+                },
+                error: function() {
+                    $('#tableBody').html(`
+                        <tr>
+                            <td colspan="3" class="py-12 text-center text-red-500">
+                                Gagal memuat data. Silakan coba lagi.
+                            </td>
+                        </tr>
+                    `);
+                }
+            });
+        }
+
+        function bindPagination() {
+            $(document).off('click', '.pagination-link')
+                .on('click', '.pagination-link', function(e) {
+                    e.preventDefault();
+                    const page = $(this).data('page');
+                    if (page) loadData(page, currentSearch);
+                });
+        }
+
+        // Search debounce
+        $('#searchInput').on('input', function() {
+            clearTimeout(searchTimer);
+            const term = $(this).val().trim();
+            searchTimer = setTimeout(() => {
+                loadData(1, term);
+            }, 400);
         });
 
         // Reset
-        document.getElementById('btnReset').addEventListener('click', function() {
-            window.location.href = '{{ route('admin.log') }}';
+        $('#btnReset').on('click', function() {
+            $('#searchInput').val('');
+            currentSearch = '';
+            loadData(1, '');
         });
 
-        function applyFilters() {
-            const term = currentSearch.toLowerCase().trim();
-            const rows = document.querySelectorAll('#tableBody tr');
-            let visibleCount = 0;
-
-            rows.forEach(row => {
-                const noDataCell = row.querySelector('td[colspan]');
-                if (noDataCell) return;
-
-                const text = row.textContent.toLowerCase();
-                const showRow = !term || text.includes(term);
-
-                row.style.display = showRow ? '' : 'none';
-                if (showRow) visibleCount++;
-            });
-
-            document.getElementById('totalData').textContent = visibleCount || '{{ $logs->total() }}';
-        }
-
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
+        // Initial load
+        $(document).ready(function() {
+            loadData(1, '{{ $search ?? '' }}');
+        });
     </script>
 @endpush

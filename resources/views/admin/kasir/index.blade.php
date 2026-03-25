@@ -1,6 +1,7 @@
 @extends('admin.layouts.app')
 @section('title', 'Data Kasir')
 @section('page-description', 'Halaman untuk mengelola data kasir.')
+
 @section('content')
     <!-- Breadcrumb & Header -->
     <section class="mb-6">
@@ -78,8 +79,9 @@
                 </div>
                 <div>
                     <h3 class="text-lg font-semibold text-gray-800">Daftar Kasir</h3>
-                    <p class="text-sm text-gray-600">Total: <span id="totalData"
-                            class="font-semibold text-green-600">{{ $kasirs->total() }}</span> kasir</p>
+                    <p class="text-sm text-gray-600">
+                        Total: <span id="totalData" class="font-semibold text-green-600">{{ $kasirs->total() }}</span> kasir
+                    </p>
                 </div>
             </div>
         </div>
@@ -103,79 +105,20 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200" id="tableBody">
-                    @forelse ($kasirs as $index => $kasir)
-                        <tr class="transition-colors hover:bg-gray-50" data-kasir-id="{{ $kasir->id }}"
-                            data-status="{{ $kasir->status }}" data-nama="{{ strtolower($kasir->nama) }}"
-                            data-username="{{ strtolower($kasir->username) }}" data-nohp="{{ $kasir->no_hp }}">
-                            <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
-                                {{ $kasirs->firstItem() + $index }}
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm font-semibold text-gray-900">{{ $kasir->nama }}</div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm text-gray-900">{{ $kasir->username }}</div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm text-gray-900">{{ $kasir->no_hp }}</div>
-                            </td>
-                            <td class="px-6 py-4 text-center whitespace-nowrap">
-                                @if ($kasir->status == 'aktif')
-                                    <span
-                                        class="inline-flex items-center px-3 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full status-badge">
-                                        <span class="w-2 h-2 mr-2 bg-green-500 rounded-full"></span>
-                                        Aktif
-                                    </span>
-                                @else
-                                    <span
-                                        class="inline-flex items-center px-3 py-1 text-xs font-semibold text-red-700 bg-red-100 rounded-full status-badge">
-                                        <span class="w-2 h-2 mr-2 bg-red-500 rounded-full"></span>
-                                        Nonaktif
-                                    </span>
-                                @endif
-                            </td>
-                            <td class="px-6 py-4 text-center whitespace-nowrap">
-                                <div class="flex justify-center gap-2">
-                                    <a href="{{ route('admin.kasir.edit', $kasir->id) }}"
-                                        class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
-                                        title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <button type="button" onclick="toggleKasirStatus({{ $kasir->id }})"
-                                        class="p-2 text-green-600 transition-colors rounded-lg bg-green-50 hover:bg-green-100"
-                                        title="Toggle Status">
-                                        <i class="fas fa-toggle-on"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr id="emptyRow">
-                            <td colspan="6" class="py-12 text-center text-gray-500">
-                                <i class="mb-2 text-3xl fas fa-users"></i>
-                                <p>Belum ada data kasir</p>
-                            </td>
-                        </tr>
-                    @endforelse
+                    @include('admin.kasir._table')
                 </tbody>
             </table>
-
-            <!-- No Result Row (hidden by default) -->
-            <div id="noResultRow" class="hidden py-12 text-center text-gray-500">
-                <i class="mb-2 text-3xl fas fa-search"></i>
-                <p>Tidak ada data yang cocok dengan filter</p>
-            </div>
         </div>
 
-        <!-- Pagination -->
         <div class="flex flex-col items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50 sm:flex-row">
             <div class="mb-4 text-sm text-gray-600 sm:mb-0">
-                Menampilkan <span id="showingInfo"
-                    class="font-semibold text-gray-900">{{ $kasirs->firstItem() }}-{{ $kasirs->lastItem() }}</span>
-                dari <span class="font-semibold text-gray-900">{{ $kasirs->total() }}</span> kasir
+                Menampilkan <span id="pageInfo" class="font-semibold text-gray-900">
+                    {{ $kasirs->firstItem() ?? 0 }}-{{ $kasirs->lastItem() ?? 0 }}
+                </span> dari
+                <span id="totalData" class="font-semibold text-gray-900">{{ $kasirs->total() }}</span> kasir
             </div>
-            <div class="flex items-center gap-2">
-                {{ $kasirs->appends(['search' => request('search'), 'status' => request('status')])->links() }}
+            <div class="flex items-center gap-2" id="paginationContainer">
+                @include('admin.kasir._pagination')
             </div>
         </div>
     </div>
@@ -183,86 +126,114 @@
 
 @push('scripts')
     <script>
-        // SweetAlert session messages
-        @if (session('success'))
-            Swal.fire({
-                icon: 'success',
-                title: 'Sukses!',
-                text: '{{ session('success') }}',
-                showConfirmButton: true,
-                confirmButtonColor: '#10b981',
-                background: '#ffffff',
-                color: '#1f2937',
-                iconColor: '#A5DC86'
-            });
-        @endif
-        @if (session('error'))
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal!',
-                text: '{{ session('error') }}',
-                showConfirmButton: true,
-                confirmButtonColor: '#ef4444',
-                background: '#ffffff',
-                color: '#1f2937',
-                iconColor: '#ef4444'
-            });
-        @endif
-
+        let currentPage = 1;
         let currentSearch = '';
         let currentStatus = '';
+        let searchTimer = null;
 
-        // Live Search
-        document.getElementById('searchInput').addEventListener('input', debounce(function(e) {
-            currentSearch = e.target.value.toLowerCase().trim();
-            applyFilters();
-        }, 300));
+        function loadData(page = 1, search = '', status = '') {
+            currentPage = page;
+            currentSearch = search;
+            currentStatus = status;
+
+            $.ajax({
+                url: '{{ route('admin.kasir') }}', // sesuai route name kamu
+                method: 'GET',
+                data: {
+                    page: page,
+                    search: search,
+                    status: status
+                },
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                beforeSend: function() {
+                    $('#tableBody').html(`
+                    <tr>
+                        <td colspan="6" class="py-12 text-center text-gray-500">
+                            <i class="mr-2 fas fa-spinner fa-spin"></i> Memuat data...
+                        </td>
+                    </tr>
+                `);
+                },
+                success: function(res) {
+                    $('#tableBody').html(res.html);
+                    $('#paginationContainer').html(res.pagination);
+                    $('#totalData').text(res.total);
+
+                    if (res.from && res.to) {
+                        $('#pageInfo').text(res.from + '-' + res.to);
+                    }
+
+                    bindPagination();
+                },
+                error: function() {
+                    $('#tableBody').html(`
+                    <tr>
+                        <td colspan="6" class="py-12 text-center text-red-500">
+                            Gagal memuat data. Silakan coba lagi.
+                        </td>
+                    </tr>
+                `);
+                }
+            });
+        }
+
+        function bindPagination() {
+            $(document).off('click', '.pagination-link')
+                .on('click', '.pagination-link', function(e) {
+                    e.preventDefault();
+                    const page = $(this).data('page');
+                    if (page) loadData(page, currentSearch, currentStatus);
+                });
+        }
+
+        // Search debounce
+        $('#searchInput').on('input', function() {
+            clearTimeout(searchTimer);
+            const term = $(this).val().trim();
+            searchTimer = setTimeout(() => {
+                loadData(1, term, currentStatus);
+            }, 400);
+        });
 
         // Status Filter
-        document.getElementById('statusFilter').addEventListener('change', function() {
-            currentStatus = this.value;
-            applyFilters();
+        $('#statusFilter').on('change', function() {
+            currentStatus = $(this).val();
+            loadData(1, currentSearch, currentStatus);
         });
 
         // Reset
-        document.getElementById('btnReset').addEventListener('click', function() {
-            document.getElementById('searchInput').value = '';
-            document.getElementById('statusFilter').value = '';
+        $('#btnReset').on('click', function() {
+            $('#searchInput').val('');
+            $('#statusFilter').val('');
             currentSearch = '';
             currentStatus = '';
-            applyFilters();
+            loadData(1, '', '');
         });
 
-        function applyFilters() {
-            const rows = document.querySelectorAll('#tableBody tr[data-kasir-id]');
-            let visibleCount = 0;
+        // Initial Load
+        $(document).ready(function() {
+            loadData(1, '{{ $search ?? '' }}', '{{ $status ?? '' }}');
 
-            rows.forEach(row => {
-                const nama = row.dataset.nama || '';
-                const username = row.dataset.username || '';
-                const nohp = row.dataset.nohp || '';
-                const status = row.dataset.status || '';
+            @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sukses!',
+                    text: '{{ session('success') }}',
+                    confirmButtonColor: '#10b981'
+                });
+            @endif
 
-                // Search filter
-                const matchSearch = !currentSearch ||
-                    nama.includes(currentSearch) ||
-                    username.includes(currentSearch) ||
-                    nohp.includes(currentSearch);
-
-                const matchStatus = !currentStatus || status === currentStatus;
-
-                const show = matchSearch && matchStatus;
-                row.style.display = show ? '' : 'none';
-                if (show) visibleCount++;
-            });
-
-            const noResultRow = document.getElementById('noResultRow');
-            if (noResultRow) {
-                noResultRow.classList.toggle('hidden', visibleCount > 0);
-            }
-
-            document.getElementById('totalData').textContent = visibleCount;
-        }
+            @if (session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: '{{ session('error') }}',
+                    confirmButtonColor: '#ef4444'
+                });
+            @endif
+        });
 
         // Toggle Status
         function toggleKasirStatus(kasirId) {
@@ -286,14 +257,6 @@
                     window.location.href = `/admin/kasir/${kasirId}/toggle-status`;
                 }
             });
-        }
-
-        function debounce(func, wait) {
-            let timeout;
-            return function(...args) {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => func.apply(this, args), wait);
-            };
         }
     </script>
 @endpush
