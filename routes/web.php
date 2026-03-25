@@ -22,7 +22,7 @@ Route::get('/', function () {
 Route::post('/allow-login', function () {
     $token = Str::random(40);
     session(['login_token' => $token]);
-    return response()->json(['token' => $token]); 
+    return response()->json(['token' => $token]);
 })->middleware('web');
 
 Route::get('/auth/{token}', [AuthController::class, 'showLoginForm'])
@@ -89,6 +89,8 @@ Route::middleware(['auth', 'role:kasir'])->prefix('/kasir')->name('kasir.')->gro
 
     // Transaksi
     Route::get('/transaksi', [KasirController::class, 'transaksiIndex'])->name('transaksi');
+    Route::get('/transaksi/get-produk', [KasirController::class, 'getProduk'])->name('transaksi.get_produk'); 
+    Route::post('/transaksi/proses-bayar', [KasirController::class, 'prosesBayar'])->name('transaksi.proses_bayar'); 
 
     // Riwayat Transaksi
     Route::get('/riwayat-transaksi', [KasirController::class, 'riwayatTransaksi'])->name('riwayat_transaksi');

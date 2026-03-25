@@ -17,4 +17,22 @@ class Transaksi extends Model
         'uang_bayar',
         'uang_kembali',
     ];
+
+    // === CASTING ===
+    protected $casts = [
+        'tanggal_transaksi' => 'datetime',
+        'total_harga'       => 'decimal:2',
+        'uang_bayar'        => 'decimal:2',
+        'uang_kembali'      => 'decimal:2',
+    ];
+
+    public function kasir()
+    {
+        return $this->belongsTo(User::class, 'kasir_id');
+    }
+
+    public function detailTransaksi()
+    {
+        return $this->hasMany(DetailTransaksi::class, 'transaksi_id');
+    }
 }
