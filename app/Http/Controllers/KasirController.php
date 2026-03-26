@@ -34,11 +34,11 @@ class KasirController extends Controller
     public function getProduk(Request $request)
     {
         $search = $request->search;
-        $stokFilter = $request->stok_filter; // 'semua', 'tersedia', dll
+        $stokFilter = $request->stok_filter; 
 
         $query = Produk::with('kategori')
             ->select('id', 'nama_produk', 'harga_jual', 'stok', 'satuan', 'barcode', 'foto')
-            ->where('stok', '>=', 0); // tampilkan semua termasuk habis
+            ->where('stok', '>=', 0);
 
         if ($search) {
             $query->where(function ($q) use ($search) {

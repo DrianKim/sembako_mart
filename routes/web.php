@@ -35,8 +35,7 @@ Route::post('/auth/{token}', [AuthController::class, 'login'])
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Admin
-Route::middleware(['auth', 'role:admin'])->prefix('/admin')->name('admin.')->group(function () {
-
+Route::middleware(['auth', 'check.status', 'role:admin'])->prefix('/admin')->name('admin.')->group(function () {
     // Dashboard
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
@@ -83,14 +82,14 @@ Route::middleware(['auth', 'role:admin'])->prefix('/admin')->name('admin.')->gro
 });
 
 // Kasir
-Route::middleware(['auth', 'role:kasir'])->prefix('/kasir')->name('kasir.')->group(function () {
+Route::middleware(['auth', 'check.status', 'role:kasir'])->prefix('/kasir')->name('kasir.')->group(function () {
     // Dashboard
     Route::get('/dashboard', [KasirController::class, 'dashboard'])->name('dashboard');
 
     // Transaksi
     Route::get('/transaksi', [KasirController::class, 'transaksiIndex'])->name('transaksi');
-    Route::get('/transaksi/get-produk', [KasirController::class, 'getProduk'])->name('transaksi.get_produk'); 
-    Route::post('/transaksi/proses-bayar', [KasirController::class, 'prosesBayar'])->name('transaksi.proses_bayar'); 
+    Route::get('/transaksi/get-produk', [KasirController::class, 'getProduk'])->name('transaksi.get_produk');
+    Route::post('/transaksi/proses-bayar', [KasirController::class, 'prosesBayar'])->name('transaksi.proses_bayar');
 
     // Riwayat Transaksi
     Route::get('/riwayat-transaksi', [KasirController::class, 'riwayatTransaksi'])->name('riwayat_transaksi');
