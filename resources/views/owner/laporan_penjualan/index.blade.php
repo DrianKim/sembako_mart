@@ -3,131 +3,130 @@
 @section('page-description', 'Pantau omzet, transaksi, dan performa penjualan.')
 
 @section('content')
-    <!-- Breadcrumb & Header -->
+    <!-- Breadcrumb -->
     <section class="mb-6">
-        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <nav class="flex mb-4 md:mb-0" aria-label="Breadcrumb">
-                <ol class="inline-flex items-center space-x-1 md:space-x-3">
-                    <li class="inline-flex items-center">
-                        <a href="{{ route('owner.dashboard') }}"
-                            class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-green-600">
-                            <i class="w-4 h-4 mr-2 fas fa-home"></i>
-                            Dashboard
-                        </a>
-                    </li>
-                    <li aria-current="page">
-                        <div class="flex items-center">
-                            <i class="w-6 h-6 text-gray-400 fas fa-chevron-right"></i>
-                            <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">Laporan Penjualan</span>
-                        </div>
-                    </li>
-                </ol>
-            </nav>
-        </div>
+        <nav class="flex" aria-label="Breadcrumb">
+            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                <li class="inline-flex items-center">
+                    <a href="{{ route('owner.dashboard') }}"
+                        class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-green-600">
+                        <i class="w-4 h-4 mr-2 fas fa-home"></i>Dashboard
+                    </a>
+                </li>
+                <li aria-current="page">
+                    <div class="flex items-center">
+                        <i class="w-6 h-6 text-gray-400 fas fa-chevron-right"></i>
+                        <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">Laporan Penjualan</span>
+                    </div>
+                </li>
+            </ol>
+        </nav>
     </section>
 
-    <!-- Ringkasan Card -->
+    <!-- Summary Cards -->
     <div class="grid grid-cols-1 gap-6 mb-6 md:grid-cols-4">
         <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
             <h4 class="text-sm font-medium text-gray-600">Total Penjualan</h4>
-            <p class="text-2xl font-bold text-green-600">Rp 1.827.500</p>
-            <p class="mt-1 text-gray-500 text-s">Periode: 1 - 31 Maret 2026</p>
-            <p class="mt-1 text-xs text-gray-400">*Total Penjualan Akan Diperbarui Setiap Bulan</p>
+            <p class="text-2xl font-bold text-green-600" id="cardTotalPenjualan">
+                Rp {{ number_format($totalPenjualan, 0, ',', '.') }}
+            </p>
+            <p class="mt-1 text-sm text-gray-500" id="cardPeriodeLabel">
+                Periode: {{ now()->startOfMonth()->format('d M Y') }} - {{ now()->endOfMonth()->format('d M Y') }}
+            </p>
+            <p class="mt-1 text-xs text-gray-400">*Diperbarui sesuai filter aktif</p>
         </div>
 
         <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
             <h4 class="text-sm font-medium text-gray-600">Jumlah Transaksi</h4>
-            <p class="text-2xl font-bold text-green-600">142</p>
-            <p class="mt-1 text-gray-500 text-s">Rata-rata Rp 12.870/transaksi</p>
+            <p class="text-2xl font-bold text-green-600" id="cardJumlahTransaksi">{{ $jumlahTransaksi }}</p>
+            <p class="mt-1 text-sm text-gray-500">Rata-rata Rp <span
+                    id="cardRataRata">{{ number_format($rataRata, 0, ',', '.') }}</span>/transaksi</p>
         </div>
 
         <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
             <h4 class="text-sm font-medium text-gray-600">Produk Terlaris</h4>
-            <p class="text-2xl font-bold text-green-600">Beras Pandan 5kg</p>
-            <p class="mt-1 text-gray-500 text-s">Terjual 85 kg</p>
+            <p class="text-xl font-bold text-green-600 truncate" id="cardProdukTerlaris">
+                {{ $produkTerlaris?->produk?->nama_produk ?? '-' }}
+            </p>
+            <p class="mt-1 text-sm text-gray-500">Terjual <span
+                    id="cardProdukQty">{{ $produkTerlaris?->total_qty ?? 0 }}</span></p>
         </div>
 
         <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
             <h4 class="text-sm font-medium text-gray-600">Kasir Terbaik</h4>
-            <p class="text-2xl font-bold text-green-600">Andi Susanto</p>
-            <p class="mt-1 text-gray-500 text-s">Omzet Rp 845.000</p>
+            <p class="text-xl font-bold text-green-600 truncate" id="cardKasirTerbaik">
+                {{ $kasirTerbaik?->kasir?->nama ?? '-' }}
+            </p>
+            <p class="mt-1 text-sm text-gray-500">Omzet Rp <span
+                    id="cardKasirOmzet">{{ number_format($kasirTerbaik?->total_omzet ?? 0, 0, ',', '.') }}</span></p>
         </div>
     </div>
 
-    <!-- Filter & Search -->
+    <!-- Filter -->
     <div class="p-6 mb-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-5 md:gap-4">
-            <!-- Periode -->
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-5">
             <div class="md:col-span-1">
                 <label class="block mb-2 text-sm font-semibold text-gray-700">
-                    <i class="mr-1 text-green-600 fas fa-calendar-day"></i>
-                    Periode
+                    <i class="mr-1 text-green-600 fas fa-calendar-day"></i> Periode
                 </label>
                 <select id="periodeFilter"
                     class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
-                    <option value="harian">Harian</option>
-                    <option value="mingguan">Mingguan</option>
-                    <option value="bulanan" selected>Bulanan</option>
-                    <option value="custom">Custom Tanggal</option>
+                    <option value="harian" {{ $periodeFilter === 'harian' ? 'selected' : '' }}>Harian</option>
+                    <option value="mingguan" {{ $periodeFilter === 'mingguan' ? 'selected' : '' }}>Mingguan</option>
+                    <option value="bulanan" {{ $periodeFilter === 'bulanan' ? 'selected' : '' }}>Bulanan</option>
+                    <option value="custom" {{ $periodeFilter === 'custom' ? 'selected' : '' }}>Custom Tanggal</option>
                 </select>
             </div>
 
-            <!-- Dari Tanggal -->
             <div class="md:col-span-1">
                 <label class="block mb-2 text-sm font-semibold text-gray-700">
-                    <i class="mr-1 text-green-600 fas fa-calendar-alt"></i>
-                    Dari Tanggal
+                    <i class="mr-1 text-green-600 fas fa-calendar-alt"></i> Dari Tanggal
                 </label>
-                <input type="date" id="fromDate"
+                <input type="date" id="fromDate" value="{{ $fromDate ?? '' }}"
                     class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
             </div>
 
-            <!-- Sampai Tanggal -->
             <div class="md:col-span-1">
                 <label class="block mb-2 text-sm font-semibold text-gray-700">
-                    <i class="mr-1 text-green-600 fas fa-calendar-alt"></i>
-                    Sampai Tanggal
+                    <i class="mr-1 text-green-600 fas fa-calendar-alt"></i> Sampai Tanggal
                 </label>
-                <input type="date" id="toDate"
+                <input type="date" id="toDate" value="{{ $toDate ?? '' }}"
                     class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
             </div>
 
-            <!-- Kasir Filter -->
             <div class="md:col-span-1">
                 <label class="block mb-2 text-sm font-semibold text-gray-700">
-                    <i class="mr-1 text-green-600 fas fa-user-tie"></i>
-                    Kasir
+                    <i class="mr-1 text-green-600 fas fa-user-tie"></i> Kasir
                 </label>
                 <select id="kasirFilter"
                     class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
                     <option value="">Semua Kasir</option>
-                    <option value="andi">Andi Susanto</option>
-                    <option value="siti">Siti Rahayu</option>
-                    <option value="budi">Budi Santoso</option>
+                    @foreach ($kasirs as $kasir)
+                        <option value="{{ $kasir->id }}" {{ $kasirId == $kasir->id ? 'selected' : '' }}>
+                            {{ $kasir->nama }}
+                        </option>
+                    @endforeach
                 </select>
             </div>
 
-            <!-- Reset - pojok kanan -->
             <div class="flex items-end justify-end md:col-span-1">
                 <button id="btnReset"
                     class="flex items-center px-6 py-2.5 text-gray-700 transition-all duration-200 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 shadow-sm">
-                    <i class="mr-2 fas fa-redo"></i>
-                    Reset
+                    <i class="mr-2 fas fa-redo"></i> Reset
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Grafik Omzet (pakai Chart.js, tinggi terkontrol) -->
+    <!-- Grafik -->
     <div class="p-6 mb-6 bg-white border border-gray-200 rounded-lg shadow-sm">
         <h3 class="mb-4 text-lg font-semibold text-gray-800">Grafik Omzet Penjualan</h3>
-        <!-- Container tinggi fixed & responsif -->
         <div class="relative w-full h-64 md:h-80 lg:h-96">
             <canvas id="omzetChart"></canvas>
         </div>
     </div>
 
-    <!-- Table Detail Transaksi -->
+    <!-- Tabel Transaksi -->
     <div class="overflow-hidden bg-white border border-gray-200 rounded-lg shadow-sm">
         <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gray-50">
             <div class="flex items-center">
@@ -136,22 +135,9 @@
                 </div>
                 <div>
                     <h3 class="text-lg font-semibold text-gray-800">Detail Transaksi</h3>
-                    <p class="text-sm text-gray-600">Menampilkan 142 transaksi</p>
+                    <p class="text-sm text-gray-600">Menampilkan <span
+                            id="totalTransaksiLabel">{{ $transaksis->total() }}</span> transaksi</p>
                 </div>
-            </div>
-            <div class="flex gap-2">
-                <button class="p-2 text-gray-600 transition-colors rounded-lg hover:bg-gray-100 hover:text-green-600"
-                    title="Export Excel">
-                    <i class="fas fa-file-excel"></i>
-                </button>
-                <button class="p-2 text-gray-600 transition-colors rounded-lg hover:bg-gray-100 hover:text-green-600"
-                    title="Export PDF">
-                    <i class="fas fa-file-pdf"></i>
-                </button>
-                <button class="p-2 text-gray-600 transition-colors rounded-lg hover:bg-gray-100 hover:text-green-600"
-                    title="Print">
-                    <i class="fas fa-print"></i>
-                </button>
             </div>
         </div>
 
@@ -176,90 +162,37 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200" id="tableBody">
-                    <!-- Dummy Row 1 -->
-                    <tr class="transition-colors hover:bg-gray-50">
-                        <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900">1</td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-03-10 14:45:00</td>
-                        <td class="px-6 py-4 text-sm text-gray-900">Andi Susanto</td>
-                        <td class="px-6 py-4 text-sm text-gray-900">Budi</td>
-                        <td class="px-6 py-4 font-mono text-sm text-gray-900">TRX-20260310-045</td>
-                        <td class="px-6 py-4 text-sm font-semibold text-right text-gray-900">Rp 185.000</td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                            <a href="{{ route('owner.laporan_penjualan.struk', 45) }}" target="_blank"
-                                class="p-2 text-green-600 transition-colors rounded-lg bg-green-50 hover:bg-green-100"
-                                title="Cetak Struk">
-                                <i class="fas fa-print"></i>
-                            </a>
-                        </td>
-                    </tr>
-
-                    <!-- Dummy Row 2 -->
-                    <tr class="transition-colors hover:bg-gray-50">
-                        <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900">2</td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-03-10 15:30:22</td>
-                        <td class="px-6 py-4 text-sm text-gray-900">Siti Rahayu</td>
-                        <td class="px-6 py-4 text-sm text-gray-900">Ani</td>
-                        <td class="px-6 py-4 font-mono text-sm text-gray-900">TRX-20260310-046</td>
-                        <td class="px-6 py-4 text-sm font-semibold text-right text-gray-900">Rp 92.500</td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                            <a href="{{ route('owner.laporan_penjualan.struk', 46) }}" target="_blank"
-                                class="p-2 text-green-600 transition-colors rounded-lg bg-green-50 hover:bg-green-100"
-                                title="Cetak Struk">
-                                <i class="fas fa-print"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    <!-- Tambah dummy lain sesuai kebutuhan -->
+                    @include('owner.laporan_penjualan._table')
                 </tbody>
             </table>
         </div>
 
-        <!-- Pagination -->
         <div class="flex flex-col items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50 sm:flex-row">
             <div class="mb-4 text-sm text-gray-600 sm:mb-0">
-                Menampilkan <span class="font-semibold text-gray-900">1-2</span> dari
-                <span class="font-semibold text-gray-900">142</span> transaksi
+                Menampilkan <span id="pageInfo" class="font-semibold text-gray-900">
+                    {{ $transaksis->firstItem() ?? 0 }}-{{ $transaksis->lastItem() ?? 0 }}
+                </span> dari
+                <span class="font-semibold text-gray-900" id="totalRows">{{ $transaksis->total() }}</span> transaksi
             </div>
-            <div class="flex items-center gap-2">
-                <button
-                    class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled>
-                    <i class="fas fa-chevron-left"></i> Previous
-                </button>
-                <button
-                    class="px-4 py-2 text-sm font-medium text-white transition-colors bg-green-600 border border-green-600 rounded-lg hover:bg-green-700">
-                    1
-                </button>
-                <button
-                    class="px-4 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
-                    2
-                </button>
-                <button
-                    class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
-                    Next <i class="fas fa-chevron-right"></i>
-                </button>
+            <div class="flex items-center gap-2" id="paginationContainer">
+                @include('owner.laporan_penjualan._pagination')
             </div>
         </div>
     </div>
 @endsection
 
 @push('scripts')
-    <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <script>
-        // Dummy data
-        const labels = ['1 Mar', '2 Mar', '3 Mar', '4 Mar', '5 Mar', '6 Mar', '7 Mar', '8 Mar', '9 Mar', '10 Mar'];
-        const omzetData = [120000, 180000, 95000, 250000, 145000, 320000, 89000, 210000, 175000, 185000];
-
+        // === Init Chart ===
         const ctx = document.getElementById('omzetChart').getContext('2d');
-        const omzetChart = new Chart(ctx, {
+        let omzetChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: labels,
+                labels: {!! json_encode($grafikLabels) !!},
                 datasets: [{
                     label: 'Omzet Harian (Rp)',
-                    data: omzetData,
+                    data: {!! json_encode($grafikOmzet) !!},
                     borderColor: '#10B981',
                     backgroundColor: 'rgba(16, 185, 129, 0.2)',
                     tension: 0.4,
@@ -281,9 +214,7 @@
                     tooltip: {
                         backgroundColor: '#1F2937',
                         callbacks: {
-                            label: function(context) {
-                                return 'Rp ' + context.parsed.y.toLocaleString('id-ID');
-                            }
+                            label: ctx => 'Rp ' + ctx.parsed.y.toLocaleString('id-ID')
                         }
                     }
                 },
@@ -291,9 +222,7 @@
                     y: {
                         beginAtZero: true,
                         ticks: {
-                            callback: function(value) {
-                                return 'Rp ' + value.toLocaleString('id-ID');
-                            }
+                            callback: v => 'Rp ' + v.toLocaleString('id-ID')
                         }
                     },
                     x: {
@@ -305,39 +234,150 @@
             }
         });
 
-        // Filter live (dummy simulasi update chart)
-        function applyFilters() {
-            const periode = document.getElementById('periodeFilter').value;
-            if (periode === 'harian') {
-                omzetChart.data.labels = ['1 Mar', '2 Mar', '3 Mar'];
-                omzetChart.data.datasets[0].data = [120000, 180000, 95000];
-            } else if (periode === 'mingguan') {
-                omzetChart.data.labels = ['Minggu 1', 'Minggu 2', 'Minggu 3'];
-                omzetChart.data.datasets[0].data = [850000, 1200000, 950000];
-            } else {
-                // bulanan default
-                omzetChart.data.labels = labels;
-                omzetChart.data.datasets[0].data = omzetData;
-            }
-            omzetChart.update();
+        // === State ===
+        let currentPage = 1;
+        let filterTimer = null;
+
+        function getFilters() {
+            return {
+                periode: $('#periodeFilter').val(),
+                from_date: $('#fromDate').val(),
+                to_date: $('#toDate').val(),
+                kasir_id: $('#kasirFilter').val(),
+                page: currentPage,
+            };
         }
 
-        // Event listeners
-        document.getElementById('periodeFilter')?.addEventListener('change', applyFilters);
-        document.getElementById('fromDate')?.addEventListener('change', applyFilters);
-        document.getElementById('toDate')?.addEventListener('change', applyFilters);
-        document.getElementById('kasirFilter')?.addEventListener('change', applyFilters);
+        function loadData(page = 1) {
+            currentPage = page;
 
-        // Reset
-        document.getElementById('btnReset')?.addEventListener('click', function() {
-            document.getElementById('periodeFilter').value = 'bulanan';
-            document.getElementById('fromDate').value = '';
-            document.getElementById('toDate').value = '';
-            document.getElementById('kasirFilter').value = '';
-            applyFilters();
+            $.ajax({
+                url: '{{ route('owner.laporan_penjualan') }}',
+                method: 'GET',
+                data: getFilters(),
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                beforeSend: function() {
+                    $('#tableBody').html(`
+                    <tr><td colspan="7" class="py-12 text-center text-gray-500">
+                        <i class="mr-2 fas fa-spinner fa-spin"></i> Memuat data...
+                    </td></tr>
+                `);
+                },
+                success: function(res) {
+                    // Update tabel
+                    $('#tableBody').html(res.html);
+                    $('#paginationContainer').html(res.pagination);
+                    $('#totalTransaksiLabel').text(res.total);
+                    $('#totalRows').text(res.total);
+                    if (res.from && res.to) $('#pageInfo').text(res.from + '-' + res.to);
+
+                    // Update cards
+                    $('#cardTotalPenjualan').text('Rp ' + res.totalPenjualan);
+                    $('#cardJumlahTransaksi').text(res.jumlahTransaksi);
+                    $('#cardRataRata').text(res.rataRata);
+                    $('#cardProdukTerlaris').text(res.produkTerlaris);
+                    $('#cardProdukQty').text(res.produkQty);
+                    $('#cardKasirTerbaik').text(res.kasirTerbaik);
+                    $('#cardKasirOmzet').text(res.kasirOmzet);
+                    $('#cardPeriodeLabel').text('Periode: ' + res.periodeLabel);
+
+                    // Update chart
+                    omzetChart.data.labels = res.grafikLabels;
+                    omzetChart.data.datasets[0].data = res.grafikOmzet;
+                    omzetChart.update();
+
+                    bindPagination();
+                },
+                error: function() {
+                    $('#tableBody').html(`
+                    <tr><td colspan="7" class="py-12 text-center text-red-500">
+                        <i class="mr-2 fas fa-exclamation-triangle"></i> Gagal memuat data.
+                    </td></tr>
+                `);
+                }
+            });
+        }
+
+        function bindPagination() {
+            $(document).off('click', '.pagination-link')
+                .on('click', '.pagination-link', function(e) {
+                    e.preventDefault();
+                    const page = $(this).data('page');
+                    if (page) loadData(page);
+                });
+        }
+
+        // === Date validation helpers ===
+        function validateDates() {
+            const fromVal = $('#fromDate').val();
+            const toVal = $('#toDate').val();
+
+            // Set min/max constraints
+            if (fromVal) {
+                $('#toDate').attr('min', fromVal);
+            } else {
+                $('#toDate').removeAttr('min');
+            }
+
+            if (toVal) {
+                $('#fromDate').attr('max', toVal);
+            } else {
+                $('#fromDate').removeAttr('max');
+            }
+
+            // Cek kalau keduanya diisi tapi invalid
+            if (fromVal && toVal && fromVal > toVal) {
+                $('#fromDate').addClass('border-red-400 focus:ring-red-400');
+                $('#toDate').addClass('border-red-400 focus:ring-red-400');
+                showDateError('Tanggal "Dari" tidak boleh lebih besar dari "Sampai".');
+                return false;
+            }
+
+            // Clear error state
+            $('#fromDate, #toDate').removeClass('border-red-400 focus:ring-red-400');
+            $('#dateErrorMsg').remove();
+            return true;
+        }
+
+        function showDateError(msg) {
+            if ($('#dateErrorMsg').length) return; // jangan duplikat
+            const el =
+                `<p id="dateErrorMsg" class="mt-2 text-xs text-red-500"><i class="mr-1 fas fa-exclamation-circle"></i>${msg}</p>`;
+            $('#toDate').closest('.md\\:col-span-1').append(el);
+        }
+
+        // === Filter listeners ===
+        $('#periodeFilter, #kasirFilter').on('change', function() {
+            clearTimeout(filterTimer);
+            filterTimer = setTimeout(() => loadData(1), 400);
         });
 
-        // Initial apply
-        applyFilters();
+        $('#fromDate').on('change', function() {
+            clearTimeout(filterTimer);
+            if (!validateDates()) return; // stop kalau invalid
+            filterTimer = setTimeout(() => loadData(1), 400);
+        });
+
+        $('#toDate').on('change', function() {
+            clearTimeout(filterTimer);
+            if (!validateDates()) return; // stop kalau invalid
+            filterTimer = setTimeout(() => loadData(1), 400);
+        });
+
+        // Reset — bersihin semua constraint juga
+        $('#btnReset').on('click', function() {
+            $('#periodeFilter').val('bulanan');
+            $('#fromDate').val('').removeAttr('max');
+            $('#toDate').val('').removeAttr('min');
+            $('#fromDate, #toDate').removeClass('border-red-400 focus:ring-red-400');
+            $('#dateErrorMsg').remove();
+            loadData(1);
+        });
+
+        $(document).ready(function() {
+            bindPagination();
+        });
     </script>
 @endpush

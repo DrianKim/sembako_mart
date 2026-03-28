@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Log;
 use App\Models\Produk;
+use App\Models\Transaksi;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -208,18 +209,121 @@ class OwnerController extends Controller
     // Struk
     public function struk($id)
     {
-        $data = [
-            'title' => 'Struk Transaksi',
-        ];
+        $transaksi = Transaksi::with(['kasir', 'detailTransaksi.produk'])->findOrFail($id);
 
-        return view('owner.laporan_penjualan.struk', $data);
+        return view('owner.laporan_penjualan.struk', compact('transaksi'));
     }
 
     // Laporan Penjualan
-    public function laporanPenjualan()
+    public function laporanPenjualan(Request $request)
     {
+        $periodeFilter = $request->query('periode', 'bulanan');
+        $fromDate      = $request->query('from_date');
+        $toDate        = $request->query('to_date');
+        $kasirId       = $request->query('kasir_id');
+
+        // === Tentuin range tanggal berdasarkan periode ===
+        $from = now()->startOfMonth();
+        $to   = now()->endOfMonth();
+
+        if ($periodeFilter === 'harian') {
+            $from = now()->startOfDay();
+            $to   = now()->endOfDay();
+        } elseif ($periodeFilter === 'mingguan') {
+            $from = now()->startOfWeek();
+            $to   = now()->endOfWeek();
+        } elseif ($periodeFilter === 'custom' && $fromDate && $toDate) {
+            $from = \Carbon\Carbon::parse($fromDate)->startOfDay();
+            $to   = \Carbon\Carbon::parse($toDate)->endOfDay();
+        }
+
+        // === Base query transaksi ===
+        $query = Transaksi::with(['kasir', 'detailTransaksi.produk'])
+            ->whereBetween('tanggal_transaksi', [$from, $to])
+            ->when($kasirId, fn($q) => $q->where('kasir_id', $kasirId))
+            ->latest('tanggal_transaksi');
+
+        // === Summary cards ===
+        $summaryQuery = Transaksi::whereBetween('tanggal_transaksi', [$from, $to])
+            ->when($kasirId, fn($q) => $q->where('kasir_id', $kasirId));
+
+        $totalPenjualan   = $summaryQuery->sum('total_harga');
+        $jumlahTransaksi  = $summaryQuery->count();
+        $rataRata         = $jumlahTransaksi > 0 ? $totalPenjualan / $jumlahTransaksi : 0;
+
+        // === Produk terlaris ===
+        $produkTerlaris = \App\Models\DetailTransaksi::selectRaw('produk_id, SUM(qty) as total_qty')
+            ->whereHas('transaksi', function ($q) use ($from, $to, $kasirId) {
+                $q->whereBetween('tanggal_transaksi', [$from, $to]);
+                if ($kasirId) $q->where('kasir_id', $kasirId);
+            })
+            ->with('produk')
+            ->groupBy('produk_id')
+            ->orderByDesc('total_qty')
+            ->first();
+
+        // === Kasir terbaik ===
+        $kasirTerbaik = Transaksi::selectRaw('kasir_id, SUM(total_harga) as total_omzet')
+            ->whereBetween('tanggal_transaksi', [$from, $to])
+            ->when($kasirId, fn($q) => $q->where('kasir_id', $kasirId))
+            ->with('kasir')
+            ->groupBy('kasir_id')
+            ->orderByDesc('total_omzet')
+            ->first();
+
+        // === Data grafik (group by tanggal) ===
+        $grafikData = Transaksi::selectRaw('DATE(tanggal_transaksi) as tanggal, SUM(total_harga) as total')
+            ->whereBetween('tanggal_transaksi', [$from, $to])
+            ->when($kasirId, fn($q) => $q->where('kasir_id', $kasirId))
+            ->groupBy('tanggal')
+            ->orderBy('tanggal')
+            ->get();
+
+        $grafikLabels = $grafikData->pluck('tanggal')->map(fn($d) => \Carbon\Carbon::parse($d)->format('d M'))->toArray();
+        $grafikOmzet  = $grafikData->pluck('total')->map(fn($v) => (float) $v)->toArray();
+
+        // === Tabel transaksi paginasi ===
+        $transaksis = $query->paginate(10)->appends($request->query());
+
+        // === Daftar kasir untuk dropdown ===
+        $kasirs = User::where('role', 'kasir')->orderBy('nama')->get();
+
+        if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+            return response()->json([
+                'html'            => view('owner.laporan_penjualan._table', compact('transaksis'))->render(),
+                'pagination'      => view('owner.laporan_penjualan._pagination', compact('transaksis'))->render(),
+                'totalPenjualan'  => number_format($totalPenjualan, 0, ',', '.'),
+                'jumlahTransaksi' => $jumlahTransaksi,
+                'rataRata'        => number_format($rataRata, 0, ',', '.'),
+                'produkTerlaris'  => $produkTerlaris?->produk?->nama_produk ?? '-',
+                'produkQty'       => ($produkTerlaris?->total_qty ?? 0) . ' ' . ($produkTerlaris?->produk?->satuan ?? ''),
+                'kasirTerbaik'    => $kasirTerbaik?->kasir?->nama ?? '-',
+                'kasirOmzet'      => number_format($kasirTerbaik?->total_omzet ?? 0, 0, ',', '.'),
+                'grafikLabels'    => $grafikLabels,
+                'grafikOmzet'     => $grafikOmzet,
+                'from'            => $transaksis->firstItem() ?? 0,
+                'to'              => $transaksis->lastItem() ?? 0,
+                'total'           => $transaksis->total(),
+                'periodeLabel'    => $from->format('d M Y') . ' - ' . $to->format('d M Y'),
+            ]);
+        }
+
         $data = [
-            'title' => 'Laporan Penjualan Owner',
+            'transaksis'      => $transaksis,
+            'kasirs'          => $kasirs,
+            'totalPenjualan'  => $totalPenjualan,
+            'jumlahTransaksi' => $jumlahTransaksi,
+            'rataRata'        => $rataRata,
+            'produkTerlaris'  => $produkTerlaris,
+            'kasirTerbaik'    => $kasirTerbaik,
+            'grafikLabels'    => $grafikLabels,
+            'grafikOmzet'     => $grafikOmzet,
+            'from'            => $from,
+            'to'              => $to,
+            'periodeFilter'   => $periodeFilter,
+            'fromDate'        => $fromDate,
+            'toDate'          => $toDate,
+            'kasirId'         => $kasirId,
         ];
 
         return view('owner.laporan_penjualan.index', $data);
