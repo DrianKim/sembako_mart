@@ -44,6 +44,23 @@
             @csrf
 
             <div class="p-6">
+                <!-- ERROR SUMMARY -->
+                @if ($errors->any())
+                    <div class="p-4 mb-6 border border-red-200 rounded-lg bg-red-50">
+                        <div class="flex items-start">
+                            <i class="mt-1 mr-3 text-lg text-red-500 fas fa-exclamation-triangle"></i>
+                            <div>
+                                <p class="mb-1 text-sm font-semibold text-red-700">Periksa kembali:</p>
+                                <ul class="space-y-1 text-sm text-red-700">
+                                    @foreach ($errors->all() as $error)
+                                        <li>• {{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <!-- Nama Lengkap -->
                     <div>
@@ -53,7 +70,7 @@
                         </label>
                         <input type="text" id="nama" name="nama" required value="{{ old('nama') }}"
                             placeholder="Contoh: Admin Neste"
-                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all @error('nama') border-red-500 @enderror">
+                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all @error('nama') border-red-500 ring-2 ring-red-200 @enderror">
                         @error('nama')
                             <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                         @enderror
@@ -67,7 +84,7 @@
                         </label>
                         <input type="text" id="username" name="username" required value="{{ old('username') }}"
                             placeholder="Contoh: admin_neste"
-                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all @error('username') border-red-500 @enderror">
+                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all @error('username') border-red-500 ring-2 ring-red-200 @enderror">
                         @error('username')
                             <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                         @enderror
@@ -79,8 +96,8 @@
                             <i class="mr-1 text-green-600 fas fa-lock"></i>
                             Password <span class="text-red-500">*</span>
                         </label>
-                        <input type="password" id="password" name="password" required placeholder="********"
-                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all @error('password') border-red-500 @enderror">
+                        <input type="password" id="password" name="password" required minlength="8" placeholder="********"
+                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all @error('password') border-red-500 ring-2 ring-red-200 @enderror">
                         <p class="mt-1 text-xs text-gray-500">Minimal 8 karakter</p>
                         @error('password')
                             <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -94,35 +111,12 @@
                             Nomor HP <span class="text-red-500">*</span>
                         </label>
                         <input type="text" id="no_hp" name="no_hp" required value="{{ old('no_hp') }}"
-                            placeholder="Contoh: 08999887766"
-                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all @error('no_hp') border-red-500 @enderror">
+                            placeholder="Contoh: 081234567890"
+                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all @error('no_hp') border-red-500 ring-2 ring-red-200 @enderror">
                         @error('no_hp')
                             <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
-
-                    <!-- Status -->
-                    {{-- <div>
-                        <label class="block mb-2 text-sm font-semibold text-gray-700">
-                            <i class="mr-1 text-green-600 fas fa-toggle-on"></i>
-                            Status <span class="text-red-500">*</span>
-                        </label>
-                        <div class="flex gap-6">
-                            <label class="flex items-center cursor-pointer">
-                                <input type="radio" name="status" value="aktif" checked
-                                    class="w-5 h-5 text-green-600 focus:ring-green-500">
-                                <span class="ml-2 text-gray-700">Aktif</span>
-                            </label>
-                            <label class="flex items-center cursor-pointer">
-                                <input type="radio" name="status" value="nonaktif"
-                                    class="w-5 h-5 text-red-600 focus:ring-red-500">
-                                <span class="ml-2 text-gray-700">Nonaktif</span>
-                            </label>
-                        </div>
-                        @error('status')
-                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div> --}}
 
                     <!-- Role -->
                     <div>
@@ -131,7 +125,8 @@
                             Role <span class="text-red-500">*</span>
                         </label>
                         <select id="role" name="role" required
-                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all @error('role') border-red-500 @enderror">
+                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all @error('role') border-red-500 ring-2 ring-red-200 @enderror">
+                            <option hidden value="">-- Pilih Role --</option>
                             <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                             <option value="kasir" {{ old('role') == 'kasir' ? 'selected' : '' }}>Kasir</option>
                         </select>
@@ -145,7 +140,8 @@
                 <div class="p-4 mt-8 border-l-4 border-green-500 rounded bg-green-50">
                     <p class="text-sm text-green-800">
                         <i class="mr-2 fas fa-info-circle"></i>
-                        Field bertanda <span class="text-red-500">*</span> wajib diisi. Password akan di-hash otomatis.
+                        Field bertanda <span class="text-red-500">*</span> wajib diisi. Password akan di-hash otomatis
+                        oleh sistem.
                     </p>
                 </div>
             </div>
@@ -153,15 +149,16 @@
             <!-- Form Actions -->
             <div class="flex items-center justify-between px-6 py-4 border-t bg-gray-50">
                 <a href="{{ route('owner.user') }}"
-                    class="flex items-center px-6 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                    class="flex items-center px-6 py-3 text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
                     <i class="mr-2 fas fa-arrow-left"></i> Kembali
                 </a>
-                <div class="flex gap-4">
-                    <button type="reset" class="px-6 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                <div class="flex gap-3">
+                    <button type="reset"
+                        class="px-6 py-3 text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
                         <i class="mr-2 fas fa-redo"></i> Reset
                     </button>
                     <button type="submit"
-                        class="px-6 py-3 text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700">
+                        class="flex items-center px-6 py-3 text-white transition-all bg-green-600 rounded-lg shadow-md hover:bg-green-700 hover:shadow-lg focus:ring-4 focus:ring-green-300">
                         <i class="mr-2 fas fa-save"></i> Simpan User
                     </button>
                 </div>

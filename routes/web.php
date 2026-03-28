@@ -115,6 +115,7 @@ Route::middleware(['auth', 'role:owner'])->prefix('/owner')->name('owner.')->gro
     Route::post('/user/store', [OwnerController::class, 'userStore'])->name('user.store');
     Route::get('/user/{id}/edit', [OwnerController::class, 'userEdit'])->name('user.edit');
     Route::put('/user/{id}/update', [OwnerController::class, 'userUpdate'])->name('user.update');
+    Route::get('/user/{id}/toggle-status', [OwnerController::class, 'userToggleStatus'])->name('user.toggle-status');
 
     // Riwayat Transaksi
     Route::get('/riwayat-transaksi', [OwnerController::class, 'riwayatTransaksiIndex'])->name('riwayat_transaksi');

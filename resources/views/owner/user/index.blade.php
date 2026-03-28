@@ -11,8 +11,7 @@
                     <li class="inline-flex items-center">
                         <a href="{{ route('owner.dashboard') }}"
                             class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-green-600">
-                            <i class="w-4 h-4 mr-2 fas fa-home"></i>
-                            Dashboard
+                            <i class="w-4 h-4 mr-2 fas fa-home"></i> Dashboard
                         </a>
                     </li>
                     <li aria-current="page">
@@ -23,27 +22,24 @@
                     </li>
                 </ol>
             </nav>
-
-            <!-- Button Tambah User -->
             <a href="{{ route('owner.user.create') }}"
                 class="flex items-center px-5 py-2.5 text-white transition-all duration-200 bg-gradient-to-r from-green-600 to-green-500 rounded-lg shadow-md hover:shadow-lg hover:from-green-700 hover:to-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
-                <i class="mr-2 fas fa-plus"></i>
-                Tambah User
+                <i class="mr-2 fas fa-plus"></i> Tambah User
             </a>
         </div>
     </section>
 
-    <!-- Filter & Search - FULL MENTOK, satu baris di desktop -->
+    <!-- Filter & Search -->
     <div class="p-6 mb-6 bg-white border border-gray-200 rounded-lg shadow-sm">
         <div class="grid grid-cols-1 gap-4 md:grid-cols-5 md:gap-4">
-            <!-- Search - span 2 biar lebar -->
+            <!-- Search -->
             <div class="md:col-span-2">
                 <label class="block mb-2 text-sm font-semibold text-gray-700">
-                    <i class="mr-1 text-green-600 fas fa-search"></i>
-                    Cari User
+                    <i class="mr-1 text-green-600 fas fa-search"></i> Cari User
                 </label>
                 <div class="relative">
                     <input type="text" id="searchInput" placeholder="Cari nama, username atau nomor HP..."
+                        value="{{ $search ?? '' }}"
                         class="w-full px-4 py-2.5 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <i class="text-gray-400 fas fa-search"></i>
@@ -52,47 +48,43 @@
             </div>
 
             <!-- Status Filter -->
-            <div class="md:col-span-1">
+            <div>
                 <label class="block mb-2 text-sm font-semibold text-gray-700">
-                    <i class="mr-1 text-green-600 fas fa-filter"></i>
-                    Status
+                    <i class="mr-1 text-green-600 fas fa-filter"></i> Status
                 </label>
                 <select id="statusFilter"
-                    class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
                     <option value="">Semua Status</option>
-                    <option value="aktif">Aktif</option>
-                    <option value="nonaktif">Nonaktif</option>
+                    <option value="aktif" {{ ($status ?? '') == 'aktif' ? 'selected' : '' }}>Aktif</option>
+                    <option value="nonaktif" {{ ($status ?? '') == 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
                 </select>
             </div>
 
             <!-- Role Filter -->
-            <div class="md:col-span-1">
+            <div>
                 <label class="block mb-2 text-sm font-semibold text-gray-700">
-                    <i class="mr-1 text-green-600 fas fa-user-shield"></i>
-                    Role
+                    <i class="mr-1 text-green-600 fas fa-user-shield"></i> Role
                 </label>
                 <select id="roleFilter"
-                    class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
                     <option value="">Semua Role</option>
-                    <option value="admin">Admin</option>
-                    <option value="kasir">Kasir</option>
+                    <option value="admin" {{ ($role ?? '') == 'admin' ? 'selected' : '' }}>Admin</option>
+                    <option value="kasir" {{ ($role ?? '') == 'kasir' ? 'selected' : '' }}>Kasir</option>
                 </select>
             </div>
 
-            <!-- Button Reset - satu jajar, rata kanan di desktop -->
-            <div class="flex items-end justify-start md:col-span-1 md:justify-end">
+            <!-- Reset -->
+            <div class="flex items-end justify-end">
                 <button id="btnReset"
-                    class="flex items-center justify-center px-6 py-2.5 text-gray-700 transition-all duration-200 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 shadow-sm min-w-[140px]">
-                    <i class="mr-2 fas fa-redo"></i>
-                    Reset
+                    class="flex items-center px-4 py-2.5 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all">
+                    <i class="mr-2 fas fa-redo"></i> Reset
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Table Section -->
+    <!-- Table -->
     <div class="overflow-hidden bg-white border border-gray-200 rounded-lg shadow-sm">
-        <!-- Table Header -->
         <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gray-50">
             <div class="flex items-center">
                 <div class="flex items-center justify-center w-10 h-10 mr-3 bg-green-100 rounded-lg">
@@ -100,197 +92,47 @@
                 </div>
                 <div>
                     <h3 class="text-lg font-semibold text-gray-800">Daftar User</h3>
-                    <p class="text-sm text-gray-600">Total: <span id="totalTransaksi"
-                            class="font-semibold text-green-600">7</span> user</p>
+                    <p class="text-sm text-gray-600">Total: <span id="totalData"
+                            class="font-semibold text-green-600">{{ $users->total() }}</span> user</p>
                 </div>
-            </div>
-            <div class="flex gap-2">
-                <button class="p-2 text-gray-600 transition-colors rounded-lg hover:bg-gray-100 hover:text-green-600"
-                    title="Export Excel">
-                    <i class="fas fa-file-excel"></i>
-                </button>
-                <button class="p-2 text-gray-600 transition-colors rounded-lg hover:bg-gray-100 hover:text-green-600"
-                    title="Export PDF">
-                    <i class="fas fa-file-pdf"></i>
-                </button>
-                <button class="p-2 text-gray-600 transition-colors rounded-lg hover:bg-gray-100 hover:text-green-600"
-                    title="Print">
-                    <i class="fas fa-print"></i>
-                </button>
             </div>
         </div>
 
-        <!-- Table -->
         <div class="overflow-x-auto">
             <table class="w-full">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="w-12 px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">NO
+                        <th class="w-12 px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">No
                         </th>
-                        <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">NAMA
+                        <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">Nama
                         </th>
-                        <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">ROLE
+                        <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">Role
                         </th>
                         <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
-                            USERNAME</th>
-                        <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">NO HP
+                            Username</th>
+                        <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">No HP
                         </th>
-                        <th class="px-6 py-4 text-xs font-semibold tracking-wider text-center text-gray-600 uppercase">
-                            STATUS</th>
-                        <th class="px-6 py-4 text-xs font-semibold tracking-wider text-center text-gray-600 uppercase">AKSI
+                        <th class="px-6 py-4 text-xs font-semibold tracking-wider text-center text-gray-600 uppercase w-28">
+                            Status</th>
+                        <th class="px-6 py-4 text-xs font-semibold tracking-wider text-center text-gray-600 uppercase">Aksi
                         </th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200" id="tableBody">
-                    <!-- Dummy Row 1 - Admin -->
-                    <tr class="transition-colors hover:bg-gray-50">
-                        <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">1</td>
-                        <td class="px-6 py-4 text-sm font-semibold text-gray-900">Admin</td>
-                        <td class="px-6 py-4">
-                            <span
-                                class="inline-flex px-3 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">
-                                Admin
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-900">admin_1</td>
-                        <td class="px-6 py-4 text-sm text-gray-900">08192837465</td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                            <span
-                                class="inline-flex items-center px-3 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">
-                                <span class="w-2 h-2 mr-2 bg-green-500 rounded-full"></span>
-                                Aktif
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                            <div class="flex justify-center gap-2">
-                                <a href="{{ route('owner.user.edit', 1) }}"
-                                    class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
-                                    title="Edit User">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <!-- Dummy Row 2 - Kasir Aktif -->
-                    <tr class="transition-colors hover:bg-gray-50">
-                        <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">2</td>
-                        <td class="px-6 py-4 text-sm font-semibold text-gray-900">Kasir 1</td>
-                        <td class="px-6 py-4">
-                            <span
-                                class="inline-flex px-3 py-1 text-xs font-semibold text-yellow-700 bg-yellow-100 rounded-full">
-                                Kasir
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-900">Kasir_1_1</td>
-                        <td class="px-6 py-4 text-sm text-gray-900">08567891234</td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                            <span
-                                class="inline-flex items-center px-3 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">
-                                <span class="w-2 h-2 mr-2 bg-green-500 rounded-full"></span>
-                                Aktif
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                            <div class="flex justify-center gap-2">
-                                <a href="{{ route('owner.user.edit', 2) }}"
-                                    class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
-                                    title="Edit User">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <!-- Dummy Row 3 - Kasir Aktif (contoh warna oranye untuk Kasir) -->
-                    <tr class="transition-colors hover:bg-gray-50">
-                        <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">3</td>
-                        <td class="px-6 py-4 text-sm font-semibold text-gray-900">Aduy Neste</td>
-                        <td class="px-6 py-4">
-                            <span
-                                class="inline-flex px-3 py-1 text-xs font-semibold text-yellow-700 bg-yellow-100 rounded-full">
-                                Kasir
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-900">aduy_kasir</td>
-                        <td class="px-6 py-4 text-sm text-gray-900">08567891234</td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                            <span
-                                class="inline-flex items-center px-3 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">
-                                <span class="w-2 h-2 mr-2 bg-green-500 rounded-full"></span>
-                                Aktif
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                            <div class="flex justify-center gap-2">
-                                <a href="{{ route('owner.user.edit', 3) }}"
-                                    class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
-                                    title="Edit User">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <!-- Dummy Row 4 - Kasir Nonaktif -->
-                    <tr class="transition-colors hover:bg-gray-50">
-                        <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">4</td>
-                        <td class="px-6 py-4 text-sm font-semibold text-gray-900">Budi Santoso</td>
-                        <td class="px-6 py-4">
-                            <span
-                                class="inline-flex px-3 py-1 text-xs font-semibold text-yellow-700 bg-yellow-100 rounded-full">
-                                Kasir
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-900">budi_kasir</td>
-                        <td class="px-6 py-4 text-sm text-gray-900">087654321098</td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                            <span
-                                class="inline-flex items-center px-3 py-1 text-xs font-semibold text-red-700 bg-red-100 rounded-full">
-                                <span class="w-2 h-2 mr-2 bg-red-500 rounded-full"></span>
-                                Nonaktif
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                            <div class="flex justify-center gap-2">
-                                <a href="{{ route('owner.user.edit', 4) }}"
-                                    class="p-2 text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
-                                    title="Edit User">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <!-- Tambah dummy lain sesuai kebutuhan (total 7) -->
+                    @include('owner.user._table')
                 </tbody>
             </table>
         </div>
 
-        <!-- Pagination -->
         <div class="flex flex-col items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50 sm:flex-row">
             <div class="mb-4 text-sm text-gray-600 sm:mb-0">
-                Menampilkan <span class="font-semibold text-gray-900">1-4</span> dari <span id="totalShown"
-                    class="font-semibold text-gray-900">7</span> data
+                Menampilkan <span id="pageInfo" class="font-semibold text-gray-900">
+                    {{ $users->firstItem() ?? 0 }}-{{ $users->lastItem() ?? 0 }}
+                </span> dari
+                <span id="totalDataFooter" class="font-semibold text-gray-900">{{ $users->total() }}</span> user
             </div>
-            <div class="flex items-center gap-2">
-                <button
-                    class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled>
-                    <i class="fas fa-chevron-left"></i> Previous
-                </button>
-                <button
-                    class="px-4 py-2 text-sm font-medium text-white transition-colors bg-green-600 border border-green-600 rounded-lg hover:bg-green-700">
-                    1
-                </button>
-                <button
-                    class="px-4 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
-                    2
-                </button>
-                <button
-                    class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
-                    Next <i class="fas fa-chevron-right"></i>
-                </button>
+            <div class="flex items-center gap-2" id="paginationContainer">
+                @include('owner.user._pagination')
             </div>
         </div>
     </div>
@@ -298,48 +140,145 @@
 
 @push('scripts')
     <script>
-        // Fungsi filter (search + status + role)
-        function applyFilters() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-            const statusVal = document.getElementById('statusFilter').value.toLowerCase();
-            const roleVal = document.getElementById('roleFilter').value.toLowerCase();
+        let currentPage = 1;
+        let currentSearch = '';
+        let currentStatus = '';
+        let currentRole = '';
+        let searchTimer = null;
 
-            let visibleCount = 0;
+        function loadData(page = 1, search = '', status = '', role = '') {
+            currentPage = page;
+            currentSearch = search;
+            currentStatus = status;
+            currentRole = role;
 
-            document.querySelectorAll('#tableBody tr').forEach(row => {
-                const text = row.textContent.toLowerCase();
-                const statusBadge = row.querySelector('td:nth-child(6) span')?.textContent.toLowerCase().trim() ||
-                    '';
-                const roleBadge = row.querySelector('td:nth-child(3) span')?.textContent.toLowerCase().trim() || '';
+            $.ajax({
+                url: '{{ route('owner.user') }}',
+                method: 'GET',
+                data: {
+                    page,
+                    search,
+                    status,
+                    role
+                },
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                beforeSend: function() {
+                    $('#tableBody').html(`
+                        <tr>
+                            <td colspan="7" class="py-12 text-center text-gray-500">
+                                <i class="mr-2 fas fa-spinner fa-spin"></i> Memuat data...
+                            </td>
+                        </tr>
+                    `);
+                },
+                success: function(res) {
+                    $('#tableBody').html(res.html);
+                    $('#paginationContainer').html(res.pagination);
+                    $('#totalData').text(res.total);
+                    $('#totalDataFooter').text(res.total);
 
-                const matchSearch = text.includes(searchTerm);
-                const matchStatus = statusVal === '' || statusBadge.includes(statusVal);
-                const matchRole = roleVal === '' || roleBadge.includes(roleVal);
+                    if (res.from && res.to) {
+                        $('#pageInfo').text(res.from + '-' + res.to);
+                    } else {
+                        $('#pageInfo').text('0-0');
+                    }
 
-                const show = matchSearch && matchStatus && matchRole;
-                row.style.display = show ? '' : 'none';
-                if (show) visibleCount++;
+                    bindPagination();
+                },
+                error: function() {
+                    $('#tableBody').html(`
+                        <tr>
+                            <td colspan="7" class="py-12 text-center text-red-500">
+                                Gagal memuat data. Silakan coba lagi.
+                            </td>
+                        </tr>
+                    `);
+                }
             });
-
-            document.getElementById('totalData').textContent = visibleCount;
-            document.getElementById('totalShown').textContent = visibleCount;
         }
 
-        // Event listeners
-        document.getElementById('searchInput')?.addEventListener('input', applyFilters);
-        document.getElementById('statusFilter')?.addEventListener('change', applyFilters);
-        document.getElementById('roleFilter')?.addEventListener('change', applyFilters);
+        function bindPagination() {
+            $(document).off('click', '.pagination-link')
+                .on('click', '.pagination-link', function(e) {
+                    e.preventDefault();
+                    const page = $(this).data('page');
+                    if (page) loadData(page, currentSearch, currentStatus, currentRole);
+                });
+        }
 
-        // Tombol Terapkan & Reset
-        document.getElementById('btnFilter')?.addEventListener('click', applyFilters);
-        document.getElementById('btnReset')?.addEventListener('click', function() {
-            document.getElementById('searchInput').value = '';
-            document.getElementById('statusFilter').value = '';
-            document.getElementById('roleFilter').value = '';
-            applyFilters();
+        $('#searchInput').on('input', function() {
+            clearTimeout(searchTimer);
+            const term = $(this).val().trim();
+            searchTimer = setTimeout(() => {
+                loadData(1, term, currentStatus, currentRole);
+            }, 400);
         });
 
-        // Initial apply
-        applyFilters();
+        $('#statusFilter').on('change', function() {
+            currentStatus = $(this).val();
+            loadData(1, currentSearch, currentStatus, currentRole);
+        });
+
+        $('#roleFilter').on('change', function() {
+            currentRole = $(this).val();
+            loadData(1, currentSearch, currentStatus, currentRole);
+        });
+
+        $('#btnReset').on('click', function() {
+            $('#searchInput').val('');
+            $('#statusFilter').val('');
+            $('#roleFilter').val('');
+            currentSearch = '';
+            currentStatus = '';
+            currentRole = '';
+            loadData(1, '', '', '');
+        });
+
+        $(document).ready(function() {
+            loadData(1, '{{ $search ?? '' }}', '{{ $status ?? '' }}', '{{ $role ?? '' }}');
+
+            @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sukses!',
+                    text: '{{ session('success') }}',
+                    confirmButtonColor: '#10b981'
+                });
+            @endif
+
+            @if (session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: '{{ session('error') }}',
+                    confirmButtonColor: '#ef4444'
+                });
+            @endif
+        });
+
+        function toggleUserStatus(userId) {
+            const row = document.querySelector(`tr[data-user-id="${userId}"]`);
+            const userName = row.dataset.nama;
+            const curStatus = row.dataset.status;
+            const newStatus = curStatus === 'aktif' ? 'Nonaktif' : 'Aktif';
+
+            Swal.fire({
+                title: 'Yakin?',
+                text: `Ubah status "${userName}" menjadi ${newStatus}?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#10b981',
+                cancelButtonColor: '#ef4444',
+                confirmButtonText: `Ya, ${newStatus.toLowerCase()}kan!`,
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/owner/user/${userId}/toggle-status`;
+                }
+            });
+        }
     </script>
 @endpush

@@ -29,7 +29,7 @@
     <!-- Filter & Search Section -->
     <div class="p-6 mb-6 bg-white border border-gray-200 rounded-lg shadow-sm">
         <div class="grid grid-cols-1 gap-4 md:grid-cols-5 md:gap-4">
-            <!-- Search - span 3 biar full width dominan & mentok -->
+            <!-- Search -->
             <div class="md:col-span-3">
                 <label class="block mb-2 text-sm font-semibold text-gray-700">
                     <i class="mr-1 text-green-600 fas fa-search"></i>
@@ -37,6 +37,7 @@
                 </label>
                 <div class="relative">
                     <input type="text" id="searchInput" placeholder="Cari berdasarkan user atau deskripsi aktivitas..."
+                        value="{{ $search ?? '' }}"
                         class="w-full px-4 py-2.5 pl-10 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <i class="text-gray-400 fas fa-search"></i>
@@ -53,12 +54,12 @@
                 <select id="roleFilter"
                     class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
                     <option value="">Semua Role</option>
-                    <option value="admin">Admin</option>
-                    <option value="kasir">Kasir</option>
+                    <option value="admin" {{ ($role ?? '') === 'admin' ? 'selected' : '' }}>Admin</option>
+                    <option value="kasir" {{ ($role ?? '') === 'kasir' ? 'selected' : '' }}>Kasir</option>
                 </select>
             </div>
 
-            <!-- Reset - pojok kanan banget, nempel di ujung grid -->
+            <!-- Reset -->
             <div class="flex items-end justify-end md:col-span-1">
                 <button id="btnReset"
                     class="flex items-center px-6 py-2.5 text-gray-700 transition-all duration-200 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 shadow-sm">
@@ -71,7 +72,7 @@
 
     <!-- Table Section -->
     <div class="overflow-hidden bg-white border border-gray-200 rounded-lg shadow-sm">
-        <!-- Table Header with Info -->
+        <!-- Table Header -->
         <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gray-50">
             <div class="flex items-center">
                 <div class="flex items-center justify-center w-10 h-10 mr-3 bg-green-100 rounded-lg">
@@ -80,22 +81,8 @@
                 <div>
                     <h3 class="text-lg font-semibold text-gray-800">Riwayat Aktivitas Admin & Kasir</h3>
                     <p class="text-sm text-gray-600">Total: <span id="totalData"
-                            class="font-semibold text-green-600">8</span> aktivitas</p>
+                            class="font-semibold text-green-600">{{ $logs->total() }}</span> aktivitas</p>
                 </div>
-            </div>
-            <div class="flex gap-2">
-                <button class="p-2 text-gray-600 transition-colors rounded-lg hover:bg-gray-100 hover:text-green-600"
-                    title="Export Excel">
-                    <i class="fas fa-file-excel"></i>
-                </button>
-                <button class="p-2 text-gray-600 transition-colors rounded-lg hover:bg-gray-100 hover:text-green-600"
-                    title="Export PDF">
-                    <i class="fas fa-file-pdf"></i>
-                </button>
-                <button class="p-2 text-gray-600 transition-colors rounded-lg hover:bg-gray-100 hover:text-green-600"
-                    title="Print">
-                    <i class="fas fa-print"></i>
-                </button>
             </div>
         </div>
 
@@ -104,169 +91,133 @@
             <table class="w-full">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="w-12 px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
-                            No
+                        <th class="w-12 px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">No
+                        </th>
+                        <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">User
                         </th>
                         <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
-                            User
-                        </th>
-                        <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
-                            Aktivitas
-                        </th>
-                        <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
-                            Waktu
+                            Aktivitas</th>
+                        <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">Waktu
                         </th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200" id="tableBody">
-                    <!-- Dummy Row 1 - Admin -->
-                    <tr class="transition-colors hover:bg-gray-50" data-role="admin">
-                        <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">1</td>
-                        <td class="px-6 py-4 text-sm text-gray-900">Admin Sembako Mart (Admin)</td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">Melakukan login ke sistem</div>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-20 08:03:32</td>
-                    </tr>
-
-                    <!-- Dummy Row 2 - Kasir -->
-                    <tr class="transition-colors hover:bg-gray-50" data-role="kasir">
-                        <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">2</td>
-                        <td class="px-6 py-4 text-sm text-gray-900">Andi Susanto (Kasir)</td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">Memproses transaksi TRX-20260220-001 (Rp 185.000)</div>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-20 09:45:12</td>
-                    </tr>
-
-                    <!-- Dummy Row 3 - Admin -->
-                    <tr class="transition-colors hover:bg-gray-50" data-role="admin">
-                        <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">3</td>
-                        <td class="px-6 py-4 text-sm text-gray-900">Admin Sembako Mart (Admin)</td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">Menambahkan kasir baru: Siti Rahayu</div>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-20 11:45:03</td>
-                    </tr>
-
-                    <!-- Dummy Row 4 - Kasir -->
-                    <tr class="transition-colors hover:bg-gray-50" data-role="kasir">
-                        <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">4</td>
-                        <td class="px-6 py-4 text-sm text-gray-900">Budi Santoso (Kasir)</td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">Melakukan refund transaksi TRX-20260219-002</div>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-20 13:10:55</td>
-                    </tr>
-
-                    <!-- Dummy Row 5 - Admin -->
-                    <tr class="transition-colors hover:bg-gray-50" data-role="admin">
-                        <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">5</td>
-                        <td class="px-6 py-4 text-sm text-gray-900">Admin Sembako Mart (Admin)</td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">Mengubah status kasir Budi Santoso menjadi Nonaktif</div>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-20 14:30:22</td>
-                    </tr>
-
-                    <!-- Dummy Row 6 - Kasir -->
-                    <tr class="transition-colors hover:bg-gray-50" data-role="kasir">
-                        <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">6</td>
-                        <td class="px-6 py-4 text-sm text-gray-900">Siti Rahayu (Kasir)</td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">Memproses transaksi TRX-20260221-004 (Rp 320.000)</div>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-21 09:15:47</td>
-                    </tr>
-
-                    <!-- Dummy Row 7 - Admin -->
-                    <tr class="transition-colors hover:bg-gray-50" data-role="admin">
-                        <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">7</td>
-                        <td class="px-6 py-4 text-sm text-gray-900">Admin Sembako Mart (Admin)</td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">Menambahkan stok produk Minyak Goreng +200 liter</div>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-21 11:12:41</td>
-                    </tr>
-
-                    <!-- Dummy Row 8 - Kasir -->
-                    <tr class="transition-colors hover:bg-gray-50" data-role="kasir">
-                        <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">8</td>
-                        <td class="px-6 py-4 text-sm text-gray-900">Andi Susanto (Kasir)</td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">Melakukan logout dari sistem setelah shift selesai</div>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-21 18:30:12</td>
-                    </tr>
+                    @include('owner.log._table')
                 </tbody>
+
+                {{-- Pagination di dalam table, di bawah tbody --}}
+                <div
+                    class="flex flex-col items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50 sm:flex-row">
+                    <div class="mb-4 text-sm text-gray-600 sm:mb-0">
+                        Menampilkan <span id="pageInfo" class="font-semibold text-gray-900">
+                            {{ $logs->firstItem() }}-{{ $logs->lastItem() }}
+                        </span> dari
+                        <span id="totalDataFooter" class="font-semibold text-gray-900">{{ $logs->total() }}</span>
+                        aktivitas
+                    </div>
+                    <div class="flex items-center gap-2" id="paginationContainer">
+                        @include('owner.log._pagination')
+                    </div>
+                </div>
             </table>
         </div>
 
-        <!-- Table Footer with Pagination -->
-        <div class="flex flex-col items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50 sm:flex-row">
-            <div class="mb-4 text-sm text-gray-600 sm:mb-0">
-                Menampilkan <span class="font-semibold text-gray-900">1-8</span> dari
-                <span id="totalData" class="font-semibold text-gray-900">8</span> aktivitas
-            </div>
-            <div class="flex items-center gap-2">
-                <button
-                    class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled>
-                    <i class="fas fa-chevron-left"></i> Previous
-                </button>
-                <button
-                    class="px-4 py-2 text-sm font-medium text-white transition-colors bg-green-600 border border-green-600 rounded-lg hover:bg-green-700">
-                    1
-                </button>
-                <button
-                    class="px-4 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
-                    2
-                </button>
-                <button
-                    class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
-                    Next <i class="fas fa-chevron-right"></i>
-                </button>
-            </div>
-        </div>
     </div>
 @endsection
 
 @push('scripts')
     <script>
-        // Fungsi filter (search + role)
-        function applyFilters() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-            const roleVal = document.getElementById('roleFilter').value.toLowerCase();
+        let currentPage = 1;
+        let currentSearch = '';
+        let currentRole = '';
+        let searchTimer = null;
 
-            let visibleCount = 0;
+        function loadData(page = 1, search = '', role = '') {
+            currentPage = page;
+            currentSearch = search;
+            currentRole = role;
 
-            document.querySelectorAll('#tableBody tr').forEach(row => {
-                const text = row.textContent.toLowerCase();
-                const rowRole = row.getAttribute('data-role') || '';
+            $.ajax({
+                url: '{{ route('owner.log') }}',
+                method: 'GET',
+                data: {
+                    page,
+                    search,
+                    role
+                },
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                beforeSend: function() {
+                    $('#tableBody').html(`
+                        <tr>
+                            <td colspan="4" class="py-12 text-center text-gray-500">
+                                <i class="mr-2 fas fa-spinner fa-spin"></i> Memuat data...
+                            </td>
+                        </tr>
+                    `);
+                },
+                success: function(res) {
+                    $('#tableBody').html(res.html);
+                    $('#paginationContainer').html(res.pagination);
+                    $('#totalData').text(res.total);
+                    $('#totalDataFooter').text(res.total);
 
-                const matchSearch = text.includes(searchTerm);
-                const matchRole = roleVal === '' || rowRole === roleVal;
+                    if (res.from && res.to) {
+                        $('#pageInfo').text(res.from + '-' + res.to);
+                    } else {
+                        $('#pageInfo').text('0-0');
+                    }
 
-                const show = matchSearch && matchRole;
-                row.style.display = show ? '' : 'none';
-                if (show) visibleCount++;
+                    bindPagination();
+                },
+                error: function() {
+                    $('#tableBody').html(`
+                        <tr>
+                            <td colspan="4" class="py-12 text-center text-red-500">
+                                Gagal memuat data. Silakan coba lagi.
+                            </td>
+                        </tr>
+                    `);
+                }
             });
-
-            document.getElementById('totalData').textContent = visibleCount;
         }
 
-        // Event listeners
-        document.getElementById('searchInput')?.addEventListener('input', applyFilters);
-        document.getElementById('roleFilter')?.addEventListener('change', applyFilters);
+        function bindPagination() {
+            $(document).off('click', '.pagination-link')
+                .on('click', '.pagination-link', function(e) {
+                    e.preventDefault();
+                    const page = $(this).data('page');
+                    if (page) loadData(page, currentSearch, currentRole);
+                });
+        }
 
-        // Reset
-        document.getElementById('btnReset')?.addEventListener('click', function() {
-            document.getElementById('searchInput').value = '';
-            document.getElementById('roleFilter').value = '';
-            applyFilters();
+        // Search debounce
+        $('#searchInput').on('input', function() {
+            clearTimeout(searchTimer);
+            const term = $(this).val().trim();
+            searchTimer = setTimeout(() => {
+                loadData(1, term, currentRole);
+            }, 400);
         });
 
-        // Initial apply
-        applyFilters();
+        // Filter role
+        $('#roleFilter').on('change', function() {
+            loadData(1, currentSearch, $(this).val());
+        });
+
+        // Reset
+        $('#btnReset').on('click', function() {
+            $('#searchInput').val('');
+            $('#roleFilter').val('');
+            currentSearch = '';
+            currentRole = '';
+            loadData(1, '', '');
+        });
+
+        // Initial load
+        $(document).ready(function() {
+            loadData(1, '{{ $search ?? '' }}', '{{ $role ?? '' }}');
+        });
     </script>
 @endpush
