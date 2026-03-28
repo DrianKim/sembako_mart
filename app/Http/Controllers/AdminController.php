@@ -613,11 +613,43 @@ class AdminController extends Controller
             ->with('success', "Status kasir {$kasir->nama} berhasil diubah menjadi {$kasir->status}");
     }
 
-    // Riwayat Transaksi
-    public function riwayatTransaksiIndex()
+    public function riwayatTransaksiIndex(Request $request)
     {
+        $search   = $request->get('search', '');
+        $fromDate = $request->get('from_date', '');
+        $toDate   = $request->get('to_date', '');
+
+        $transaksis = Transaksi::with('kasir')
+            ->when($search, function ($q) use ($search) {
+                $lower = strtolower($search);
+
+                $q->where(function ($q2) use ($lower) {
+                    $q2->whereRaw('LOWER(nama_pelanggan) LIKE ?', ["%{$lower}%"])
+                        ->orWhereRaw('LOWER(nomor_unik) LIKE ?', ["%{$lower}%"])
+                        ->orWhereHas('kasir', function ($q3) use ($lower) {
+                            $q3->whereRaw('LOWER(nama) LIKE ?', ["%{$lower}%"]);
+                        });
+                });
+            })
+            ->when($fromDate, fn($q) => $q->whereDate('tanggal_transaksi', '>=', $fromDate))
+            ->when($toDate,   fn($q) => $q->whereDate('tanggal_transaksi', '<=', $toDate))
+            ->orderBy('tanggal_transaksi', 'desc')
+            ->paginate(5)
+            ->appends(compact('search', 'fromDate', 'toDate'));
+
+        if ($request->ajax()) {
+            return response()->json([
+                'html'       => view('admin.riwayat_transaksi._table', compact('transaksis'))->render(),
+                'pagination' => view('admin.riwayat_transaksi._pagination', compact('transaksis'))->render(),
+                'total'      => $transaksis->total(),
+                'from'       => $transaksis->firstItem() ?? 0,
+                'to'         => $transaksis->lastItem() ?? 0,
+            ]);
+        }
+
         $data = [
-            'title' => 'Riwayat Transaksi',
+            'title'      => 'Riwayat Transaksi',
+            'transaksis' => $transaksis,
         ];
 
         return view('admin.riwayat_transaksi.index', $data);
@@ -625,11 +657,12 @@ class AdminController extends Controller
 
     public function riwayatTransaksiEdit($id)
     {
-        $data = [
-            'title' => 'Detail Transaksi',
-        ];
+        $transaksi = Transaksi::with('kasir')->findOrFail($id);
 
-        return view('admin.riwayat_transaksi.edit', $data);
+        return view('admin.riwayat_transaksi.edit', [
+            'title'      => 'Edit Transaksi',
+            'transaksi'  => $transaksi,
+        ]);
     }
 
     public function riwayatTransaksiUpdate(Request $request, $id)
@@ -640,10 +673,16 @@ class AdminController extends Controller
             'uang_bayar'     => 'nullable|numeric|min:0',
         ]);
 
-        $transaksi = Transaksi::findOrFail($id);
+        // Validasi manual: uang bayar tidak boleh kurang dari total
+        $uang_bayar = $request->uang_bayar ?? 0;
+        if ($uang_bayar < $request->total_harga) {
+            return back()
+                ->withInput()
+                ->withErrors(['uang_bayar' => 'Uang bayar tidak boleh kurang dari total harga.']);
+        }
 
-        $uang_bayar = $request->uang_bayar ?? $transaksi->uang_bayar;
-        $uang_kembali = max(0, $uang_bayar - $request->total_harga);
+        $transaksi    = Transaksi::findOrFail($id);
+        $uang_kembali = $uang_bayar - $request->total_harga;
 
         $transaksi->update([
             'nama_pelanggan' => $request->nama_pelanggan ?? $transaksi->nama_pelanggan,
@@ -657,11 +696,9 @@ class AdminController extends Controller
 
     public function struk($id)
     {
-        $data = [
-            'title' => 'Struk Transaksi',
-        ];
+        $transaksi = Transaksi::with(['kasir', 'detailTransaksi.produk'])->findOrFail($id);
 
-        return view('admin.riwayat_transaksi.struk', $data);
+        return view('admin.riwayat_transaksi.struk', compact('transaksi'));
     }
 
     // Log Aktivitas

@@ -21,7 +21,7 @@ class HideLoginPage
             session()->forget('allow_login_access');
             session(['login_form_opened' => true]);
         }
-
+        
         if ($request->isMethod('POST') && !$formOpened) {
             return redirect('/')->with('error', 'Akses ditolak');
         }

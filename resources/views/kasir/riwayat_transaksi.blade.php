@@ -89,20 +89,6 @@
                             class="font-semibold text-green-600">3</span> transaksi</p>
                 </div>
             </div>
-            <div class="flex gap-2">
-                <button class="p-2 text-gray-600 transition-colors rounded-lg hover:bg-gray-100 hover:text-green-600"
-                    title="Export Excel">
-                    <i class="fas fa-file-excel"></i>
-                </button>
-                <button class="p-2 text-gray-600 transition-colors rounded-lg hover:bg-gray-100 hover:text-green-600"
-                    title="Export PDF">
-                    <i class="fas fa-file-pdf"></i>
-                </button>
-                <button class="p-2 text-gray-600 transition-colors rounded-lg hover:bg-gray-100 hover:text-green-600"
-                    title="Print">
-                    <i class="fas fa-print"></i>
-                </button>
-            </div>
         </div>
 
         <div class="overflow-x-auto">
@@ -118,79 +104,22 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200" id="tableBody">
-                    <!-- Dummy Row 1 -->
-                    <tr class="transition-colors hover:bg-gray-50" data-tanggal="2026-02-20">
-                        <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">1</td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-20 14:45:00</td>
-                        <td class="px-6 py-4 text-sm text-gray-900">Budi</td>
-                        <td class="px-6 py-4 font-mono text-sm text-gray-900">TRX-20260220-001</td>
-                        <td class="px-6 py-4 text-sm font-semibold text-right text-gray-900">Rp 185.000</td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                            <div class="flex justify-center gap-2">
-                                <a href="{{ route('kasir.struk', 1) }}" target="_blank"
-                                    class="p-2 text-green-600 transition-colors rounded-lg bg-green-50 hover:bg-green-100"
-                                    title="Cetak Struk">
-                                    <i class="fas fa-print"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <!-- Dummy Row 2 -->
-                    <tr class="transition-colors hover:bg-gray-50" data-tanggal="2026-02-19">
-                        <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">2</td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-19 15:30:22</td>
-                        <td class="px-6 py-4 text-sm text-gray-900">Ani</td>
-                        <td class="px-6 py-4 font-mono text-sm text-gray-900">TRX-20260219-002</td>
-                        <td class="px-6 py-4 text-sm font-semibold text-right text-gray-900">Rp 92.500</td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                            <div class="flex justify-center gap-2">
-                                <a href="{{ route('kasir.struk', 2) }}" target="_blank"
-                                    class="p-2 text-green-600 transition-colors rounded-lg bg-green-50 hover:bg-green-100"
-                                    title="Cetak Struk">
-                                    <i class="fas fa-print"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <!-- Dummy Row 3 -->
-                    <tr class="transition-colors hover:bg-gray-50" data-tanggal="2026-02-15">
-                        <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">3</td>
-                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">2026-02-15 16:10:55</td>
-                        <td class="px-6 py-4 text-sm text-gray-900">Rina</td>
-                        <td class="px-6 py-4 font-mono text-sm text-gray-900">TRX-20260215-003</td>
-                        <td class="px-6 py-4 text-sm font-semibold text-right text-gray-900">Rp 450.000</td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                            <div class="flex justify-center gap-2">
-                                <a href="{{ route('kasir.struk', 3) }}" target="_blank"
-                                    class="p-2 text-green-600 transition-colors rounded-lg bg-green-50 hover:bg-green-100"
-                                    title="Cetak Struk">
-                                    <i class="fas fa-print"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
+                    @include('kasir._riwayat_table')
                 </tbody>
             </table>
         </div>
 
-        <!-- Pagination Dummy -->
+        <!-- Pagination -->
         <div
             class="flex flex-col items-center justify-between px-6 py-4 text-sm text-gray-600 border-t bg-gray-50 sm:flex-row">
-            <div class="mb-4 sm:mb-0">Menampilkan <span class="font-semibold text-gray-900">1-3</span> dari <span
-                    id="totalShown" class="font-semibold text-gray-900">3</span> transaksi</div>
-            <div class="flex items-center gap-2">
-                <button class="px-3 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
-                    disabled>
-                    <i class="fas fa-chevron-left"></i> Previous
-                </button>
-                <button
-                    class="px-4 py-2 text-white bg-green-600 border border-green-600 rounded-lg hover:bg-green-700">1</button>
-                <button class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">2</button>
-                <button class="px-3 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
-                    Next <i class="fas fa-chevron-right"></i>
-                </button>
+            <div class="mb-4 sm:mb-0">
+                Menampilkan <span id="pageInfo" class="font-semibold text-gray-900">
+                    {{ $transaksis->firstItem() ?? 0 }}-{{ $transaksis->lastItem() ?? 0 }}
+                </span> dari
+                <span id="totalTransaksi" class="font-semibold text-green-600">{{ $transaksis->total() }}</span> transaksi
+            </div>
+            <div class="flex items-center gap-2" id="paginationContainer">
+                @include('kasir._riwayat_pagination')
             </div>
         </div>
     </div>
@@ -198,63 +127,97 @@
 
 @push('scripts')
     <script>
-        // Fungsi utama filter (search + tanggal range)
-        function applyFilters() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-            const fromDateVal = document.getElementById('fromDate').value; // YYYY-MM-DD
-            const toDateVal = document.getElementById('toDate').value;
+        let currentPage = 1;
+        let searchTimer = null;
 
-            let visibleCount = 0;
-
-            document.querySelectorAll('#tableBody tr').forEach(row => {
-                const text = row.textContent.toLowerCase();
-                const rowTanggal = row.getAttribute('data-tanggal') || ''; // ambil dari attribute
-
-                const matchSearch = text.includes(searchTerm);
-
-                let matchTanggal = true;
-                if (fromDateVal || toDateVal) {
-                    const rowDate = new Date(rowTanggal);
-
-                    if (fromDateVal) {
-                        const fromDate = new Date(fromDateVal);
-                        matchTanggal = matchTanggal && rowDate >= fromDate;
-                    }
-
-                    if (toDateVal) {
-                        const toDate = new Date(toDateVal);
-                        toDate.setHours(23, 59, 59, 999); // sampai akhir hari
-                        matchTanggal = matchTanggal && rowDate <= toDate;
-                    }
-                }
-
-                const show = matchSearch && matchTanggal;
-                row.style.display = show ? '' : 'none';
-                if (show) visibleCount++;
-            });
-
-            // Update total transaksi yang tampil
-            document.getElementById('totalTransaksi').textContent = visibleCount;
-            document.getElementById('totalShown').textContent = visibleCount;
+        function getFilters() {
+            return {
+                page: currentPage,
+                search: $('#searchInput').val(),
+                from_date: $('#fromDate').val(),
+                to_date: $('#toDate').val(),
+            };
         }
 
-        // Event listeners
-        document.getElementById('searchInput')?.addEventListener('input', applyFilters);
-        document.getElementById('fromDate')?.addEventListener('change', applyFilters);
-        document.getElementById('toDate')?.addEventListener('change', applyFilters);
+        function loadData(page = 1) {
+            currentPage = page;
 
-        // Tombol Terapkan (manual apply)
-        document.getElementById('btnFilter')?.addEventListener('click', applyFilters);
+            $.ajax({
+                url: '{{ route('kasir.riwayat_transaksi') }}',
+                method: 'GET',
+                data: getFilters(),
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                beforeSend: function() {
+                    $('#tableBody').html(`
+                    <tr>
+                        <td colspan="6" class="py-10 text-center text-gray-500">
+                            <i class="mr-2 fas fa-spinner fa-spin"></i> Memuat data...
+                        </td>
+                    </tr>
+                `);
+                },
+                success: function(res) {
+                    $('#tableBody').html(res.html);
+                    $('#paginationContainer').html(res.pagination);
+                    $('#totalTransaksi').text(res.total);
+                    $('#pageInfo').text((res.from ?? 0) + '-' + (res.to ?? 0));
+                    bindPagination();
+                },
+                error: function() {
+                    $('#tableBody').html(`
+                    <tr>
+                        <td colspan="6" class="py-10 text-center text-red-500">
+                            Gagal memuat data.
+                        </td>
+                    </tr>
+                `);
+                }
+            });
+        }
 
-        // Reset semua filter
-        document.getElementById('btnReset')?.addEventListener('click', function() {
-            document.getElementById('searchInput').value = '';
-            document.getElementById('fromDate').value = '';
-            document.getElementById('toDate').value = '';
-            applyFilters();
+        function bindPagination() {
+            $(document).off('click', '.pagination-link').on('click', '.pagination-link', function(e) {
+                e.preventDefault();
+                loadData($(this).data('page'));
+            });
+        }
+
+        // Search debounce
+        $('#searchInput').on('input', function() {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => loadData(1), 400);
         });
 
-        // Initial apply
-        applyFilters();
+        // Validasi range tanggal
+        $('#fromDate').on('change', function() {
+            const fromVal = $(this).val();
+            $('#toDate').attr('min', fromVal || '');
+
+            // Kalau toDate sudah diisi tapi lebih kecil dari fromDate, reset toDate
+            if ($('#toDate').val() && $('#toDate').val() < fromVal) {
+                $('#toDate').val(fromVal);
+            }
+
+            loadData(1);
+        });
+
+        $('#toDate').on('change', function() {
+            const toVal = $(this).val();
+            $('#fromDate').attr('max', toVal || '');
+            loadData(1);
+        });
+
+        // Reset
+        $('#btnReset').on('click', function() {
+            $('#searchInput').val('');
+            $('#fromDate').val('').removeAttr('max');
+            $('#toDate').val('').removeAttr('min');
+            loadData(1);
+        });
+
+        // Init
+        bindPagination();
     </script>
 @endpush

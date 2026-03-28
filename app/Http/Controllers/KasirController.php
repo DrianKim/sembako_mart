@@ -34,7 +34,7 @@ class KasirController extends Controller
     public function getProduk(Request $request)
     {
         $search = $request->search;
-        $stokFilter = $request->stok_filter; 
+        $stokFilter = $request->stok_filter;
 
         $query = Produk::with('kategori')
             ->select('id', 'nama_produk', 'harga_jual', 'stok', 'satuan', 'barcode', 'foto')
@@ -144,11 +144,43 @@ class KasirController extends Controller
     }
 
     // Riwayat Transaksi
-    public function riwayatTransaksi()
+    public function riwayatTransaksi(Request $request)
     {
+        $search   = $request->get('search', '');
+        $fromDate = $request->get('from_date', '');
+        $toDate   = $request->get('to_date', '');
+
+        $transaksis = Transaksi::with('kasir')
+            ->where('kasir_id', Auth::id())
+            ->when($search, function ($q) use ($search) {
+                $lower = strtolower($search);
+
+                $q->where(function ($q2) use ($lower) {
+                    $q2->whereRaw('LOWER(nama_pelanggan) LIKE ?', ["%{$lower}%"])
+                        ->orWhereRaw('LOWER(nomor_unik) LIKE ?', ["%{$lower}%"]);
+                });
+            })
+            ->when($fromDate, fn($q) => $q->whereDate('tanggal_transaksi', '>=', $fromDate))
+            ->when($toDate,   fn($q) => $q->whereDate('tanggal_transaksi', '<=', $toDate))
+            ->orderBy('tanggal_transaksi', 'desc')
+            ->paginate(10)
+            ->appends(compact('search', 'fromDate', 'toDate'));
+
+        if ($request->ajax()) {
+            return response()->json([
+                'html'       => view('kasir._riwayat_table', compact('transaksis'))->render(),
+                'pagination' => view('kasir._riwayat_pagination', compact('transaksis'))->render(),
+                'total'      => $transaksis->total(),
+                'from'       => $transaksis->firstItem() ?? 0,
+                'to'         => $transaksis->lastItem() ?? 0,
+            ]);
+        }
+
         $data = [
-            'title' => 'Riwayat Transaksi',
+            'title'      => 'Riwayat Transaksi',
+            'transaksis' => $transaksis,
         ];
+
         return view('kasir.riwayat_transaksi', $data);
     }
 
