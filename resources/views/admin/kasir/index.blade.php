@@ -3,30 +3,24 @@
 @section('page-description', 'Halaman untuk mengelola data kasir.')
 
 @section('content')
-    <!-- Breadcrumb & Header -->
+    <!-- Breadcrumb -->
     <section class="mb-6">
-        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <nav class="flex mb-4 md:mb-0" aria-label="Breadcrumb">
-                <ol class="inline-flex items-center space-x-1 md:space-x-3">
-                    <li class="inline-flex items-center">
-                        <a href="{{ route('admin.dashboard') }}"
-                            class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-green-600">
-                            <i class="w-4 h-4 mr-2 fas fa-home"></i> Dashboard
-                        </a>
-                    </li>
-                    <li aria-current="page">
-                        <div class="flex items-center">
-                            <i class="w-6 h-6 text-gray-400 fas fa-chevron-right"></i>
-                            <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">Kasir</span>
-                        </div>
-                    </li>
-                </ol>
-            </nav>
-            <a href="{{ route('admin.kasir.create') }}"
-                class="flex items-center px-4 py-2.5 text-white bg-gradient-to-r from-green-600 to-green-500 rounded-lg shadow-md hover:shadow-lg hover:from-green-700 hover:to-green-600">
-                <i class="mr-2 fas fa-plus"></i> Tambah Kasir
-            </a>
-        </div>
+        <nav class="flex" aria-label="Breadcrumb">
+            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                <li class="inline-flex items-center">
+                    <a href="{{ route('admin.dashboard') }}"
+                        class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-green-600">
+                        <i class="w-4 h-4 mr-2 fas fa-home"></i> Dashboard
+                    </a>
+                </li>
+                <li aria-current="page">
+                    <div class="flex items-center">
+                        <i class="w-6 h-6 text-gray-400 fas fa-chevron-right"></i>
+                        <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">Kasir</span>
+                    </div>
+                </li>
+            </ol>
+        </nav>
     </section>
 
     <!-- Filter & Search -->
@@ -60,8 +54,8 @@
                 </select>
             </div>
 
-            <!-- Reset Button -->
-            <div class="flex items-end justify-end space-x-2 md:col-span-1">
+            <!-- Reset -->
+            <div class="flex items-end justify-end md:col-span-1">
                 <button id="btnReset"
                     class="flex items-center px-4 py-2.5 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all">
                     <i class="mr-2 fas fa-redo"></i> Reset
@@ -84,6 +78,12 @@
                     </p>
                 </div>
             </div>
+
+            <!-- Button Tambah Kasir -->
+            <a href="{{ route('admin.kasir.create') }}"
+                class="flex items-center px-5 py-2.5 text-white bg-gradient-to-r from-green-600 to-green-500 rounded-lg shadow-md hover:shadow-lg hover:from-green-700 hover:to-green-600 transition-all duration-200">
+                <i class="mr-2 fas fa-plus"></i> Tambah Kasir
+            </a>
         </div>
 
         <div class="overflow-x-auto">

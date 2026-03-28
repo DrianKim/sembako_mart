@@ -3,43 +3,31 @@
 @section('page-description', 'Halaman untuk mengelola produk.')
 
 @section('content')
-    <!-- Breadcrumb & Header Section -->
+    <!-- Breadcrumb -->
     <section class="mb-6">
-        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <!-- Breadcrumb -->
-            <nav class="flex mb-4 md:mb-0" aria-label="Breadcrumb">
-                <ol class="inline-flex items-center space-x-1 md:space-x-3">
-                    <li class="inline-flex items-center">
-                        <a href="{{ route('admin.dashboard') }}"
-                            class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-green-600">
-                            <i class="w-4 h-4 mr-2 fas fa-home"></i>
-                            Dashboard
-                        </a>
-                    </li>
-                    <li aria-current="page">
-                        <div class="flex items-center">
-                            <i class="w-6 h-6 text-gray-400 fas fa-chevron-right"></i>
-                            <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">Produk</span>
-                        </div>
-                    </li>
-                </ol>
-            </nav>
-
-            <!-- Create Button -->
-            <a href="{{ route('admin.produk.create') }}"
-                class="flex items-center px-4 py-2.5 text-white transition-all duration-200 bg-gradient-to-r from-green-600 to-green-500 rounded-lg shadow-md hover:shadow-lg hover:from-green-700 hover:to-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                Tambah Produk
-            </a>
-        </div>
+        <nav class="flex" aria-label="Breadcrumb">
+            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                <li class="inline-flex items-center">
+                    <a href="{{ route('admin.dashboard') }}"
+                        class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-green-600">
+                        <i class="w-4 h-4 mr-2 fas fa-home"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li aria-current="page">
+                    <div class="flex items-center">
+                        <i class="w-6 h-6 text-gray-400 fas fa-chevron-right"></i>
+                        <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">Produk</span>
+                    </div>
+                </li>
+            </ol>
+        </nav>
     </section>
 
     <!-- Filter & Search Section -->
     <div class="p-6 mb-6 bg-white border border-gray-200 rounded-lg shadow-sm">
         <div class="grid grid-cols-1 gap-4 md:grid-cols-4 md:gap-4">
-            <!-- Search - span 3 biar lebar dominan -->
+            <!-- Search -->
             <div class="md:col-span-3">
                 <label class="block mb-2 text-sm font-semibold text-gray-700">
                     <i class="mr-1 text-green-600 fas fa-search"></i>
@@ -54,7 +42,7 @@
                 </div>
             </div>
 
-            <!-- Reset - satu jajar nempel di kanan search -->
+            <!-- Reset -->
             <div class="flex items-end justify-end md:col-span-1">
                 <button id="btnReset"
                     class="flex items-center px-6 py-2.5 text-gray-700 transition-all duration-200 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 shadow-sm">
@@ -67,7 +55,7 @@
 
     <!-- Table Section -->
     <div class="overflow-hidden bg-white border border-gray-200 rounded-lg shadow-sm">
-        <!-- Table Header with Info -->
+        <!-- Table Header with Info + Button -->
         <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gray-50">
             <div class="flex items-center">
                 <div class="flex items-center justify-center w-10 h-10 mr-3 bg-green-100 rounded-lg">
@@ -76,9 +64,18 @@
                 <div>
                     <h3 class="text-lg font-semibold text-gray-800">Daftar Produk</h3>
                     <p class="text-sm text-gray-600">Total: <span id="totalData"
-                            class="font-semibold text-green-600">{{ $produks->total() }}</span> produk</span></p>
+                            class="font-semibold text-green-600">{{ $produks->total() }}</span> produk</p>
                 </div>
             </div>
+
+            <!-- Button Tambah Produk -->
+            <a href="{{ route('admin.produk.create') }}"
+                class="flex items-center px-5 py-2.5 text-white bg-gradient-to-r from-green-600 to-green-500 rounded-lg shadow-md hover:shadow-lg hover:from-green-700 hover:to-green-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Tambah Produk
+            </a>
         </div>
 
         <!-- Table -->

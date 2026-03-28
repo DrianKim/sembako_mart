@@ -3,33 +3,24 @@
 @section('page-description', 'Halaman untuk mengelola kategori produk.')
 
 @section('content')
+    <!-- Breadcrumb -->
     <section class="mb-6">
-        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <nav class="flex mb-4 md:mb-0" aria-label="Breadcrumb">
-                <ol class="inline-flex items-center space-x-1 md:space-x-3">
-                    <li class="inline-flex items-center">
-                        <a href="{{ route('admin.dashboard') }}"
-                            class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-green-600">
-                            <i class="w-4 h-4 mr-2 fas fa-home"></i> Dashboard
-                        </a>
-                    </li>
-                    <li aria-current="page">
-                        <div class="flex items-center">
-                            <i class="w-6 h-6 text-gray-400 fas fa-chevron-right"></i>
-                            <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">Kategori Produk</span>
-                        </div>
-                    </li>
-                </ol>
-            </nav>
-
-            <a href="{{ route('admin.kategori.create') }}"
-                class="flex items-center px-4 py-2.5 text-white bg-gradient-to-r from-green-600 to-green-500 rounded-lg shadow-md hover:shadow-lg hover:from-green-700 hover:to-green-600">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                Tambah Kategori
-            </a>
-        </div>
+        <nav class="flex" aria-label="Breadcrumb">
+            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                <li class="inline-flex items-center">
+                    <a href="{{ route('admin.dashboard') }}"
+                        class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-green-600">
+                        <i class="w-4 h-4 mr-2 fas fa-home"></i> Dashboard
+                    </a>
+                </li>
+                <li aria-current="page">
+                    <div class="flex items-center">
+                        <i class="w-6 h-6 text-gray-400 fas fa-chevron-right"></i>
+                        <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">Kategori Produk</span>
+                    </div>
+                </li>
+            </ol>
+        </nav>
     </section>
 
     <!-- Search Section -->
@@ -79,6 +70,15 @@
                     </p>
                 </div>
             </div>
+
+            <!-- Button Tambah Kategori -->
+            <a href="{{ route('admin.kategori.create') }}"
+                class="flex items-center px-5 py-2.5 text-white bg-gradient-to-r from-green-600 to-green-500 rounded-lg shadow-md hover:shadow-lg hover:from-green-700 hover:to-green-600 transition-all duration-200">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Tambah Kategori
+            </a>
         </div>
 
         <div class="overflow-x-auto">
