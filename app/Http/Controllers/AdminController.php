@@ -303,7 +303,7 @@ class AdminController extends Controller
 
         $fotoPath = $produk->foto;
         if ($request->hasFile('foto')) {
-            // Hapus foto lama dari Supabase (optional)
+            // Hapus foto lama dari Supabase 
             if ($produk->foto) {
                 $this->deleteFromSupabase($produk->foto);
             }
@@ -603,6 +603,7 @@ class AdminController extends Controller
         $kasir->save();
 
         $oldStatus = $kasir->status == 'aktif' ? 'nonaktif' : 'aktif';
+
         Log::create([
             'id_user'   => auth()->id(),
             'aktivitas' => "User " . auth()->user()->nama . " Mengubah status kasir (Kasir: {$kasir->nama}): {$oldStatus} -> {$kasir->status}",
@@ -684,11 +685,26 @@ class AdminController extends Controller
         $transaksi    = Transaksi::findOrFail($id);
         $uang_kembali = $uang_bayar - $request->total_harga;
 
+        $oldNama  = $transaksi->nama_pelanggan;
+        $oldTotal = $transaksi->total_harga;
+        $oldBayar = $transaksi->uang_bayar;
+        $kode     = $transaksi->nomor_unik;
+
         $transaksi->update([
             'nama_pelanggan' => $request->nama_pelanggan ?? $transaksi->nama_pelanggan,
             'total_harga'    => $request->total_harga,
             'uang_bayar'     => $uang_bayar,
             'uang_kembali'   => $uang_kembali,
+        ]);
+
+        Log::create([
+            'id_user'   => auth()->id(),
+            'aktivitas' => "User " . auth()->user()->nama .
+                " mengubah transaksi (Kode: {$kode}) | " .
+                "Nama: {$oldNama} -> {$transaksi->nama_pelanggan}, " .
+                "Total: {$oldTotal} -> {$transaksi->total_harga}, " .
+                "Bayar: {$oldBayar} -> {$transaksi->uang_bayar}",
+            'waktu'     => now(),
         ]);
 
         return redirect()->route('admin.riwayat_transaksi')->with('success', 'Transaksi berhasil diperbarui!');

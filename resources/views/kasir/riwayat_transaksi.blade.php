@@ -29,7 +29,7 @@
     <!-- Filter & Search -->
     <div class="p-6 mb-6 bg-white border border-gray-200 rounded-lg shadow-sm">
         <div class="grid grid-cols-1 gap-4 md:grid-cols-5 md:gap-4">
-            <!-- Search - span 2 biar lebar dominan -->
+            <!-- Search -->
             <div class="md:col-span-2">
                 <label class="block mb-2 text-sm font-semibold text-gray-700">
                     <i class="mr-1 text-green-600 fas fa-search"></i>
@@ -65,7 +65,7 @@
                     class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
             </div>
 
-            <!-- Reset - pojok kanan banget, nempel di ujung grid -->
+            <!-- Reset -->
             <div class="flex items-end justify-end md:col-span-1">
                 <button id="btnReset"
                     class="flex items-center px-6 py-2.5 text-gray-700 transition-all duration-200 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 shadow-sm">

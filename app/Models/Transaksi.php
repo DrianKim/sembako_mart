@@ -18,7 +18,7 @@ class Transaksi extends Model
         'uang_kembali',
     ];
 
-    // === CASTING ===
+    // CASTING
     protected $casts = [
         'tanggal_transaksi' => 'datetime',
         'total_harga'       => 'decimal:2',

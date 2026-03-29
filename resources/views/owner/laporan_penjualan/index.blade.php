@@ -184,7 +184,7 @@
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // === Init Chart ===
+        // Init Chart
         const ctx = document.getElementById('omzetChart').getContext('2d');
         let omzetChart = new Chart(ctx, {
             type: 'line',
@@ -234,7 +234,7 @@
             }
         });
 
-        // === State ===
+        // State
         let currentPage = 1;
         let filterTimer = null;
 
@@ -309,7 +309,7 @@
                 });
         }
 
-        // === Date validation helpers ===
+        // Date validation helpers
         function validateDates() {
             const fromVal = $('#fromDate').val();
             const toVal = $('#toDate').val();
@@ -348,7 +348,7 @@
             $('#toDate').closest('.md\\:col-span-1').append(el);
         }
 
-        // === Filter listeners ===
+        // Filter listeners
         $('#periodeFilter, #kasirFilter').on('change', function() {
             clearTimeout(filterTimer);
             filterTimer = setTimeout(() => loadData(1), 400);
@@ -366,7 +366,7 @@
             filterTimer = setTimeout(() => loadData(1), 400);
         });
 
-        // Reset — bersihin semua constraint juga
+        // Reset
         $('#btnReset').on('click', function() {
             $('#periodeFilter').val('bulanan');
             $('#fromDate').val('').removeAttr('max');

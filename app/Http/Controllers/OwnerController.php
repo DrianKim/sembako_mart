@@ -60,7 +60,7 @@ class OwnerController extends Controller
         return view('owner.produk.index', $data);
     }
 
-    // User Management (Owner)
+    // User Management
     public function userIndex(Request $request)
     {
         $search       = $request->get('search');
@@ -237,13 +237,13 @@ class OwnerController extends Controller
             $to   = \Carbon\Carbon::parse($toDate)->endOfDay();
         }
 
-        // === Base query transaksi ===
+        // Base query transaksi
         $query = Transaksi::with(['kasir', 'detailTransaksi.produk'])
             ->whereBetween('tanggal_transaksi', [$from, $to])
             ->when($kasirId, fn($q) => $q->where('kasir_id', $kasirId))
             ->latest('tanggal_transaksi');
 
-        // === Summary cards ===
+        // Summary cards
         $summaryQuery = Transaksi::whereBetween('tanggal_transaksi', [$from, $to])
             ->when($kasirId, fn($q) => $q->where('kasir_id', $kasirId));
 
@@ -251,7 +251,7 @@ class OwnerController extends Controller
         $jumlahTransaksi  = $summaryQuery->count();
         $rataRata         = $jumlahTransaksi > 0 ? $totalPenjualan / $jumlahTransaksi : 0;
 
-        // === Produk terlaris ===
+        // Produk terlaris
         $produkTerlaris = \App\Models\DetailTransaksi::selectRaw('produk_id, SUM(qty) as total_qty')
             ->whereHas('transaksi', function ($q) use ($from, $to, $kasirId) {
                 $q->whereBetween('tanggal_transaksi', [$from, $to]);
@@ -262,7 +262,7 @@ class OwnerController extends Controller
             ->orderByDesc('total_qty')
             ->first();
 
-        // === Kasir terbaik ===
+        // Kasir terbaik
         $kasirTerbaik = Transaksi::selectRaw('kasir_id, SUM(total_harga) as total_omzet')
             ->whereBetween('tanggal_transaksi', [$from, $to])
             ->when($kasirId, fn($q) => $q->where('kasir_id', $kasirId))
@@ -271,7 +271,7 @@ class OwnerController extends Controller
             ->orderByDesc('total_omzet')
             ->first();
 
-        // === Data grafik (group by tanggal) ===
+        // Data grafik (group by tanggal)
         $grafikData = Transaksi::selectRaw('DATE(tanggal_transaksi) as tanggal, SUM(total_harga) as total')
             ->whereBetween('tanggal_transaksi', [$from, $to])
             ->when($kasirId, fn($q) => $q->where('kasir_id', $kasirId))
@@ -282,10 +282,10 @@ class OwnerController extends Controller
         $grafikLabels = $grafikData->pluck('tanggal')->map(fn($d) => \Carbon\Carbon::parse($d)->format('d M'))->toArray();
         $grafikOmzet  = $grafikData->pluck('total')->map(fn($v) => (float) $v)->toArray();
 
-        // === Tabel transaksi paginasi ===
+        // Tabel transaksi paginasi
         $transaksis = $query->paginate(10)->appends($request->query());
 
-        // === Daftar kasir untuk dropdown ===
+        // Daftar kasir untuk dropdown
         $kasirs = User::where('role', 'kasir')->orderBy('nama')->get();
 
         if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {

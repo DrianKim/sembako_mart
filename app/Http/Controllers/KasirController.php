@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Produk;
 use App\Models\Transaksi;
 use App\Models\DetailTransaksi;
-use App\Models\Log;   // kalau mau catat log
+use App\Models\Log;
 
 class KasirController extends Controller
 {
@@ -22,7 +22,6 @@ class KasirController extends Controller
     }
 
     // Transaksi
-    // Halaman Transaksi (view)
     public function transaksiIndex()
     {
         return view('kasir.transaksi', [
@@ -30,7 +29,7 @@ class KasirController extends Controller
         ]);
     }
 
-    // === AJAX: Ambil daftar produk ===
+    // AJAX: Ambil daftar produk
     public function getProduk(Request $request)
     {
         $search = $request->search;
@@ -58,7 +57,7 @@ class KasirController extends Controller
 
         $products = $query->orderBy('nama_produk')->get();
 
-        // Format untuk JS (sama seperti dummy kamu)
+        // Format untuk JS
         $formatted = $products->map(function ($p) {
             return [
                 'id'       => $p->id,
@@ -76,7 +75,7 @@ class KasirController extends Controller
         return response()->json($formatted);
     }
 
-    // === Proses Bayar & Simpan Transaksi ===
+    // Proses Bayar & Simpan Transaksi
     public function prosesBayar(Request $request)
     {
         $request->validate([
@@ -119,7 +118,6 @@ class KasirController extends Controller
                     ->decrement('stok', $item['qty']);
             }
 
-            // Catat log
             Log::create([
                 'id_user'   => $kasirId,
                 'aktivitas' => "User " . auth()->user()->nama . " Melakukan transaksi {$nomorUnik} sebesar Rp " . number_format($request->total_harga),

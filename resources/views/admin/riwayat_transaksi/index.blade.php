@@ -65,7 +65,7 @@
                     class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
             </div>
 
-            <!-- Reset - satu jajar nempel di kanan (kolom ke-5) -->
+            <!-- Reset -->
             <div class="flex items-end justify-end md:col-span-1">
                 <button id="btnReset"
                     class="flex items-center px-6 py-2.5 text-gray-700 transition-all duration-200 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 shadow-sm">

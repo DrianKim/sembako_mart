@@ -20,7 +20,6 @@ class Log extends Model
 
     public $timestamps = true;
 
-    // Relasi ke user
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user');

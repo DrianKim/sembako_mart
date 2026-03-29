@@ -12,12 +12,12 @@
                     <!-- Search -->
                     <div class="relative w-full sm:w-64">
                         <input type="text" id="searchProduk" placeholder="Cari nama atau barcode..."
-                               class="w-full px-4 py-2.5 pl-10 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
+                            class="w-full px-4 py-2.5 pl-10 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
                         <i class="absolute text-gray-400 -translate-y-1/2 left-3 top-1/2 fas fa-search"></i>
                     </div>
                     <!-- Filter Stok -->
                     <select id="filterStok"
-                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent sm:w-48">
+                        class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent sm:w-48">
                         <option value="semua">Semua Stok</option>
                         <option value="tersedia">Stok Tersedia</option>
                         <option value="sedikit">Stok Sedikit (&lt; 10)</option>
@@ -34,19 +34,20 @@
             <!-- Pagination -->
             <div class="flex flex-col items-center justify-center gap-4 mt-8 sm:flex-row" id="pagination">
                 <button id="prevPage"
-                        class="flex items-center px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-green-50 hover:border-green-300 hover:text-green-700 transition-all disabled:opacity-50 disabled:hover:bg-white disabled:hover:border-gray-300 disabled:cursor-not-allowed">
+                    class="flex items-center px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-green-50 hover:border-green-300 hover:text-green-700 transition-all disabled:opacity-50 disabled:hover:bg-white disabled:hover:border-gray-300 disabled:cursor-not-allowed">
                     <i class="mr-2 text-xs fas fa-chevron-left"></i> Prev
                 </button>
                 <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3" id="pageNumbers"></div>
                 <button id="nextPage"
-                        class="flex items-center px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-green-50 hover:border-green-300 hover:text-green-700 transition-all disabled:opacity-50 disabled:hover:bg-white disabled:hover:border-gray-300 disabled:cursor-not-allowed">
+                    class="flex items-center px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-green-50 hover:border-green-300 hover:text-green-700 transition-all disabled:opacity-50 disabled:hover:bg-white disabled:hover:border-gray-300 disabled:cursor-not-allowed">
                     Next <i class="ml-2 text-xs fas fa-chevron-right"></i>
                 </button>
             </div>
         </div>
 
         <!-- Kanan: Keranjang Belanja -->
-        <div class="lg:fixed lg:top-20 lg:right-0 lg:bottom-14 lg:w-[420px] lg:max-w-md w-full bg-white border-t lg:border-l border-gray-300 overflow-hidden flex flex-col z-20 lg:shadow-xl mt-auto lg:mt-0">
+        <div
+            class="lg:fixed lg:top-20 lg:right-0 lg:bottom-14 lg:w-[420px] lg:max-w-md w-full bg-white border-t lg:border-l border-gray-300 overflow-hidden flex flex-col z-20 lg:shadow-xl mt-auto lg:mt-0">
             <div class="flex flex-col h-full p-5 lg:p-6">
                 <h2 class="flex items-center justify-between mb-3 text-xl font-bold text-gray-800 lg:mb-4">
                     Keranjang Belanja
@@ -57,11 +58,12 @@
                 <div class="mb-3 lg:mb-4">
                     <label class="block mb-1.5 lg:mb-2 text-sm font-medium text-gray-700">Nama Pelanggan</label>
                     <input type="text" id="namaPelanggan" value="Umum" placeholder="Masukkan nama pelanggan (opsional)"
-                           class="w-full px-4 py-2 lg:py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
+                        class="w-full px-4 py-2 lg:py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
                 </div>
 
                 <!-- Isi Keranjang -->
-                <div id="keranjangList" class="flex flex-col flex-grow gap-3 pb-4 pr-2 overflow-y-auto lg:gap-4 lg:pb-6 custom-scrollbar">
+                <div id="keranjangList"
+                    class="flex flex-col flex-grow gap-3 pb-4 pr-2 overflow-y-auto lg:gap-4 lg:pb-6 custom-scrollbar">
                     <div class="flex items-center justify-center flex-1 py-8 text-center text-gray-500 lg:py-10">
                         Belum ada produk di keranjang
                     </div>
@@ -76,7 +78,7 @@
                     <div class="mb-3 lg:mb-4">
                         <label class="block mb-1.5 lg:mb-2 text-sm font-medium text-gray-700">Uang Bayar</label>
                         <input type="number" id="uangBayar" min="0" placeholder="Masukkan jumlah uang"
-                               class="w-full px-4 py-2 lg:py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
+                            class="w-full px-4 py-2 lg:py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
                     </div>
                     <div class="flex items-center justify-between mb-4 text-sm lg:mb-6">
                         <span class="text-gray-600">Kembalian</span>
@@ -84,11 +86,11 @@
                     </div>
                     <div class="flex flex-col gap-2.5 lg:gap-3 sm:flex-row">
                         <button id="btnBayar" disabled
-                                class="flex-1 py-2.5 lg:py-3 text-white transition-all rounded-lg bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                            class="flex-1 py-2.5 lg:py-3 text-white transition-all rounded-lg bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
                             <i class="mr-2 fas fa-check-circle"></i> Bayar Sekarang
                         </button>
                         <button id="btnClear" disabled
-                                class="flex-1 py-2.5 lg:py-3 text-white transition-all bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                            class="flex-1 py-2.5 lg:py-3 text-white transition-all bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
                             <i class="mr-2 fas fa-trash-alt"></i> Clear Keranjang
                         </button>
                     </div>
@@ -106,12 +108,15 @@
         let allProducts = [];
         let filteredProducts = [];
 
-        // ================== LOAD PRODUK DARI DATABASE ==================
+        // LOAD PRODUK DARI DATABASE
         function loadProduk() {
             const search = document.getElementById('searchProduk').value.trim();
             const stokFilter = document.getElementById('filterStok').value;
 
-            const params = new URLSearchParams({ search, stok_filter: stokFilter });
+            const params = new URLSearchParams({
+                search,
+                stok_filter: stokFilter
+            });
 
             fetch(`{{ route('kasir.transaksi.get_produk') }}?${params}`)
                 .then(res => res.json())
@@ -124,7 +129,7 @@
                 });
         }
 
-        // ================== FILTER LOKAL (search + stok) ==================
+        // FILTER LOKAL (search + stok)
         function applyFilters() {
             const searchTerm = document.getElementById('searchProduk').value.toLowerCase().trim();
             const stokFilter = document.getElementById('filterStok').value;
@@ -148,7 +153,7 @@
             renderProducts(currentPage);
         }
 
-        // ================== RENDER PRODUK ==================
+        // RENDER PRODUK
         function renderProducts(page = 1) {
             const container = document.getElementById('produkList');
             container.innerHTML = '';
@@ -201,7 +206,7 @@
             attachProductClick();
         }
 
-        // ================== PAGINATION ==================
+        // PAGINATION
         function renderPagination(page) {
             const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
             const container = document.getElementById('pageNumbers');
@@ -311,11 +316,11 @@
             }
         });
 
-        // Search & Filter — hanya re-filter lokal, tidak hit server ulang
+        // Search & Filter
         document.getElementById('searchProduk').addEventListener('input', applyFilters);
         document.getElementById('filterStok').addEventListener('change', applyFilters);
 
-        // ================== KERANJANG ==================
+        // KERANJANG
         function renderKeranjang() {
             const container = document.getElementById('keranjangList');
             container.innerHTML = '';
@@ -387,16 +392,16 @@
             const bayar = parseInt(document.getElementById('uangBayar').value) || 0;
             const kembalian = bayar - total;
 
-            document.getElementById('kembalian').textContent = kembalian >= 0
-                ? 'Rp ' + kembalian.toLocaleString('id-ID')
-                : 'Rp 0';
+            document.getElementById('kembalian').textContent = kembalian >= 0 ?
+                'Rp ' + kembalian.toLocaleString('id-ID') :
+                'Rp 0';
 
             document.getElementById('btnBayar').disabled = (total === 0 || bayar < total);
         }
 
         document.getElementById('uangBayar').addEventListener('input', hitungTotal);
 
-        // ================== TOMBOL CLEAR ==================
+        // TOMBOL CLEAR
         document.getElementById('btnClear').addEventListener('click', () => {
             Swal.fire({
                 title: 'Clear Keranjang?',
@@ -411,12 +416,17 @@
                 if (result.isConfirmed) {
                     keranjang = [];
                     renderKeranjang();
-                    Swal.fire({ title: 'Keranjang Dikosongkan!', icon: 'success', timer: 1500, showConfirmButton: false });
+                    Swal.fire({
+                        title: 'Keranjang Dikosongkan!',
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
                 }
             });
         });
 
-        // ================== TOMBOL BAYAR ==================
+        // TOMBOL BAYAR
         document.getElementById('btnBayar').addEventListener('click', () => {
             const total = keranjang.reduce((sum, item) => sum + item.harga * item.qty, 0);
             const bayar = parseInt(document.getElementById('uangBayar').value) || 0;
@@ -474,45 +484,45 @@
             }).then(result => {
                 if (result.isConfirmed) {
                     fetch("{{ route('kasir.transaksi.proses_bayar') }}", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({
-                            keranjang: keranjang,
-                            total_harga: total,
-                            uang_bayar: bayar,
-                            nama_pelanggan: namaPelanggan
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                keranjang: keranjang,
+                                total_harga: total,
+                                uang_bayar: bayar,
+                                nama_pelanggan: namaPelanggan
+                            })
                         })
-                    })
-                    .then(res => res.json())
-                    .then(res => {
-                        if (res.success) {
-                            Swal.fire({
-                                title: 'Transaksi Berhasil!',
-                                text: `Nomor: ${res.nomor_unik}`,
-                                icon: 'success',
-                                timer: 1800,
-                                showConfirmButton: false
-                            }).then(() => {
-                                window.location.href =
-                                    "{{ route('kasir.struk', ['id' => ':id']) }}"
-                                    .replace(':id', res.transaksi_id);
-                            });
-                        } else {
-                            Swal.fire('Gagal', res.message || 'Terjadi kesalahan', 'error');
-                        }
-                    })
-                    .catch(() => {
-                        Swal.fire('Gagal', 'Terjadi kesalahan saat menyimpan transaksi', 'error');
-                    });
+                        .then(res => res.json())
+                        .then(res => {
+                            if (res.success) {
+                                Swal.fire({
+                                    title: 'Transaksi Berhasil!',
+                                    text: `Nomor: ${res.nomor_unik}`,
+                                    icon: 'success',
+                                    timer: 1800,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    window.location.href =
+                                        "{{ route('kasir.struk', ['id' => ':id']) }}"
+                                        .replace(':id', res.transaksi_id);
+                                });
+                            } else {
+                                Swal.fire('Gagal', res.message || 'Terjadi kesalahan', 'error');
+                            }
+                        })
+                        .catch(() => {
+                            Swal.fire('Gagal', 'Terjadi kesalahan saat menyimpan transaksi', 'error');
+                        });
                 }
             });
         });
 
-        // ================== INIT ==================
-        document.addEventListener('DOMContentLoaded', function () {
+        // INIT
+        document.addEventListener('DOMContentLoaded', function() {
             loadProduk();
         });
     </script>

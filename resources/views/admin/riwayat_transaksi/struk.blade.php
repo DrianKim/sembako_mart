@@ -28,7 +28,6 @@
                 box-shadow: none !important;
             }
 
-            /* Force semua konten terlihat */
             body * {
                 visibility: hidden;
             }
@@ -38,7 +37,6 @@
                 visibility: visible;
             }
 
-            /* Style manual untuk print agar tidak bergantung Tailwind */
             .struk-container {
                 max-width: 80mm;
             }

@@ -6,7 +6,7 @@
 @section('content')
     <div class="space-y-6">
 
-        <!-- Greeting + Quick Stats -->
+        <!-- Quick Stats -->
         <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
                 <h1 class="text-2xl font-bold text-gray-800">Selamat Datang, {{ Auth::user()->nama }}</h1>
