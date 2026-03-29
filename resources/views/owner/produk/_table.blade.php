@@ -22,16 +22,24 @@
             Rp {{ number_format($produk->harga_jual, 0, ',', '.') }}
         </td>
         <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">{{ $produk->satuan }}</td>
-        <td
-            class="px-6 py-4 font-bold text-center whitespace-nowrap
-            @if ($produk->stok == 0) text-red-600
-            @elseif ($produk->stok <= 10) text-yellow-600
-            @else text-green-600 @endif">
-            {{ $produk->stok == 0 ? '0 (Habis)' : $produk->stok }}
+        <td class="px-6 py-4 text-center whitespace-nowrap">
+            @if ($produk->stok == 0)
+                <span class="px-3 py-1 text-xs font-semibold text-red-800 bg-red-100 rounded-full">
+                    0 (Habis)
+                </span>
+            @elseif ($produk->stok <= 10)
+                <span class="px-3 py-1 text-xs font-semibold text-yellow-800 bg-yellow-100 rounded-full">
+                    {{ number_format($produk->stok) }}
+                </span>
+            @else
+                <span class="px-3 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded-full">
+                    {{ number_format($produk->stok) }}
+                </span>
+            @endif
         </td>
     </tr>
 @empty
     <tr>
         <td colspan="7" class="py-10 text-center text-gray-500">Belum ada data produk.</td>
     </tr>
-@endforelse 
+@endforelse
