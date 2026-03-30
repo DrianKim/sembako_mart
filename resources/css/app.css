@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 
-/* Import Font Source Sans Pro */
+/* Import Font Source Sans Pro
 @font-face {
     font-family: 'Source Sans Pro';
     src: url('/fonts/SourceSansPro-Light.ttf') format('truetype');
@@ -27,7 +27,7 @@
     src: url('/fonts/SourceSansPro-Bold.ttf') format('truetype');
     font-weight: 700;
     font-style: normal;
-}
+} */
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';

@@ -296,7 +296,7 @@ class OwnerController extends Controller
                 'jumlahTransaksi' => $jumlahTransaksi,
                 'rataRata'        => number_format($rataRata, 0, ',', '.'),
                 'produkTerlaris'  => $produkTerlaris?->produk?->nama_produk ?? '-',
-                'produkQty'       => ($produkTerlaris?->total_qty ?? 0) . ' ' . ($produkTerlaris?->produk?->satuan ?? ''),
+                'produkQty'       => ($produkTerlaris?->total_qty ?? 0) . ' ',
                 'kasirTerbaik'    => $kasirTerbaik?->kasir?->nama ?? '-',
                 'kasirOmzet'      => number_format($kasirTerbaik?->total_omzet ?? 0, 0, ',', '.'),
                 'grafikLabels'    => $grafikLabels,

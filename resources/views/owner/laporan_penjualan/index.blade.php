@@ -139,6 +139,20 @@
                             id="totalTransaksiLabel">{{ $transaksis->total() }}</span> transaksi</p>
                 </div>
             </div>
+            <div class="flex gap-2">
+                <button class="p-2 text-gray-600 transition-colors rounded-lg hover:bg-gray-100 hover:text-green-600"
+                    title="Export Excel">
+                    <i class="fas fa-file-excel"></i>
+                </button>
+                <button class="p-2 text-gray-600 transition-colors rounded-lg hover:bg-gray-100 hover:text-green-600"
+                    title="Export PDF">
+                    <i class="fas fa-file-pdf"></i>
+                </button>
+                {{-- <button class="p-2 text-gray-600 transition-colors rounded-lg hover:bg-gray-100 hover:text-green-600"
+                    title="Print">
+                    <i class="fas fa-print"></i>
+                </button> --}}
+            </div>
         </div>
 
         <div class="overflow-x-auto">
@@ -147,7 +161,8 @@
                     <tr>
                         <th class="w-12 px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">No
                         </th>
-                        <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">Tanggal
+                        <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
+                            Tanggal
                         </th>
                         <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">Kasir
                         </th>

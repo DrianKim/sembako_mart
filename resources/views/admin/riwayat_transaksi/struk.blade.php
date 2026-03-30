@@ -127,7 +127,7 @@
         <!-- Header Toko -->
         <div class="mb-4 text-center">
             <h1 class="text-xl font-bold">Sembako Mart</h1>
-            <p class="text-sm text-gray-600">Subang, Jawa Barat</p>
+        <p class="text-sm text-gray-600">Gg. A. Ipeng 44, Subang</p>
             <p class="text-sm">Telp: 0812-3456-7890</p>
         </div>
 
