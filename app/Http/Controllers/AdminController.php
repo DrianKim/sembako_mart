@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BatchProduk;
 use App\Models\Kategori;
 use App\Models\Log;
 use App\Models\Produk;
@@ -9,55 +10,12 @@ use App\Models\Transaksi;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Supabase\SupabaseClient;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class AdminController extends Controller
 {
-
-    //supabase upload
-    private function uploadToSupabase($file)
-    {
-        $bucket = 'produk_images';
-        $fileName = 'produk_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-
-        $curl = curl_init();
-        curl_setopt_array($curl, [
-            CURLOPT_URL => env('SUPABASE_URL') . "/storage/v1/object/{$bucket}/{$fileName}",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_CUSTOMREQUEST => "PUT",
-            CURLOPT_POSTFIELDS => file_get_contents($file->getRealPath()),
-            CURLOPT_HTTPHEADER => [
-                "Authorization: Bearer " . env('SUPABASE_SERVICE_KEY'),
-                "Content-Type: " . $file->getMimeType(),
-            ],
-        ]);
-
-        $response = curl_exec($curl);
-        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
-
-        if ($httpCode === 200) {
-            return "{$bucket}/{$fileName}";
-        }
-        return null;
-    }
-
-    private function deleteFromSupabase($filePath)
-    {
-        $fileName = basename($filePath);
-        $bucket = 'produk_images';
-
-        $curl = curl_init();
-        curl_setopt_array($curl, [
-            CURLOPT_URL => env('SUPABASE_URL') . "/storage/v1/object/{$bucket}/{$fileName}",
-            CURLOPT_CUSTOMREQUEST => "DELETE",
-            CURLOPT_HTTPHEADER => [
-                "Authorization: Bearer " . env('SUPABASE_SERVICE_KEY'),
-            ],
-        ]);
-        curl_exec($curl);
-        curl_close($curl);
-    }
 
     // dashboard
     public function dashboard()
@@ -197,19 +155,20 @@ class AdminController extends Controller
     {
         $search = $request->query('search', '');
 
-        $produks = Produk::with('kategori')
+        $produks = Produk::with(['kategori', 'batchProduks' => function ($q) {
+            $q->whereNull('deleted_at')->latest();
+        }])
             ->when($search, function ($query, $search) {
                 $lower = strtolower($search);
                 $query->whereRaw('LOWER(nama_produk) LIKE ?', ["%{$lower}%"])
                     ->orWhereRaw('LOWER(barcode) LIKE ?', ["%{$lower}%"])
                     ->orWhereHas(
                         'kategori',
-                        fn($q) =>
-                        $q->whereRaw('LOWER(nama_kategori) LIKE ?', ["%{$lower}%"])
+                        fn($q) => $q->whereRaw('LOWER(nama_kategori) LIKE ?', ["%{$lower}%"])
                     );
             })
             ->latest()
-            ->paginate(3)
+            ->paginate(10)
             ->appends(['search' => $search]);
 
         if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
@@ -222,22 +181,19 @@ class AdminController extends Controller
             ]);
         }
 
-        $data = [
-            'title' => 'Produk',
+        return view('admin.produk.index', [
+            'title'   => 'Produk',
             'produks' => $produks,
-            'search' => $search,
-        ];
-
-        return view('admin.produk.index', $data);
+            'search'  => $search,
+        ]);
     }
 
     public function produkCreate()
     {
-        $data = [
-            'title' => 'Tambah Produk',
+        return view('admin.produk.create', [
+            'title'    => 'Tambah Produk',
             'kategoris' => Kategori::all(),
-        ];
-        return view('admin.produk.create', $data);
+        ]);
     }
 
     public function produkStore(Request $request)
@@ -245,32 +201,92 @@ class AdminController extends Controller
         $request->validate([
             'nama_produk' => 'required|string|max:255',
             'kategori_id' => 'required|exists:kategori,id',
-            'harga_beli' => 'required|numeric|min:0',
-            'harga_jual' => 'required|numeric|gt:harga_beli',
+            'harga_jual' => 'required|numeric|min:0',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'barcode' => 'nullable|string|max:255|unique:produk,barcode',
             'satuan' => 'required|in:kg,pcs,liter',
+            // Batch
+            'nomor_batch' => [
+                'nullable',
+                'string',
+                'max:255',
+                Rule::unique('batch_produk', 'nomor_batch')->whereNull('deleted_at'),
+            ],
+            'stok_awal' => 'required|integer|min:0',
+            'harga_beli' => 'required|numeric|min:0',
+            'tanggal_kadaluarsa' => 'nullable|date|after:today',
+        ], [
+            'nama_produk.required' => 'Nama produk wajib diisi!',
+            'kategori_id.required' => 'Kategori wajib dipilih!',
+            'kategori_id.exists' => 'Kategori tidak valid!',
+            'harga_jual.required' => 'Harga jual wajib diisi!',
+            'harga_jual.numeric' => 'Harga jual harus berupa angka!',
+            'harga_jual.min' => 'Harga jual tidak boleh negatif!',
+            'foto.image' => 'File harus berupa gambar!',
+            'foto.mimes' => 'Format gambar harus jpeg, png, jpg, atau webp!',
+            'foto.max' => 'Ukuran gambar maksimal 2MB!',
+            'barcode.string' => 'Barcode harus berupa teks!',
+            'barcode.max' => 'Barcode maksimal 255 karakter!',
+            'barcode.unique' => 'Barcode sudah digunakan oleh produk lain!',
+            'satuan.required' => 'Satuan wajib dipilih!',
+            'satuan.in' => 'Satuan tidak valid!',
+            'nomor_batch.unique' => 'Nomor batch sudah digunakan oleh batch lain!',
+            'stok_awal.required' => 'Stok awal wajib diisi!',
+            'stok_awal.integer' => 'Stok awal harus berupa angka bulat!',
+            'stok_awal.min' => 'Stok awal minimal 0!',
+            'harga_beli.required' => 'Harga beli wajib diisi!',
+            'harga_beli.numeric' => 'Harga beli harus berupa angka!',
+            'harga_beli.min' => 'Harga beli tidak boleh negatif!',
+            'tanggal_kadaluarsa.date' => 'Tanggal kadaluarsa harus berupa tanggal yang valid!',
+            'tanggal_kadaluarsa.after' => 'Tanggal kadaluarsa harus setelah hari ini!',
         ]);
 
-        $fotoPath = null;
+        $imgUrl = null;
+        $disk = 'supabase';
+
         if ($request->hasFile('foto')) {
-            $fotoPath = $this->uploadToSupabase($request->file('foto'));
+            try {
+                // Pakai storeAs supaya nama file unik + folder jelas
+                $filename = 'produk/' . time() . '_' . Str::random(10) . '.' .
+                    $request->file('foto')->getClientOriginalExtension();
+
+                $imgPath = $request->file('foto')->storeAs('', $filename, $disk);
+
+                if (!$imgPath) {
+                    return redirect()->back()->with('error', 'Gagal mengunggah foto ke Supabase.');
+                }
+
+                $bucket = env('SUPABASE_BUCKET', 'public');
+                $baseUrl = rtrim(env('SUPABASE_PUBLIC_URL'), '/');
+
+                // Cara yang lebih benar untuk Supabase
+                $imgUrl = $baseUrl . '/storage/v1/object/public/' . $bucket . '/' . $imgPath;
+            } catch (\Exception $e) {
+                return redirect()->back()->with('error', 'Gagal mengunggah foto: ' . $e->getMessage());
+            }
         }
 
-        Produk::create([
+        $produk = Produk::create([
             'kategori_id' => $request->kategori_id,
             'nama_produk' => $request->nama_produk,
-            'harga_beli' => $request->harga_beli,
             'harga_jual' => $request->harga_jual,
-            'foto' => $fotoPath,
+            'foto' => $imgUrl,
             'barcode' => $request->barcode,
             'satuan' => $request->satuan,
         ]);
 
+        // Buat batch pertama
+        $produk->batchProduks()->create([
+            'nomor_batch' => $request->nomor_batch,
+            'stok' => $request->stok_awal,
+            'harga_beli' => $request->harga_beli,
+            'tanggal_kadaluarsa' => $request->tanggal_kadaluarsa,
+        ]);
+
         Log::create([
-            'id_user'   => auth()->id(),
+            'id_user' => auth()->id(),
             'aktivitas' => "User " . auth()->user()->nama . " Menambahkan produk baru: '{$request->nama_produk}'",
-            'waktu'     => now(),
+            'waktu' => now(),
         ]);
 
         return redirect()->route('admin.produk')->with('success', 'Produk berhasil ditambahkan!');
@@ -278,13 +294,15 @@ class AdminController extends Controller
 
     public function produkEdit($id)
     {
-        $produk = Produk::with('kategori')->findOrFail($id);
-        $data = [
-            'title' => 'Edit Produk',
-            'produk' => $produk,
+        $produk = Produk::with(['kategori', 'batchProduks' => function ($q) {
+            $q->whereNull('deleted_at')->latest();
+        }])->findOrFail($id);
+
+        return view('admin.produk.edit', [
+            'title'    => 'Edit Produk',
+            'produk'   => $produk,
             'kategoris' => Kategori::all(),
-        ];
-        return view('admin.produk.edit', $data);
+        ]);
     }
 
     public function produkUpdate(Request $request, $id)
@@ -294,30 +312,72 @@ class AdminController extends Controller
         $request->validate([
             'nama_produk' => 'required|string|max:255',
             'kategori_id' => 'required|exists:kategori,id',
-            'harga_beli' => 'required|numeric|min:0',
-            'harga_jual' => 'required|numeric|gt:harga_beli',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'barcode' => 'nullable|string|max:255|unique:produk,barcode,' . $id,
-            'satuan' => 'required|in:kg,pcs,liter',
+            'harga_jual'  => 'required|numeric|min:0',
+            'foto'        => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'barcode'     => 'nullable|string|max:255|unique:produk,barcode,' . $id,
+            'satuan'      => 'required|in:kg,pcs,liter',
+        ], [
+            'nama_produk.required' => 'Nama produk wajib diisi!',
+            'kategori_id.required' => 'Kategori wajib dipilih!',
+            'kategori_id.exists' => 'Kategori tidak valid!',
+            'harga_jual.required' => 'Harga jual wajib diisi!',
+            'harga_jual.numeric' => 'Harga jual harus berupa angka!',
+            'harga_jual.min' => 'Harga jual tidak boleh negatif!',
+            'foto.image' => 'File harus berupa gambar!',
+            'foto.mimes' => 'Format gambar harus jpeg, png, jpg, atau webp!',
+            'foto.max' => 'Ukuran gambar maksimal 2MB!',
+            'barcode.unique' => 'Barcode sudah digunakan oleh produk lain!',
+            'satuan.required' => 'Satuan wajib dipilih!',
+            'satuan.in' => 'Satuan tidak valid!',
         ]);
 
-        $fotoPath = $produk->foto;
+        $fotoPath = $produk->foto;   // default pakai foto lama
+
         if ($request->hasFile('foto')) {
-            // Hapus foto lama dari Supabase 
-            if ($produk->foto) {
-                $this->deleteFromSupabase($produk->foto);
+            try {
+                // === HAPUS FOTO LAMA DI SUPABASE (manual, tanpa deleteFromSupabase) ===
+                if ($produk->foto) {
+                    try {
+                        // Ambil path dari URL lama
+                        $oldUrl = $produk->foto;
+                        $baseUrl = rtrim(env('SUPABASE_PUBLIC_URL'), '/') . '/storage/v1/object/public/' . env('SUPABASE_BUCKET', 'public') . '/';
+
+                        $oldPath = str_replace($baseUrl, '', $oldUrl);
+
+                        // Hapus file lama dari Supabase
+                        Storage::disk('supabase')->delete($oldPath);
+                    } catch (\Exception $e) {
+                        // Tidak menghentikan proses kalau gagal hapus lama
+                        Log::error('Gagal menghapus foto lama: ' . $e->getMessage());
+                    }
+                }
+
+                // === UPLOAD FOTO BARU ===
+                $filename = 'produk/' . time() . '_' . Str::random(10) . '.' .
+                    $request->file('foto')->getClientOriginalExtension();
+
+                $imgPath = $request->file('foto')->storeAs('', $filename, 'supabase');
+
+                if (!$imgPath) {
+                    return redirect()->back()->with('error', 'Gagal mengunggah foto ke Supabase.');
+                }
+
+                $bucket = env('SUPABASE_BUCKET', 'public');
+                $baseUrl = rtrim(env('SUPABASE_PUBLIC_URL'), '/');
+
+                $fotoPath = $baseUrl . '/storage/v1/object/public/' . $bucket . '/' . $imgPath;
+            } catch (\Exception $e) {
+                return redirect()->back()->with('error', 'Gagal mengunggah foto: ' . $e->getMessage());
             }
-            $fotoPath = $this->uploadToSupabase($request->file('foto'));
         }
 
         $produk->update([
             'kategori_id' => $request->kategori_id,
             'nama_produk' => $request->nama_produk,
-            'harga_beli' => $request->harga_beli,
-            'harga_jual' => $request->harga_jual,
-            'foto' => $fotoPath,
-            'barcode' => $request->barcode,
-            'satuan' => $request->satuan,
+            'harga_jual'  => $request->harga_jual,
+            'foto'        => $fotoPath,
+            'barcode'     => $request->barcode,
+            'satuan'      => $request->satuan,
         ]);
 
         Log::create([
@@ -333,11 +393,27 @@ class AdminController extends Controller
     {
         $produk = Produk::findOrFail($id);
 
-        // Hapus foto dari Supabase jika ada
+        // Hapus foto dari Supabase Storage (manual, tanpa deleteFromSupabase)
         if ($produk->foto) {
-            $this->deleteFromSupabase($produk->foto);
+            try {
+                // Ambil path foto dari URL
+                $baseUrl = rtrim(env('SUPABASE_PUBLIC_URL'), '/') . '/storage/v1/object/public/' . env('SUPABASE_BUCKET', 'public') . '/';
+                $filePath = str_replace($baseUrl, '', $produk->foto);
+
+                // Hapus file dari Supabase
+                if ($filePath) {
+                    Storage::disk('supabase')->delete($filePath);
+                }
+            } catch (\Exception $e) {
+                // Tidak menghentikan proses delete produk kalau gagal hapus foto
+                Log::error('Gagal menghapus foto dari Supabase: ' . $e->getMessage());
+            }
         }
 
+        // Hapus batch terkait
+        $produk->batchProduks()->each(fn($b) => $b->delete());
+
+        // Hapus produk
         $produk->delete();
 
         Log::create([
@@ -349,35 +425,41 @@ class AdminController extends Controller
         return redirect()->route('admin.produk')->with('success', 'Produk berhasil dihapus!');
     }
 
-    // Stok
     public function stokIndex(Request $request)
     {
-        $search = $request->get('search');
+        $search     = $request->get('search');
         $stokFilter = $request->get('stok_filter');
 
-        $query = Produk::with('kategori')
+        $produks = Produk::with(['kategori', 'batchProduks' => function ($q) {
+            $q->whereNull('deleted_at')->latest();
+        }])
             ->when($search, function ($q) use ($search) {
                 $lower = strtolower($search);
                 $q->whereRaw('LOWER(nama_produk) LIKE ?', ["%{$lower}%"])
                     ->orWhereRaw('LOWER(barcode) LIKE ?', ["%{$lower}%"])
                     ->orWhereHas(
                         'kategori',
-                        fn($q) =>
-                        $q->whereRaw('LOWER(nama_kategori) LIKE ?', ["%{$lower}%"])
+                        fn($q) => $q->whereRaw('LOWER(nama_kategori) LIKE ?', ["%{$lower}%"])
                     );
             })
+            // Filter berdasarkan total stok dari batch (pakai subquery)
             ->when($stokFilter, function ($q) use ($stokFilter) {
-                if ($stokFilter == 'aman') {
-                    $q->where('stok', '>', 15);
-                } elseif ($stokFilter == 'peringatan') {
-                    $q->whereBetween('stok', [6, 15]);
-                } elseif ($stokFilter == 'kritis') {
-                    $q->where('stok', '<=', 5);
+                $q->withSum(['batchProduks as total_stok_sum' => function ($query) {
+                    $query->whereNull('deleted_at');
+                }], 'stok');
+
+                if ($stokFilter === 'aman') {
+                    $q->having('total_stok_sum', '>', 15);
+                } elseif ($stokFilter === 'peringatan') {
+                    $q->having('total_stok_sum', '>=', 6)
+                        ->having('total_stok_sum', '<=', 15);
+                } elseif ($stokFilter === 'kritis') {
+                    $q->having('total_stok_sum', '<=', 5);
                 }
             })
-            ->orderBy('nama_produk');
-
-        $produks = $query->paginate(3);
+            ->orderBy('nama_produk')
+            ->paginate(10)
+            ->appends(['search' => $search, 'stok_filter' => $stokFilter]);
 
         if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
             return response()->json([
@@ -389,97 +471,143 @@ class AdminController extends Controller
             ]);
         }
 
-        $data = [
-            'title' => 'Stok',
-            'produks' => $produks,
-            'search' => $search,
-            'stok_filter' => $stokFilter
-        ];
-
-        return view('admin.stok.index', $data);
-    }
-
-    public function stokCreate($id)
-    {
-        $produk = Produk::with('kategori')->findOrFail($id);
-
-        $data = [
-            'title' => 'Tambah Stok: ' . $produk->nama_produk,
-            'produk' => $produk
-        ];
-
-        return view('admin.stok.create', $data);
-    }
-
-    public function stokStore(Request $request, $id)
-    {
-        $request->validate([
-            'stok' => 'required|integer|min:1',
-        ], [
-            'stok.required' => 'Stok harus diisi!',
-            'stok.integer' => 'Stok harus berupa angka bulat!',
-            'stok.min' => 'Stok minimal 1!',
+        return view('admin.stok.index', [
+            'title'       => 'Stok Produk',
+            'produks'     => $produks,
+            'search'      => $search,
+            'stok_filter' => $stokFilter,
         ]);
-
-        $produk = Produk::findOrFail($id);
-        $stokLama = $produk->stok;
-
-        $produk->update([
-            'stok' => $produk->stok + $request->stok,
-        ]);
-
-        Log::create([
-            'id_user'   => auth()->id(),
-            'aktivitas' => "User " . auth()->user()->nama . " Menambahkan stok untuk produk '{$produk->nama_produk}': Stok lama: {$stokLama}, Stok ditambahkan: {$request->stok}, Total stok sekarang: {$produk->stok}",
-            'waktu'     => now(),
-        ]);
-
-        return redirect()->route('admin.stok')->with(
-            'success',
-            "Stok produk berhasil diperbarui! Stok lama: {$stokLama}, Stok ditambahkan: {$request->stok}, Total stok sekarang: {$produk->stok}"
-        );
     }
 
     public function stokEdit($id)
     {
-        $produk = Produk::with('kategori')->findOrFail($id);
+        $produk = Produk::with(['kategori', 'batchProduks' => function ($q) {
+            $q->whereNull('deleted_at')->latest();
+        }])->findOrFail($id);
 
-        $data = [
-            'title' => 'Edit Stok: ' . $produk->nama_produk,
-            'produk' => $produk
-        ];
-
-        return view('admin.stok.edit', $data);
+        return view('admin.stok.edit', [
+            'title'  => 'Kelola Stok: ' . $produk->nama_produk,
+            'produk' => $produk,
+        ]);
     }
 
     public function stokUpdate(Request $request, $id)
     {
-        $request->validate([
-            'stok' => 'required|integer|min:0',
-        ], [
-            'stok.required' => 'Stok harus diisi!',
-            'stok.integer' => 'Stok harus berupa angka bulat!',
-            'stok.min' => 'Stok tidak boleh negatif!',
-        ]);
+        $produk = Produk::with('batchProduks')->findOrFail($id);
+        $aksi   = $request->input('aksi');
 
-        $produk = Produk::findOrFail($id);
-        $stokLama = $produk->stok;
+        // ==============================
+        // AKSI 1: Edit batch yang ada
+        // ==============================
+        if ($aksi === 'edit_batch') {
+            $request->validate([
+                'batch_id'           => 'required|exists:batch_produk,id',
+                // Ignore batch yang sedang diedit (by batch_id) + ignore soft-deleted
+                'nomor_batch'        => [
+                    'nullable',
+                    'string',
+                    'max:255',
+                    Rule::unique('batch_produk', 'nomor_batch')
+                        ->ignore($request->batch_id)      // abaikan batch yg sedang diedit
+                        ->whereNull('deleted_at'),         // abaikan yang sudah soft-deleted
+                ],
+                'aksi_stok'          => 'required|in:tambah,kurangi,ganti',
+                'jumlah_stok'        => 'required|integer|min:0',
+                'harga_beli'         => 'required|numeric|min:0',
+                'tanggal_kadaluarsa' => 'nullable|date',
+            ], [
+                'nomor_batch.unique'   => 'Nomor batch sudah digunakan oleh batch lain!',
+                'aksi_stok.required'   => 'Pilih aksi stok!',
+                'jumlah_stok.required' => 'Jumlah stok wajib diisi!',
+                'jumlah_stok.integer'  => 'Jumlah stok harus berupa angka bulat!',
+                'jumlah_stok.min'      => 'Jumlah stok tidak boleh negatif!',
+                'harga_beli.required'  => 'Harga beli wajib diisi!',
+                'harga_beli.numeric'   => 'Harga beli harus berupa angka!',
+            ]);
 
-        $produk->update([
-            'stok' => $request->stok,
-        ]);
+            $batch = BatchProduk::where('id', $request->batch_id)
+                ->where('produk_id', $id)
+                ->whereNull('deleted_at')
+                ->firstOrFail();
 
-        Log::create([
-            'id_user'   => auth()->id(),
-            'aktivitas' => "User " . auth()->user()->nama . " Memperbarui stok untuk produk '{$produk->nama_produk}': Stok lama: {$stokLama}, Stok baru: {$request->stok}",
-            'waktu'     => now(),
-        ]);
+            $stokLama  = $batch->stok;
+            $jumlah    = (int) $request->jumlah_stok;
+            $aksiStok  = $request->aksi_stok;
 
-        return redirect()->route('admin.stok')->with(
-            'success',
-            "Stok {$produk->nama_produk} berhasil diupdate! {$stokLama} → " .
-                number_format($produk->stok)
-        );
+            $stokBaru = match ($aksiStok) {
+                'tambah'  => $stokLama + $jumlah,
+                'kurangi' => max(0, $stokLama - $jumlah),
+                'ganti'   => $jumlah,
+            };
+
+            $aksiLabel = match ($aksiStok) {
+                'tambah'  => "ditambah {$jumlah}",
+                'kurangi' => "dikurangi {$jumlah}",
+                'ganti'   => "diganti menjadi {$jumlah}",
+            };
+
+            $batch->update([
+                'nomor_batch'        => $request->nomor_batch,
+                'stok'               => $stokBaru,
+                'harga_beli'         => $request->harga_beli,
+                'tanggal_kadaluarsa' => $request->tanggal_kadaluarsa ?: null,
+            ]);
+
+            Log::create([
+                'id_user'   => auth()->id(),
+                'aktivitas' => "User " . auth()->user()->nama . " mengedit batch '{$batch->nomor_batch}' produk '{$produk->nama_produk}': stok {$aksiLabel} ({$stokLama} → {$stokBaru})",
+                'waktu'     => now(),
+            ]);
+
+            return redirect()->route('admin.stok.edit', $id)
+                ->with('success', "Batch berhasil diperbarui! Stok {$aksiLabel} → {$stokBaru}");
+        }
+
+        // ==============================
+        // AKSI 2: Tambah batch baru
+        // ==============================
+        if ($aksi === 'tambah_batch') {
+            $request->validate([
+                'stok_baru'               => 'required|integer|min:1',
+                'harga_beli_baru'         => 'required|numeric|min:0',
+                // Tidak perlu ignore karena ini batch baru, cukup skip soft-deleted
+                'nomor_batch_baru'        => [
+                    'nullable',
+                    'string',
+                    'max:255',
+                    Rule::unique('batch_produk', 'nomor_batch')
+                        ->whereNull('deleted_at'),
+                ],
+                'tanggal_kadaluarsa_baru' => 'nullable|date|after:today',
+            ], [
+                'stok_baru.required'            => 'Jumlah stok wajib diisi!',
+                'stok_baru.integer'             => 'Stok harus berupa angka bulat!',
+                'stok_baru.min'                 => 'Stok minimal 1!',
+                'harga_beli_baru.required'      => 'Harga beli wajib diisi!',
+                'harga_beli_baru.numeric'       => 'Harga beli harus berupa angka!',
+                'nomor_batch_baru.unique'       => 'Nomor batch sudah digunakan oleh batch lain!',
+                'tanggal_kadaluarsa_baru.date'  => 'Tanggal kadaluarsa tidak valid!',
+                'tanggal_kadaluarsa_baru.after' => 'Tanggal kadaluarsa harus setelah hari ini!',
+            ]);
+
+            $batch = $produk->batchProduks()->create([
+                'nomor_batch'        => $request->nomor_batch_baru,
+                'stok'               => $request->stok_baru,
+                'harga_beli'         => $request->harga_beli_baru,
+                'tanggal_kadaluarsa' => $request->tanggal_kadaluarsa_baru ?: null,
+            ]);
+
+            Log::create([
+                'id_user'   => auth()->id(),
+                'aktivitas' => "User " . auth()->user()->nama . " menambahkan batch baru '{$batch->nomor_batch}' untuk produk '{$produk->nama_produk}': stok {$request->stok_baru}",
+                'waktu'     => now(),
+            ]);
+
+            return redirect()->route('admin.stok.edit', $id)
+                ->with('success', "Batch baru berhasil ditambahkan! Stok +{$request->stok_baru} {$produk->satuan}");
+        }
+
+        return redirect()->route('admin.stok.edit', $id)->with('error', 'Aksi tidak dikenali.');
     }
 
     // Kasir

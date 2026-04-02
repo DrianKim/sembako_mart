@@ -57,8 +57,8 @@
                             <i class="mr-1 text-green-600 fas fa-tag"></i>
                             Nama Produk <span class="text-red-500">*</span>
                         </label>
-                        <input type="text" id="nama_produk" name="nama_produk" required
-                            value="{{ old('nama_produk') }}" placeholder="Contoh: Beras Pandan Premium 5kg"
+                        <input type="text" id="nama_produk" name="nama_produk" required value="{{ old('nama_produk') }}"
+                            placeholder="Contoh: Beras Pandan Premium 5kg"
                             class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all @error('nama_produk') border-red-500 @enderror">
                         @error('nama_produk')
                             <p class="mt-1 text-sm text-red-500"><i class="mr-1 fas fa-exclamation-circle"></i>
@@ -103,21 +103,6 @@
                         @enderror
                     </div>
 
-                    <!-- Harga Beli -->
-                    <div>
-                        <label for="harga_beli" class="block mb-2 text-sm font-semibold text-gray-700">
-                            <i class="mr-1 text-green-600 fas fa-coins"></i>
-                            Harga Beli (Rp) <span class="text-red-500">*</span>
-                        </label>
-                        <input type="number" id="harga_beli" name="harga_beli" required min="0" step="100"
-                            value="{{ old('harga_beli') }}" placeholder="Contoh: 70000"
-                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all @error('harga_beli') border-red-500 @enderror">
-                        @error('harga_beli')
-                            <p class="mt-1 text-sm text-red-500"><i class="mr-1 fas fa-exclamation-circle"></i>
-                                {{ $message }}</p>
-                        @enderror
-                    </div>
-
                     <!-- Satuan -->
                     <div>
                         <label for="satuan" class="block mb-2 text-sm font-semibold text-gray-700">
@@ -134,6 +119,66 @@
                         @error('satuan')
                             <p class="mt-1 text-sm text-red-500"><i class="mr-1 fas fa-exclamation-circle"></i>
                                 {{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Nomor Batch --}}
+                    <div>
+                        <label for="nomor_batch" class="block mb-2 text-sm font-semibold text-gray-700">
+                            <i class="mr-1 text-green-600 fas fa-hashtag"></i>
+                            Nomor Batch
+                        </label>
+                        <input type="text" id="nomor_batch" name="nomor_batch" value="{{ old('nomor_batch') }}"
+                            placeholder="Contoh: BATCH-2025-001"
+                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all @error('nomor_batch') border-red-500 @enderror">
+                        @error('nomor_batch')
+                            <p class="mt-1 text-sm text-red-500"><i
+                                    class="mr-1 fas fa-exclamation-circle"></i>{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Stok Awal --}}
+                    <div>
+                        <label for="stok_awal" class="block mb-2 text-sm font-semibold text-gray-700">
+                            <i class="mr-1 text-green-600 fas fa-boxes"></i>
+                            Stok Awal <span class="text-red-500">*</span>
+                        </label>
+                        <input type="number" id="stok_awal" name="stok_awal" required min="0"
+                            value="{{ old('stok_awal') }}" placeholder="Contoh: 100"
+                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all @error('stok_awal') border-red-500 @enderror">
+                        @error('stok_awal')
+                            <p class="mt-1 text-sm text-red-500"><i
+                                    class="mr-1 fas fa-exclamation-circle"></i>{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Harga Beli --}}
+                    <div>
+                        <label for="harga_beli" class="block mb-2 text-sm font-semibold text-gray-700">
+                            <i class="mr-1 text-green-600 fas fa-coins"></i>
+                            Harga Beli (Rp) <span class="text-red-500">*</span>
+                        </label>
+                        <input type="number" id="harga_beli" name="harga_beli" required min="0" step="100"
+                            value="{{ old('harga_beli') }}" placeholder="Contoh: 70000"
+                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all @error('harga_beli') border-red-500 @enderror">
+                        @error('harga_beli')
+                            <p class="mt-1 text-sm text-red-500"><i
+                                    class="mr-1 fas fa-exclamation-circle"></i>{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Tanggal Kadaluarsa --}}
+                    <div>
+                        <label for="tanggal_kadaluarsa" class="block mb-2 text-sm font-semibold text-gray-700">
+                            <i class="mr-1 text-green-600 fas fa-calendar-times"></i>
+                            Tanggal Kadaluarsa
+                        </label>
+                        <input type="date" id="tanggal_kadaluarsa" name="tanggal_kadaluarsa"
+                            value="{{ old('tanggal_kadaluarsa') }}" min="{{ date('Y-m-d', strtotime('+1 day')) }}"
+                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all @error('tanggal_kadaluarsa') border-red-500 @enderror">
+                        @error('tanggal_kadaluarsa')
+                            <p class="mt-1 text-sm text-red-500"><i
+                                    class="mr-1 fas fa-exclamation-circle"></i>{{ $message }}</p>
                         @enderror
                     </div>
 

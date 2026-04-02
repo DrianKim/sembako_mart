@@ -103,7 +103,7 @@
                         @enderror
                     </div>
 
-                    <!-- Harga Beli -->
+                    {{-- <!-- Harga Beli -->
                     <div>
                         <label for="harga_beli" class="block mb-2 text-sm font-semibold text-gray-700">
                             <i class="mr-1 text-green-600 fas fa-coins"></i>
@@ -116,7 +116,7 @@
                             <p class="mt-1 text-sm text-red-500"><i
                                     class="mr-1 fas fa-exclamation-circle"></i>{{ $message }}</p>
                         @enderror
-                    </div>
+                    </div> --}}
 
                     <!-- Satuan -->
                     <div>
@@ -172,7 +172,7 @@
                         @if ($produk->foto)
                             <div class="flex items-center gap-3 mt-3">
                                 <div>
-                                    <img src="https://yexkxhepiviphofpsymz.supabase.co/storage/v1/object/public/{{ $produk->foto }}"
+                                    <img src="{{ url($produk->foto) }}"
                                         alt="{{ $produk->nama_produk }}"
                                         class="object-cover w-24 h-24 rounded-lg shadow">
                                 </div>
