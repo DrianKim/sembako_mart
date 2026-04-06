@@ -26,19 +26,20 @@ class OwnerController extends Controller
     {
         $search = $request->query('search', '');
 
-        $produks = Produk::with('kategori')
+        $produks = Produk::with(['kategori', 'batchProduks' => function ($q) {
+            $q->whereNull('deleted_at')->latest();
+        }])
             ->when($search, function ($query, $search) {
                 $lower = strtolower($search);
                 $query->whereRaw('LOWER(nama_produk) LIKE ?', ["%{$lower}%"])
                     ->orWhereRaw('LOWER(barcode) LIKE ?', ["%{$lower}%"])
                     ->orWhereHas(
                         'kategori',
-                        fn($q) =>
-                        $q->whereRaw('LOWER(nama_kategori) LIKE ?', ["%{$lower}%"])
+                        fn($q) => $q->whereRaw('LOWER(nama_kategori) LIKE ?', ["%{$lower}%"])
                     );
             })
             ->latest()
-            ->paginate(3)
+            ->paginate(10)
             ->appends(['search' => $search]);
 
         if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
@@ -51,14 +52,12 @@ class OwnerController extends Controller
             ]);
         }
 
-        $data = [
-            'title' => 'Produk',
+        return view('owner.produk.index', [
+            'title'   => 'Produk',
             'produks' => $produks,
-            'search' => $search,
-        ];
-
-        return view('owner.produk.index', $data);
-    }
+            'search'  => $search,
+        ]);
+    }   
 
     // User Management
     public function userIndex(Request $request)

@@ -78,6 +78,8 @@
                         <th class="px-4 py-3 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
                             Kategori</th>
                         <th class="px-4 py-3 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">Harga
+                            Beli</th>
+                        <th class="px-4 py-3 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">Harga
                             Jual</th>
                         <th class="px-4 py-3 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">Satuan
                         </th>

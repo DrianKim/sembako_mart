@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BatchProduk;
+use App\Models\DetailTransaksi;
+use App\Models\Log;
+use App\Models\Produk;
+use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use App\Models\Produk;
-use App\Models\Transaksi;
-use App\Models\DetailTransaksi;
-use App\Models\Log;
 
 class KasirController extends Controller
 {
@@ -35,42 +36,58 @@ class KasirController extends Controller
         $search = $request->search;
         $stokFilter = $request->stok_filter;
 
-        $query = Produk::with('kategori')
-            ->select('id', 'nama_produk', 'harga_jual', 'stok', 'satuan', 'barcode', 'foto')
-            ->where('stok', '>=', 0);
-
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('nama_produk', 'like', "%{$search}%")
-                    ->orWhere('barcode', 'like', "%{$search}%");
+        $query = Produk::with(['batchProduks' => function ($q) {
+            $q->whereNull('deleted_at')
+                ->where('stok', '>', 0)
+                ->orderBy('tanggal_kadaluarsa'); // FIFO: yang mau expired duluan
+        }])
+            ->when($search, function ($q) use ($search) {
+                $q->where(function ($q2) use ($search) {
+                    $q2->where('nama_produk', 'like', "%{$search}%")
+                        ->orWhere('barcode', 'like', "%{$search}%");
+                });
             });
-        }
-
-        // Filter stok
-        if ($stokFilter === 'tersedia') {
-            $query->where('stok', '>', 0);
-        } elseif ($stokFilter === 'sedikit') {
-            $query->whereBetween('stok', [1, 9]);
-        } elseif ($stokFilter === 'habis') {
-            $query->where('stok', 0);
-        }
 
         $products = $query->orderBy('nama_produk')->get();
 
-        // Format untuk JS
-        $formatted = $products->map(function ($p) {
+        $formatted = $products->map(function ($p) use ($stokFilter) {
+            $totalStok = $p->batchProduks->sum('stok');
+            $hargaBeli = $p->batchProduks->first()?->harga_beli ?? 0;
+
+            // Filter stok
+            if ($stokFilter === 'tersedia' && $totalStok <= 0) return null;
+            if ($stokFilter === 'sedikit' && ($totalStok <= 0 || $totalStok >= 10)) return null;
+            if ($stokFilter === 'habis' && $totalStok > 0) return null;
+
+            // Cek ada batch hampir/sudah kadaluarsa
+            $adaKadaluarsa = $p->batchProduks->filter(
+                fn($b) =>
+                $b->tanggal_kadaluarsa &&
+                    \Carbon\Carbon::parse($b->tanggal_kadaluarsa)->isPast()
+            )->count();
+
+            $mendekatiKadaluarsa = $p->batchProduks->filter(
+                fn($b) =>
+                $b->tanggal_kadaluarsa &&
+                    !\Carbon\Carbon::parse($b->tanggal_kadaluarsa)->isPast() &&
+                    \Carbon\Carbon::parse($b->tanggal_kadaluarsa)->diffInDays(now()) <= 30
+            )->count();
+
             return [
-                'id'       => $p->id,
-                'nama'     => $p->nama_produk,
-                'harga'    => (int) $p->harga_jual,
-                'satuan'   => $p->satuan,
-                'barcode'  => $p->barcode,
-                'stok'     => (int) $p->stok,
+                'id'                   => $p->id,
+                'nama'                 => $p->nama_produk,
+                'harga'                => (int) $p->harga_jual,
+                'harga_beli'           => (int) $hargaBeli,
+                'satuan'               => $p->satuan,
+                'barcode'              => $p->barcode,
+                'stok'                 => (int) $totalStok,
+                'ada_kadaluarsa'       => $adaKadaluarsa > 0,
+                'mendekati_kadaluarsa' => $mendekatiKadaluarsa > 0,
                 'img' => $p->foto
-                    ? env('SUPABASE_URL') . '/storage/v1/object/public/' . $p->foto
-                    : 'https://via.placeholder.com/400x300?text=No+Image',
+                    ? $p->foto
+                    : 'https://placehold.co/400x300?text=No+Image',
             ];
-        });
+        })->filter()->values();
 
         return response()->json($formatted);
     }
@@ -79,10 +96,10 @@ class KasirController extends Controller
     public function prosesBayar(Request $request)
     {
         $request->validate([
-            'keranjang'       => 'required|array|min:1',
-            'total_harga'     => 'required|numeric',
-            'uang_bayar'      => 'required|numeric|min:' . $request->total_harga,
-            'nama_pelanggan'  => 'nullable|string|max:100',
+            'keranjang'      => 'required|array|min:1',
+            'total_harga'    => 'required|numeric',
+            'uang_bayar'     => 'required|numeric|min:' . $request->total_harga,
+            'nama_pelanggan' => 'nullable|string|max:100',
         ]);
 
         try {
@@ -90,8 +107,6 @@ class KasirController extends Controller
 
             $kasirId = Auth::id();
             $namaPelanggan = $request->nama_pelanggan ?: 'Umum';
-
-            // Generate nomor unik
             $nomorUnik = 'TRX-' . now()->format('Ymd') . '-' . str_pad(rand(100, 999), 3, '0', STR_PAD_LEFT);
 
             $transaksi = Transaksi::create([
@@ -105,6 +120,19 @@ class KasirController extends Controller
             ]);
 
             foreach ($request->keranjang as $item) {
+                // Validasi stok total dulu
+                $totalStok = BatchProduk::where('produk_id', $item['produk_id'])
+                    ->whereNull('deleted_at')
+                    ->sum('stok');
+
+                if ($totalStok < $item['qty']) {
+                    DB::rollBack();
+                    return response()->json([
+                        'success' => false,
+                        'message' => "Stok produk '{$item['nama']}' tidak mencukupi. Sisa: {$totalStok}"
+                    ], 422);
+                }
+
                 DetailTransaksi::create([
                     'transaksi_id' => $transaksi->id,
                     'produk_id'    => $item['produk_id'],
@@ -113,9 +141,26 @@ class KasirController extends Controller
                     'subtotal'     => $item['harga'] * $item['qty'],
                 ]);
 
-                // Kurangi stok
-                Produk::where('id', $item['produk_id'])
-                    ->decrement('stok', $item['qty']);
+                // FIFO: kurangi dari batch paling dekat kadaluarsa
+                $sisaKurang = $item['qty'];
+
+                $batches = BatchProduk::where('produk_id', $item['produk_id'])
+                    ->whereNull('deleted_at')
+                    ->where('stok', '>', 0)
+                    ->orderByRaw('tanggal_kadaluarsa IS NULL, tanggal_kadaluarsa ASC')
+                    ->get();
+
+                foreach ($batches as $batch) {
+                    if ($sisaKurang <= 0) break;
+
+                    if ($batch->stok >= $sisaKurang) {
+                        $batch->decrement('stok', $sisaKurang);
+                        $sisaKurang = 0;
+                    } else {
+                        $sisaKurang -= $batch->stok;
+                        $batch->update(['stok' => 0]);
+                    }
+                }
             }
 
             Log::create([
@@ -127,10 +172,10 @@ class KasirController extends Controller
             DB::commit();
 
             return response()->json([
-                'success' => true,
+                'success'      => true,
                 'transaksi_id' => $transaksi->id,
                 'nomor_unik'   => $nomorUnik,
-                'message' => 'Transaksi berhasil disimpan'
+                'message'      => 'Transaksi berhasil disimpan'
             ]);
         } catch (\Exception $e) {
             DB::rollBack();

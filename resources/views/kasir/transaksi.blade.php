@@ -187,17 +187,27 @@
                 card.dataset.stok = product.stok;
 
                 card.innerHTML = `
+                <div class="relative">
                     <img src="${product.img}" alt="${product.nama}"
-                         class="object-cover w-full transition-transform duration-300 h-44 group-hover:scale-105">
-                    <div class="p-4">
-                        <h4 class="text-sm font-semibold text-gray-800 transition-colors line-clamp-2 group-hover:text-green-700">
-                            ${product.nama}
-                        </h4>
-                        <p class="mt-1 text-xs text-gray-600">${product.barcode}</p>
-                        <p class="mt-1 text-xs font-medium">Stok: <span class="font-bold ${stokColor}">${stokText}</span></p>
-                        <p class="mt-2 font-bold text-green-600">Rp ${Number(product.harga).toLocaleString('id-ID')}</p>
-                    </div>
-                `;
+                        class="object-cover w-full transition-transform duration-300 h-44 group-hover:scale-105">
+                    ${product.ada_kadaluarsa ? `
+                        <span class="absolute top-2 left-2 px-2 py-0.5 text-xs font-bold text-white bg-red-500 rounded-full">
+                            <i class="mr-1 fas fa-exclamation-circle"></i>Kadaluarsa
+                        </span>` : ''}
+                    ${product.mendekati_kadaluarsa && !product.ada_kadaluarsa ? `
+                        <span class="absolute top-2 left-2 px-2 py-0.5 text-xs font-bold text-white bg-yellow-500 rounded-full">
+                            <i class="mr-1 fas fa-clock"></i>Segera Exp
+                        </span>` : ''}
+                </div>
+                <div class="p-4">
+                    <h4 class="text-sm font-semibold text-gray-800 transition-colors line-clamp-2 group-hover:text-green-700">
+                        ${product.nama}
+                    </h4>
+                    <p class="mt-1 text-xs text-gray-500">${product.barcode ?? '-'}</p>
+                    <p class="mt-1 text-xs font-medium">Stok: <span class="font-bold ${stokColor}">${stokText} ${product.satuan}</span></p>
+                    <p class="mt-2 font-bold text-green-600">Rp ${Number(product.harga).toLocaleString('id-ID')}</p>
+                </div>
+            `;
 
                 container.appendChild(card);
             });
