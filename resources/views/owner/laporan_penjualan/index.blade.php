@@ -140,14 +140,16 @@
                 </div>
             </div>
             <div class="flex gap-2">
-                <button class="p-2 text-gray-600 transition-colors rounded-lg hover:bg-gray-100 hover:text-green-600"
+                <a id="btnExportExcel" href="{{ route('owner.laporan_penjualan.export.excel') }}"
+                    class="p-2 text-gray-600 transition-colors rounded-lg hover:bg-gray-100 hover:text-green-600"
                     title="Export Excel">
                     <i class="fas fa-file-excel"></i>
-                </button>
-                <button class="p-2 text-gray-600 transition-colors rounded-lg hover:bg-gray-100 hover:text-green-600"
+                </a>
+                <a id="btnExportPdf" href="{{ route('owner.laporan_penjualan.export.pdf') }}"
+                    class="p-2 text-gray-600 transition-colors rounded-lg hover:bg-gray-100 hover:text-red-500"
                     title="Export PDF">
                     <i class="fas fa-file-pdf"></i>
-                </button>
+                </a>
             </div>
         </div>
 
@@ -155,7 +157,8 @@
             <table class="w-full">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="w-12 px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">No
+                        <th class="w-12 px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
+                            No
                         </th>
                         <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
                             Tanggal
@@ -358,6 +361,33 @@
                 `<p id="dateErrorMsg" class="mt-2 text-xs text-red-500"><i class="mr-1 fas fa-exclamation-circle"></i>${msg}</p>`;
             $('#toDate').closest('.md\\:col-span-1').append(el);
         }
+
+        function updateExportLinks() {
+            const params = new URLSearchParams({
+                periode: $('#periodeFilter').val(),
+                from_date: $('#fromDate').val(),
+                to_date: $('#toDate').val(),
+                kasir_id: $('#kasirFilter').val(),
+            });
+
+            $('#btnExportExcel').attr('href',
+                '{{ route('owner.laporan_penjualan.export.excel') }}?' + params.toString()
+            );
+            $('#btnExportPdf').attr('href',
+                '{{ route('owner.laporan_penjualan.export.pdf') }}?' + params.toString()
+            );
+        }
+
+        // Panggil setiap kali filter berubah
+        $('#periodeFilter, #kasirFilter, #fromDate, #toDate').on('change', function() {
+            updateExportLinks();
+        });
+
+        // Panggil sekali saat halaman load
+        $(document).ready(function() {
+            updateExportLinks();
+            bindPagination();
+        });
 
         // Filter listeners
         $('#periodeFilter, #kasirFilter').on('change', function() {

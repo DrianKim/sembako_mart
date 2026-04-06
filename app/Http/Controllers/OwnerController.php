@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\LaporanPenjualanExport;
 use App\Models\Log;
 use App\Models\Produk;
 use App\Models\Transaksi;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
 
 class OwnerController extends Controller
 {
@@ -57,7 +61,7 @@ class OwnerController extends Controller
             'produks' => $produks,
             'search'  => $search,
         ]);
-    }   
+    }
 
     // User Management
     public function userIndex(Request $request)
@@ -326,6 +330,78 @@ class OwnerController extends Controller
         ];
 
         return view('owner.laporan_penjualan.index', $data);
+    }
+
+    public function exportExcel(Request $request)
+    {
+        [$from, $to, $kasirId] = $this->resolveFilterRange($request);
+
+        $kasirNama = $kasirId ? User::find($kasirId)?->nama : null;
+        $filename  = 'laporan_penjualan_' . $from->format('Ymd') . '_' . $to->format('Ymd') . '.xlsx';
+
+        return Excel::download(
+            new LaporanPenjualanExport($from, $to, $kasirId, $kasirNama),
+            $filename
+        );
+    }
+
+    // Export PDF
+    public function exportPdf(Request $request)
+    {
+        [$from, $to, $kasirId] = $this->resolveFilterRange($request);
+
+        $transaksis = Transaksi::with(['kasir', 'detailTransaksi.produk'])
+            ->whereBetween('tanggal_transaksi', [$from, $to])
+            ->when($kasirId, fn($q) => $q->where('kasir_id', $kasirId))
+            ->latest('tanggal_transaksi')
+            ->get();
+
+        $summaryQuery    = Transaksi::whereBetween('tanggal_transaksi', [$from, $to])
+            ->when($kasirId, fn($q) => $q->where('kasir_id', $kasirId));
+        $totalPenjualan  = $summaryQuery->sum('total_harga');
+        $jumlahTransaksi = $summaryQuery->count();
+        $rataRata        = $jumlahTransaksi > 0 ? $totalPenjualan / $jumlahTransaksi : 0;
+
+        $kasirNama   = $kasirId ? User::find($kasirId)?->nama : null;
+        $periodeLabel = $from->format('d M Y') . ' - ' . $to->format('d M Y');
+
+        $pdf = Pdf::loadView('owner.laporan_penjualan.export_pdf', compact(
+            'transaksis',
+            'totalPenjualan',
+            'jumlahTransaksi',
+            'rataRata',
+            'periodeLabel',
+            'kasirNama'
+        ))->setPaper('a4', 'landscape');
+
+        $filename = 'laporan_penjualan_' . $from->format('Ymd') . '_' . $to->format('Ymd') . '.pdf';
+
+        return $pdf->download($filename);
+    }
+
+    // Helper: resolve date range dari request (biar DRY)
+    private function resolveFilterRange(Request $request): array
+    {
+        $periodeFilter = $request->query('periode', 'bulanan');
+        $fromDate      = $request->query('from_date');
+        $toDate        = $request->query('to_date');
+        $kasirId       = $request->query('kasir_id');
+
+        $from = now()->startOfMonth();
+        $to   = now()->endOfMonth();
+
+        if ($periodeFilter === 'harian') {
+            $from = now()->startOfDay();
+            $to   = now()->endOfDay();
+        } elseif ($periodeFilter === 'mingguan') {
+            $from = now()->startOfWeek();
+            $to   = now()->endOfWeek();
+        } elseif ($periodeFilter === 'custom' && $fromDate && $toDate) {
+            $from = Carbon::parse($fromDate)->startOfDay();
+            $to   = Carbon::parse($toDate)->endOfDay();
+        }
+
+        return [$from, $to, $kasirId];
     }
 
     // Log Aktivitas

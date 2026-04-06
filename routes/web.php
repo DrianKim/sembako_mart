@@ -125,7 +125,8 @@ Route::middleware(['auth', 'role:owner'])->prefix('/owner')->name('owner.')->gro
 
     // Laporan Penjualan
     Route::get('/laporan-penjualan', [OwnerController::class, 'laporanPenjualan'])->name('laporan_penjualan');
-    Route::get('/laporan-penjualan/export', [OwnerController::class, 'exportLaporanPenjualan'])->name('laporan_penjualan.export');
+    Route::get('laporan-penjualan/export/excel', [OwnerController::class, 'exportExcel'])->name('laporan_penjualan.export.excel');
+    Route::get('laporan-penjualan/export/pdf', [OwnerController::class, 'exportPdf'])->name('laporan_penjualan.export.pdf');
 
     // Log Aktivitas
     Route::get('/log', [OwnerController::class, 'logIndex'])->name('log');
