@@ -276,10 +276,12 @@ class AdminController extends Controller
         ]);
 
         // Buat batch pertama
+        $nomorBatch = $request->nomor_batch ?: $this->generateNomorBatch($produk);
+
         $produk->batchProduks()->create([
-            'nomor_batch' => $request->nomor_batch,
-            'stok' => $request->stok_awal,
-            'harga_beli' => $request->harga_beli,
+            'nomor_batch'        => $nomorBatch,
+            'stok'               => $request->stok_awal,
+            'harga_beli'         => $request->harga_beli,
             'tanggal_kadaluarsa' => $request->tanggal_kadaluarsa,
         ]);
 
@@ -431,7 +433,9 @@ class AdminController extends Controller
         $stokFilter = $request->get('stok_filter');
 
         $produks = Produk::with(['kategori', 'batchProduks' => function ($q) {
-            $q->whereNull('deleted_at')->latest();
+            $q->whereNull('deleted_at')
+                ->orderByRaw('stok = 0 ASC')
+                ->orderBy('tanggal_kadaluarsa', 'asc');
         }])
             ->when($search, function ($q) use ($search) {
                 $lower = strtolower($search);
@@ -442,7 +446,6 @@ class AdminController extends Controller
                         fn($q) => $q->whereRaw('LOWER(nama_kategori) LIKE ?', ["%{$lower}%"])
                     );
             })
-            // Filter berdasarkan total stok dari batch (pakai subquery)
             ->when($stokFilter, function ($q) use ($stokFilter) {
                 $q->withSum(['batchProduks as total_stok_sum' => function ($query) {
                     $query->whereNull('deleted_at');
@@ -482,7 +485,9 @@ class AdminController extends Controller
     public function stokEdit($id)
     {
         $produk = Produk::with(['kategori', 'batchProduks' => function ($q) {
-            $q->whereNull('deleted_at')->latest();
+            $q->whereNull('deleted_at')
+                ->orderByRaw('stok = 0 ASC')
+                ->orderBy('tanggal_kadaluarsa', 'asc');
         }])->findOrFail($id);
 
         return view('admin.stok.edit', [
@@ -590,8 +595,11 @@ class AdminController extends Controller
                 'tanggal_kadaluarsa_baru.after' => 'Tanggal kadaluarsa harus setelah hari ini!',
             ]);
 
+            $nomorBatch = $request->nomor_batch_baru
+                ?: $this->generateNomorBatch($produk);
+
             $batch = $produk->batchProduks()->create([
-                'nomor_batch'        => $request->nomor_batch_baru,
+                'nomor_batch'        => $nomorBatch,
                 'stok'               => $request->stok_baru,
                 'harga_beli'         => $request->harga_beli_baru,
                 'tanggal_kadaluarsa' => $request->tanggal_kadaluarsa_baru ?: null,
@@ -608,6 +616,44 @@ class AdminController extends Controller
         }
 
         return redirect()->route('admin.stok.edit', $id)->with('error', 'Aksi tidak dikenali.');
+    }
+
+    // Tambah helper method di controller
+    private function generateNomorBatch(Produk $produk): string
+    {
+        $prefix = strtoupper(preg_replace('/[^A-Za-z]/', '', $produk->nama_produk));
+        $prefix = substr($prefix, 0, 3);
+        $tanggal = now()->format('Ymd');
+        $base = "{$prefix}-{$tanggal}-";
+
+        $existing = BatchProduk::where('nomor_batch', 'like', $base . '%')
+            ->whereNull('deleted_at')
+            ->pluck('nomor_batch')
+            ->map(fn($nb) => str_replace($base, '', $nb))
+            ->toArray();
+
+        $suffix = 'A';
+        while (in_array($suffix, $existing)) {
+            $suffix = $this->nextSuffix($suffix);
+        }
+
+        return $base . $suffix;
+    }
+
+    private function nextSuffix(string $current): string
+    {
+        $len = strlen($current);
+        $chars = str_split($current);
+
+        for ($i = $len - 1; $i >= 0; $i--) {
+            if ($chars[$i] < 'Z') {
+                $chars[$i] = chr(ord($chars[$i]) + 1);
+                return implode('', $chars);
+            }
+            $chars[$i] = 'A';
+        }
+
+        return 'A' . implode('', $chars);
     }
 
     // Kasir

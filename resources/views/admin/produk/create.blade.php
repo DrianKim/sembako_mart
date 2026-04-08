@@ -129,8 +129,8 @@
                             Nomor Batch
                         </label>
                         <input type="text" id="nomor_batch" name="nomor_batch" value="{{ old('nomor_batch') }}"
-                            placeholder="Contoh: BATCH-2025-001"
-                            class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all @error('nomor_batch') border-red-500 @enderror">
+                            placeholder="Auto-generate" readonly
+                            class="w-full px-4 py-2.5 text-gray-500 bg-gray-100 border border-gray-200 rounded-lg cursor-not-allowed focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all @error('nomor_batch') border-red-500 @enderror">
                         @error('nomor_batch')
                             <p class="mt-1 text-sm text-red-500"><i
                                     class="mr-1 fas fa-exclamation-circle"></i>{{ $message }}</p>

@@ -64,7 +64,8 @@
                 <div class="flex items-center gap-2 mt-1">
                     <span class="text-sm font-semibold text-gray-700">Total Stok:</span>
                     @php $totalStok = $produk->total_stok; @endphp
-                    <span class="px-3 py-0.5 text-sm font-bold rounded-full
+                    <span
+                        class="px-3 py-0.5 text-sm font-bold rounded-full
                         {{ $totalStok > 15 ? 'bg-green-100 text-green-800' : ($totalStok > 5 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800') }}">
                         {{ number_format($totalStok) }} {{ $produk->satuan }}
                     </span>
@@ -92,15 +93,16 @@
             <div class="divide-y divide-gray-100" id="batchList">
                 @forelse ($produk->batchProduks as $batch)
                     @php
-                        $isKadaluarsa = $batch->tanggal_kadaluarsa && \Carbon\Carbon::parse($batch->tanggal_kadaluarsa)->isPast();
-                        $isMendekati  = !$isKadaluarsa && $batch->tanggal_kadaluarsa &&
-                                        \Carbon\Carbon::parse($batch->tanggal_kadaluarsa)->diffInDays(now()) <= 30;
+                        $isKadaluarsa =
+                            $batch->tanggal_kadaluarsa && \Carbon\Carbon::parse($batch->tanggal_kadaluarsa)->isPast();
+                        $isMendekati =
+                            !$isKadaluarsa &&
+                            $batch->tanggal_kadaluarsa &&
+                            \Carbon\Carbon::parse($batch->tanggal_kadaluarsa)->diffInDays(now()) <= 30;
                     @endphp
                     <div class="p-4 transition-colors cursor-pointer hover:bg-gray-50 batch-item"
-                        data-batch-id="{{ $batch->id }}"
-                        data-nomor-batch="{{ $batch->nomor_batch }}"
-                        data-stok="{{ $batch->stok }}"
-                        data-harga-beli="{{ $batch->harga_beli }}"
+                        data-batch-id="{{ $batch->id }}" data-nomor-batch="{{ $batch->nomor_batch }}"
+                        data-stok="{{ $batch->stok }}" data-harga-beli="{{ $batch->harga_beli }}"
                         data-tanggal="{{ $batch->tanggal_kadaluarsa }}">
                         <div class="flex items-start justify-between">
                             <div>
@@ -109,17 +111,23 @@
                                         {{ $batch->nomor_batch ?? 'Tanpa Nomor Batch' }}
                                     </span>
                                     @if ($isKadaluarsa)
-                                        <span class="px-2 py-0.5 text-xs font-medium text-white bg-red-500 rounded-full">Kadaluarsa</span>
+                                        <span
+                                            class="px-2 py-0.5 text-xs font-medium text-white bg-red-500 rounded-full">Kadaluarsa</span>
                                     @elseif ($isMendekati)
-                                        <span class="px-2 py-0.5 text-xs font-medium text-white bg-yellow-500 rounded-full">Segera Kadaluarsa</span>
+                                        <span
+                                            class="px-2 py-0.5 text-xs font-medium text-white bg-yellow-500 rounded-full">Segera
+                                            Kadaluarsa</span>
                                     @else
-                                        <span class="px-2 py-0.5 text-xs font-medium text-white bg-green-500 rounded-full">Aktif</span>
+                                        <span
+                                            class="px-2 py-0.5 text-xs font-medium text-white bg-green-500 rounded-full">Aktif</span>
                                     @endif
                                 </div>
                                 <p class="mt-1 text-xs text-gray-500">
-                                    Stok: <span class="font-semibold text-gray-700">{{ number_format($batch->stok) }}</span>
+                                    Stok: <span
+                                        class="font-semibold text-gray-700">{{ number_format($batch->stok) }}</span>
                                     &nbsp;|&nbsp;
-                                    Harga Beli: <span class="font-semibold text-orange-600">Rp {{ number_format($batch->harga_beli, 0, ',', '.') }}</span>
+                                    Harga Beli: <span class="font-semibold text-orange-600">Rp
+                                        {{ number_format($batch->harga_beli, 0, ',', '.') }}</span>
                                 </p>
                                 <p class="text-xs text-gray-400">
                                     Kadaluarsa:
@@ -142,13 +150,15 @@
         </div>
 
         {{-- KOLOM KANAN: Form Batch --}}
-        <div class="overflow-hidden bg-white border border-green-200 shadow-sm rounded-xl transition-all" id="batchFormCard">
+        <div class="overflow-hidden bg-white border border-green-200 shadow-sm rounded-xl transition-all"
+            id="batchFormCard">
 
             {{-- Header dinamis --}}
             <div class="px-6 py-4 border-b border-green-100 bg-green-50 transition-all" id="formHeader">
                 <div class="flex items-center justify-between gap-3">
                     <div class="flex items-center gap-3">
-                        <div class="flex items-center justify-center w-9 h-9 rounded-lg transition-colors" id="formIconWrapper">
+                        <div class="flex items-center justify-center w-9 h-9 rounded-lg transition-colors"
+                            id="formIconWrapper">
                             <i class="fas transition-colors" id="formIcon"></i>
                         </div>
                         <div>
@@ -176,8 +186,8 @@
                             <div>
                                 <label class="block mb-1.5 text-sm font-semibold text-gray-700">Nomor Batch</label>
                                 <input type="text" name="nomor_batch_baru" value="{{ old('nomor_batch_baru') }}"
-                                    placeholder="Contoh: BTH-2025-001"
-                                    class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg @error('nomor_batch_baru') border-red-400 @enderror">
+                                    placeholder="Otomatis generate" readonly
+                                    class="w-full px-4 py-2.5 text-gray-500 bg-gray-100 border border-gray-200 rounded-lg cursor-not-allowed">
                                 @error('nomor_batch_baru')
                                     <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                                 @enderror
@@ -186,8 +196,7 @@
                                 <label class="block mb-1.5 text-sm font-semibold text-gray-700">
                                     Jumlah Stok <span class="text-red-500">*</span>
                                 </label>
-                                <input type="number" name="stok_baru" min="1"
-                                    value="{{ old('stok_baru') }}"
+                                <input type="number" name="stok_baru" min="1" value="{{ old('stok_baru') }}"
                                     class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg @error('stok_baru') border-red-400 @enderror">
                                 @error('stok_baru')
                                     <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
@@ -246,8 +255,8 @@
                     <div class="p-6 space-y-4">
                         <div>
                             <label class="block mb-1.5 text-sm font-semibold text-gray-700">Nomor Batch</label>
-                            <input type="text" id="editNomorBatch" name="nomor_batch"
-                                class="w-full px-4 py-2.5 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg @error('nomor_batch') border-red-400 @enderror">
+                            <input type="text" id="editNomorBatch" name="nomor_batch" readonly
+                                class="w-full px-4 py-2.5 text-gray-500 bg-gray-100 border border-gray-200 rounded-lg cursor-not-allowed @error('nomor_batch') border-red-400 @enderror">
                             @error('nomor_batch')
                                 <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                             @enderror
@@ -267,19 +276,22 @@
                             <div class="grid grid-cols-3 gap-2">
                                 <label class="aksi-stok-option cursor-pointer">
                                     <input type="radio" name="aksi_stok" value="tambah" class="sr-only" checked>
-                                    <div class="flex flex-col items-center justify-center gap-1 px-3 py-2.5 text-xs font-semibold border-2 rounded-lg transition-all border-green-400 bg-green-50 text-green-700 ring-2 ring-green-400 ring-offset-1 aksi-label">
+                                    <div
+                                        class="flex flex-col items-center justify-center gap-1 px-3 py-2.5 text-xs font-semibold border-2 rounded-lg transition-all border-green-400 bg-green-50 text-green-700 ring-2 ring-green-400 ring-offset-1 aksi-label">
                                         <i class="text-base fas fa-plus-circle"></i> Tambah
                                     </div>
                                 </label>
                                 <label class="aksi-stok-option cursor-pointer">
                                     <input type="radio" name="aksi_stok" value="kurangi" class="sr-only">
-                                    <div class="flex flex-col items-center justify-center gap-1 px-3 py-2.5 text-xs font-semibold border-2 rounded-lg transition-all border-gray-200 bg-white text-gray-500 aksi-label">
+                                    <div
+                                        class="flex flex-col items-center justify-center gap-1 px-3 py-2.5 text-xs font-semibold border-2 rounded-lg transition-all border-gray-200 bg-white text-gray-500 aksi-label">
                                         <i class="text-base fas fa-minus-circle"></i> Kurangi
                                     </div>
                                 </label>
                                 <label class="aksi-stok-option cursor-pointer">
                                     <input type="radio" name="aksi_stok" value="ganti" class="sr-only">
-                                    <div class="flex flex-col items-center justify-center gap-1 px-3 py-2.5 text-xs font-semibold border-2 rounded-lg transition-all border-gray-200 bg-white text-gray-500 aksi-label">
+                                    <div
+                                        class="flex flex-col items-center justify-center gap-1 px-3 py-2.5 text-xs font-semibold border-2 rounded-lg transition-all border-gray-200 bg-white text-gray-500 aksi-label">
                                         <i class="text-base fas fa-pen"></i> Ganti
                                     </div>
                                 </label>
@@ -309,7 +321,8 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block mb-1.5 text-sm font-semibold text-gray-700">Harga Beli (Rp)</label>
-                                <input type="number" id="editHargaBeli" name="harga_beli" min="0" step="100"
+                                <input type="number" id="editHargaBeli" name="harga_beli" min="0"
+                                    step="100"
                                     class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg @error('harga_beli') border-red-400 @enderror">
                                 @error('harga_beli')
                                     <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
@@ -357,223 +370,268 @@
 @endsection
 
 @push('scripts')
-<script>
-// ============================================================
-// CONFIG AKSI STOK
-// ============================================================
-const aksiConfig = {
-    tambah: {
-        border: 'border-green-400', bg: 'bg-green-50', text: 'text-green-700', ring: 'ring-green-400',
-        label: 'Jumlah Tambah',
-        infoBorder: 'border-green-400', infoBg: 'bg-green-50', infoText: 'text-green-800',
-        infoMsg: 'Stok batch ini akan <strong>DITAMBAH</strong> sejumlah yang diisi.',
-        previewColor: 'text-green-600',
-        calc: (stok, jumlah) => stok + jumlah,
-    },
-    kurangi: {
-        border: 'border-red-400', bg: 'bg-red-50', text: 'text-red-700', ring: 'ring-red-400',
-        label: 'Jumlah Kurangi',
-        infoBorder: 'border-red-400', infoBg: 'bg-red-50', infoText: 'text-red-800',
-        infoMsg: 'Stok batch ini akan <strong>DIKURANGI</strong> sejumlah yang diisi. Tidak bisa minus.',
-        previewColor: 'text-red-600',
-        calc: (stok, jumlah) => Math.max(0, stok - jumlah),
-    },
-    ganti: {
-        border: 'border-blue-400', bg: 'bg-blue-50', text: 'text-blue-700', ring: 'ring-blue-400',
-        label: 'Stok Baru',
-        infoBorder: 'border-blue-400', infoBg: 'bg-blue-50', infoText: 'text-blue-800',
-        infoMsg: 'Stok batch ini akan <strong>DIGANTI</strong> sepenuhnya. Gunakan untuk koreksi.',
-        previewColor: 'text-blue-600',
-        calc: (stok, jumlah) => jumlah,
-    },
-};
+    <script>
+        // SweetAlert Session
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Sukses!',
+                text: '{{ session('success') }}',
+                confirmButtonColor: '#10b981'
+            });
+        @endif
 
-// ============================================================
-// STATE & ELEMEN
-// ============================================================
-let stokSaatIni = 0;
+        @if (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: '{{ session('error') }}',
+                confirmButtonColor: '#ef4444'
+            });
+        @endif
+        // ============================================================
+        // CONFIG AKSI STOK
+        // ============================================================
+        const aksiConfig = {
+            tambah: {
+                border: 'border-green-400',
+                bg: 'bg-green-50',
+                text: 'text-green-700',
+                ring: 'ring-green-400',
+                label: 'Jumlah Tambah',
+                infoBorder: 'border-green-400',
+                infoBg: 'bg-green-50',
+                infoText: 'text-green-800',
+                infoMsg: 'Stok batch ini akan <strong>DITAMBAH</strong> sejumlah yang diisi.',
+                previewColor: 'text-green-600',
+                calc: (stok, jumlah) => stok + jumlah,
+            },
+            kurangi: {
+                border: 'border-red-400',
+                bg: 'bg-red-50',
+                text: 'text-red-700',
+                ring: 'ring-red-400',
+                label: 'Jumlah Kurangi',
+                infoBorder: 'border-red-400',
+                infoBg: 'bg-red-50',
+                infoText: 'text-red-800',
+                infoMsg: 'Stok batch ini akan <strong>DIKURANGI</strong> sejumlah yang diisi. Tidak bisa minus.',
+                previewColor: 'text-red-600',
+                calc: (stok, jumlah) => Math.max(0, stok - jumlah),
+            },
+            ganti: {
+                border: 'border-blue-400',
+                bg: 'bg-blue-50',
+                text: 'text-blue-700',
+                ring: 'ring-blue-400',
+                label: 'Stok Baru',
+                infoBorder: 'border-blue-400',
+                infoBg: 'bg-blue-50',
+                infoText: 'text-blue-800',
+                infoMsg: 'Stok batch ini akan <strong>DIGANTI</strong> sepenuhnya. Gunakan untuk koreksi.',
+                previewColor: 'text-blue-600',
+                calc: (stok, jumlah) => jumlah,
+            },
+        };
 
-const panelTambah     = document.getElementById('panelTambah');
-const panelEdit       = document.getElementById('panelEdit');
-const batchFormCard   = document.getElementById('batchFormCard');
-const formHeader      = document.getElementById('formHeader');
-const formIconWrapper = document.getElementById('formIconWrapper');
-const formIcon        = document.getElementById('formIcon');
-const formTitle       = document.getElementById('formTitle');
-const formSubtitle    = document.getElementById('formSubtitle');
-const btnBatalEdit    = document.getElementById('btnBatalEdit');
+        // ============================================================
+        // STATE & ELEMEN
+        // ============================================================
+        let stokSaatIni = 0;
 
-// ============================================================
-// INIT: tampilkan mode tambah saat halaman load
-// ============================================================
-setModeTambah();
+        const panelTambah = document.getElementById('panelTambah');
+        const panelEdit = document.getElementById('panelEdit');
+        const batchFormCard = document.getElementById('batchFormCard');
+        const formHeader = document.getElementById('formHeader');
+        const formIconWrapper = document.getElementById('formIconWrapper');
+        const formIcon = document.getElementById('formIcon');
+        const formTitle = document.getElementById('formTitle');
+        const formSubtitle = document.getElementById('formSubtitle');
+        const btnBatalEdit = document.getElementById('btnBatalEdit');
 
-// ============================================================
-// MODE TAMBAH
-// ============================================================
-function setModeTambah() {
-    // Panel
-    panelTambah.classList.remove('hidden');
-    panelEdit.classList.add('hidden');
+        // ============================================================
+        // INIT: tampilkan mode tambah saat halaman load
+        // ============================================================
+        setModeTambah();
 
-    // Card & header warna hijau
-    batchFormCard.className = 'overflow-hidden bg-white border border-green-200 shadow-sm rounded-xl transition-all';
-    formHeader.className    = 'px-6 py-4 border-b border-green-100 bg-green-50 transition-all';
+        // ============================================================
+        // MODE TAMBAH
+        // ============================================================
+        function setModeTambah() {
+            // Panel
+            panelTambah.classList.remove('hidden');
+            panelEdit.classList.add('hidden');
 
-    // Icon & teks
-    formIconWrapper.className = 'flex items-center justify-center w-9 h-9 rounded-lg bg-green-100';
-    formIcon.className        = 'fas fa-plus-circle text-green-600';
-    formTitle.textContent     = 'Tambah Batch Baru';
-    formSubtitle.textContent  = 'Dari supplier / pengiriman baru';
+            // Card & header warna hijau
+            batchFormCard.className =
+                'overflow-hidden bg-white border border-green-200 shadow-sm rounded-xl transition-all';
+            formHeader.className = 'px-6 py-4 border-b border-green-100 bg-green-50 transition-all';
 
-    // Sembunyikan tombol batal
-    btnBatalEdit.classList.add('hidden');
-    btnBatalEdit.classList.remove('flex');
+            // Icon & teks
+            formIconWrapper.className = 'flex items-center justify-center w-9 h-9 rounded-lg bg-green-100';
+            formIcon.className = 'fas fa-plus-circle text-green-600';
+            formTitle.textContent = 'Tambah Batch Baru';
+            formSubtitle.textContent = 'Dari supplier / pengiriman baru';
 
-    // Hapus highlight batch list kiri
-    document.querySelectorAll('.batch-item').forEach(el =>
-        el.classList.remove('bg-blue-50', 'ring-1', 'ring-blue-200'));
-}
+            // Sembunyikan tombol batal
+            btnBatalEdit.classList.add('hidden');
+            btnBatalEdit.classList.remove('flex');
 
-// ============================================================
-// MODE EDIT
-// ============================================================
-function setModeEdit(data) {
-    stokSaatIni = parseInt(data.stok) || 0;
+            // Hapus highlight batch list kiri
+            document.querySelectorAll('.batch-item').forEach(el =>
+                el.classList.remove('bg-blue-50', 'ring-1', 'ring-blue-200'));
+        }
 
-    // Isi field form edit
-    document.getElementById('editBatchId').value           = data.batchId;
-    document.getElementById('editNomorBatch').value        = data.nomorBatch || '';
-    document.getElementById('editStokInfo').value          = stokSaatIni;
-    document.getElementById('editJumlahStok').value        = '';
-    document.getElementById('editHargaBeli').value         = data.hargaBeli;
-    document.getElementById('editTanggalKadaluarsa').value = data.tanggal || '';
+        // ============================================================
+        // MODE EDIT
+        // ============================================================
+        function setModeEdit(data) {
+            stokSaatIni = parseInt(data.stok) || 0;
 
-    // Reset aksi ke "tambah"
-    document.querySelector('input[name="aksi_stok"][value="tambah"]').checked = true;
-    updateAksiUI();
+            // Isi field form edit
+            document.getElementById('editBatchId').value = data.batchId;
+            document.getElementById('editNomorBatch').value = data.nomorBatch || '';
+            document.getElementById('editStokInfo').value = stokSaatIni;
+            document.getElementById('editJumlahStok').value = '';
+            document.getElementById('editHargaBeli').value = data.hargaBeli;
+            document.getElementById('editTanggalKadaluarsa').value = data.tanggal || '';
 
-    // Panel
-    panelEdit.classList.remove('hidden');
-    panelTambah.classList.add('hidden');
+            // Reset aksi ke "tambah"
+            document.querySelector('input[name="aksi_stok"][value="tambah"]').checked = true;
+            updateAksiUI();
 
-    // Card & header warna biru
-    batchFormCard.className = 'overflow-hidden bg-white border border-blue-200 shadow-sm rounded-xl transition-all';
-    formHeader.className    = 'px-6 py-4 border-b border-blue-100 bg-blue-50 transition-all';
+            // Panel
+            panelEdit.classList.remove('hidden');
+            panelTambah.classList.add('hidden');
 
-    // Icon & teks
-    formIconWrapper.className = 'flex items-center justify-center w-9 h-9 rounded-lg bg-blue-100';
-    formIcon.className        = 'fas fa-edit text-blue-600';
-    formTitle.textContent     = 'Edit Batch';
-    formSubtitle.textContent  = 'Mengedit: ' + (data.nomorBatch || 'Tanpa Nomor Batch');
+            // Card & header warna biru
+            batchFormCard.className = 'overflow-hidden bg-white border border-blue-200 shadow-sm rounded-xl transition-all';
+            formHeader.className = 'px-6 py-4 border-b border-blue-100 bg-blue-50 transition-all';
 
-    // Tampilkan tombol batal
-    btnBatalEdit.classList.remove('hidden');
-    btnBatalEdit.classList.add('flex');
+            // Icon & teks
+            formIconWrapper.className = 'flex items-center justify-center w-9 h-9 rounded-lg bg-blue-100';
+            formIcon.className = 'fas fa-edit text-blue-600';
+            formTitle.textContent = 'Edit Batch';
+            formSubtitle.textContent = 'Mengedit: ' + (data.nomorBatch || 'Tanpa Nomor Batch');
 
-    // Highlight batch yang diklik di list kiri
-    document.querySelectorAll('.batch-item').forEach(el =>
-        el.classList.remove('bg-blue-50', 'ring-1', 'ring-blue-200'));
-    const target = document.querySelector(`.batch-item[data-batch-id="${data.batchId}"]`);
-    if (target) target.classList.add('bg-blue-50', 'ring-1', 'ring-blue-200');
+            // Tampilkan tombol batal
+            btnBatalEdit.classList.remove('hidden');
+            btnBatalEdit.classList.add('flex');
 
-    // Scroll ke form
-    batchFormCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
+            // Highlight batch yang diklik di list kiri
+            document.querySelectorAll('.batch-item').forEach(el =>
+                el.classList.remove('bg-blue-50', 'ring-1', 'ring-blue-200'));
+            const target = document.querySelector(`.batch-item[data-batch-id="${data.batchId}"]`);
+            if (target) target.classList.add('bg-blue-50', 'ring-1', 'ring-blue-200');
 
-// ============================================================
-// KLIK BATCH ITEM (daftar kiri)
-// ============================================================
-document.querySelectorAll('.batch-item').forEach(function (item) {
-    item.addEventListener('click', function () {
-        setModeEdit({
-            batchId:    this.dataset.batchId,
-            nomorBatch: this.dataset.nomorBatch,
-            stok:       this.dataset.stok,
-            hargaBeli:  this.dataset.hargaBeli,
-            tanggal:    this.dataset.tanggal,
+            // Scroll ke form
+            batchFormCard.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
+        // ============================================================
+        // KLIK BATCH ITEM (daftar kiri)
+        // ============================================================
+        document.querySelectorAll('.batch-item').forEach(function(item) {
+            item.addEventListener('click', function() {
+                setModeEdit({
+                    batchId: this.dataset.batchId,
+                    nomorBatch: this.dataset.nomorBatch,
+                    stok: this.dataset.stok,
+                    hargaBeli: this.dataset.hargaBeli,
+                    tanggal: this.dataset.tanggal,
+                });
+            });
         });
-    });
-});
 
-// ============================================================
-// TOMBOL BATAL → kembali ke mode tambah
-// ============================================================
-btnBatalEdit.addEventListener('click', setModeTambah);
+        // ============================================================
+        // TOMBOL BATAL → kembali ke mode tambah
+        // ============================================================
+        btnBatalEdit.addEventListener('click', setModeTambah);
 
-// ============================================================
-// AKSI STOK: update UI radio & info box
-// ============================================================
-function getAksiAktif() {
-    return document.querySelector('input[name="aksi_stok"]:checked')?.value || 'tambah';
-}
+        // ============================================================
+        // AKSI STOK: update UI radio & info box
+        // ============================================================
+        function getAksiAktif() {
+            return document.querySelector('input[name="aksi_stok"]:checked')?.value || 'tambah';
+        }
 
-function updateAksiUI() {
-    const aksi = getAksiAktif();
-    const cfg  = aksiConfig[aksi];
+        function updateAksiUI() {
+            const aksi = getAksiAktif();
+            const cfg = aksiConfig[aksi];
 
-    document.getElementById('labelJumlah').textContent = cfg.label;
+            document.getElementById('labelJumlah').textContent = cfg.label;
 
-    const infoBox  = document.getElementById('infoAksiStok');
-    const infoTeks = document.getElementById('infoAksiTeks');
-    infoBox.className  = `p-3 border-l-4 ${cfg.infoBorder} rounded-lg ${cfg.infoBg}`;
-    infoTeks.className = `text-xs ${cfg.infoText}`;
-    infoTeks.innerHTML = `<i class="mr-1 fas fa-info-circle"></i> ${cfg.infoMsg}`;
+            const infoBox = document.getElementById('infoAksiStok');
+            const infoTeks = document.getElementById('infoAksiTeks');
+            infoBox.className = `p-3 border-l-4 ${cfg.infoBorder} rounded-lg ${cfg.infoBg}`;
+            infoTeks.className = `text-xs ${cfg.infoText}`;
+            infoTeks.innerHTML = `<i class="mr-1 fas fa-info-circle"></i> ${cfg.infoMsg}`;
 
-    document.querySelectorAll('.aksi-stok-option').forEach(function (opt) {
-        const radio = opt.querySelector('input[type="radio"]');
-        const div   = opt.querySelector('.aksi-label');
-        const c     = aksiConfig[radio.value];
-        div.className = radio.checked
-            ? `flex flex-col items-center justify-center gap-1 px-3 py-2.5 text-xs font-semibold border-2 rounded-lg transition-all ${c.border} ${c.bg} ${c.text} ring-2 ${c.ring} ring-offset-1 aksi-label`
-            : 'flex flex-col items-center justify-center gap-1 px-3 py-2.5 text-xs font-semibold border-2 rounded-lg transition-all border-gray-200 bg-white text-gray-500 aksi-label';
-    });
+            document.querySelectorAll('.aksi-stok-option').forEach(function(opt) {
+                const radio = opt.querySelector('input[type="radio"]');
+                const div = opt.querySelector('.aksi-label');
+                const c = aksiConfig[radio.value];
+                div.className = radio.checked ?
+                    `flex flex-col items-center justify-center gap-1 px-3 py-2.5 text-xs font-semibold border-2 rounded-lg transition-all ${c.border} ${c.bg} ${c.text} ring-2 ${c.ring} ring-offset-1 aksi-label` :
+                    'flex flex-col items-center justify-center gap-1 px-3 py-2.5 text-xs font-semibold border-2 rounded-lg transition-all border-gray-200 bg-white text-gray-500 aksi-label';
+            });
 
-    updatePreview();
-}
+            updatePreview();
+        }
 
-function updatePreview() {
-    const aksi   = getAksiAktif();
-    const cfg    = aksiConfig[aksi];
-    const jumlah = parseInt(document.getElementById('editJumlahStok').value) || 0;
-    const el     = document.getElementById('previewHasilStok');
-    const isEmpty = document.getElementById('editJumlahStok').value === '';
+        function updatePreview() {
+            const aksi = getAksiAktif();
+            const cfg = aksiConfig[aksi];
+            const jumlah = parseInt(document.getElementById('editJumlahStok').value) || 0;
+            const el = document.getElementById('previewHasilStok');
+            const isEmpty = document.getElementById('editJumlahStok').value === '';
 
-    if (isEmpty || !document.getElementById('editBatchId').value) {
-        el.textContent = '-';
-        el.className   = 'flex items-center justify-center w-full px-4 py-2.5 text-lg font-bold border-2 border-dashed rounded-lg border-gray-200 text-gray-300';
-    } else {
-        el.textContent = cfg.calc(stokSaatIni, jumlah);
-        el.className   = `flex items-center justify-center w-full px-4 py-2.5 text-lg font-bold border-2 border-dashed rounded-lg border-gray-200 ${cfg.previewColor}`;
-    }
-}
+            if (isEmpty || !document.getElementById('editBatchId').value) {
+                el.textContent = '-';
+                el.className =
+                    'flex items-center justify-center w-full px-4 py-2.5 text-lg font-bold border-2 border-dashed rounded-lg border-gray-200 text-gray-300';
+            } else {
+                el.textContent = cfg.calc(stokSaatIni, jumlah);
+                el.className =
+                    `flex items-center justify-center w-full px-4 py-2.5 text-lg font-bold border-2 border-dashed rounded-lg border-gray-200 ${cfg.previewColor}`;
+            }
+        }
 
-document.querySelectorAll('input[name="aksi_stok"]').forEach(r => r.addEventListener('change', updateAksiUI));
-document.getElementById('editJumlahStok').addEventListener('input', updatePreview);
+        document.querySelectorAll('input[name="aksi_stok"]').forEach(r => r.addEventListener('change', updateAksiUI));
+        document.getElementById('editJumlahStok').addEventListener('input', updatePreview);
 
-// ============================================================
-// SUBMIT FORM EDIT: KONFIRMASI SWEETALERT
-// ============================================================
-document.getElementById('formEditBatch').addEventListener('submit', function (e) {
-    e.preventDefault();
-    const form   = this;
-    const nomor  = document.getElementById('editNomorBatch').value || 'Tanpa Nomor';
-    const aksi   = getAksiAktif();
-    const jumlah = parseInt(document.getElementById('editJumlahStok').value) || 0;
-    const hasil  = aksiConfig[aksi].calc(stokSaatIni, jumlah);
-    const aksiTeks = { tambah: 'ditambah', kurangi: 'dikurangi', ganti: 'diganti menjadi' };
+        // ============================================================
+        // SUBMIT FORM EDIT: KONFIRMASI SWEETALERT
+        // ============================================================
+        document.getElementById('formEditBatch').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = this;
+            const nomor = document.getElementById('editNomorBatch').value || 'Tanpa Nomor';
+            const aksi = getAksiAktif();
+            const jumlah = parseInt(document.getElementById('editJumlahStok').value) || 0;
+            const hasil = aksiConfig[aksi].calc(stokSaatIni, jumlah);
+            const aksiTeks = {
+                tambah: 'ditambah',
+                kurangi: 'dikurangi',
+                ganti: 'diganti menjadi'
+            };
 
-    Swal.fire({
-        title: 'Simpan perubahan batch?',
-        html:  `Batch <strong>${nomor}</strong>:<br>Stok akan <strong>${aksiTeks[aksi]} ${jumlah}</strong> → menjadi <strong>${hasil}</strong>`,
-        icon:  'question',
-        showCancelButton:   true,
-        confirmButtonColor: '#3b82f6',
-        cancelButtonColor:  '#ef4444',
-        confirmButtonText:  'Ya, Simpan!',
-        cancelButtonText:   'Batal',
-        reverseButtons:     true
-    }).then(result => { if (result.isConfirmed) form.submit(); });
-});
-</script>
+            Swal.fire({
+                title: 'Simpan perubahan batch?',
+                html: `Batch <strong>${nomor}</strong>:<br>Stok akan <strong>${aksiTeks[aksi]} ${jumlah}</strong> → menjadi <strong>${hasil}</strong>`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3b82f6',
+                cancelButtonColor: '#ef4444',
+                confirmButtonText: 'Ya, Simpan!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then(result => {
+                if (result.isConfirmed) form.submit();
+            });
+        });
+    </script>
 @endpush

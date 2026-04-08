@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -16,6 +17,14 @@ return Application::configure(basePath: dirname(__DIR__))
             'hide.login' => \App\Http\Middleware\HideLoginPage::class,
             'check.status' => \App\Http\Middleware\CheckUserStatus::class,
         ]);
+
+        $middleware->redirectGuestsTo(function (Request $request) {
+            if (session('login_token')) {
+                return '/';
+            }
+
+            return '/';
+        });
 
     })
     ->withExceptions(function (Exceptions $exceptions): void {

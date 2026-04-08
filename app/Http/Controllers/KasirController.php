@@ -36,7 +36,7 @@ class KasirController extends Controller
         $search = $request->search;
         $stokFilter = $request->stok_filter;
 
-        $query = Produk::with(['batchProduks' => function ($q) {
+        $query = Produk::with(['kategori', 'batchProduks' => function ($q) {
             $q->whereNull('deleted_at')
                 ->where('stok', '>', 0)
                 ->orderBy('tanggal_kadaluarsa'); // FIFO: yang mau expired duluan
@@ -81,6 +81,8 @@ class KasirController extends Controller
                 'satuan'               => $p->satuan,
                 'barcode'              => $p->barcode,
                 'stok'                 => (int) $totalStok,
+                'kategori_id'          => $p->kategori_id,
+                'kategori_nama'        => $p->kategori->nama_kategori ?? 'Lainnya',
                 'ada_kadaluarsa'       => $adaKadaluarsa > 0,
                 'mendekati_kadaluarsa' => $mendekatiKadaluarsa > 0,
                 'img' => $p->foto

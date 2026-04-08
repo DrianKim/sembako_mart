@@ -26,6 +26,11 @@
                 </div>
             </div>
 
+            <!-- Chip Filter Kategori -->
+            <div class="flex flex-wrap gap-2 mb-4" id="chipKategori">
+                <!-- dirender via JS -->
+            </div>
+
             <!-- Grid Card Produk -->
             <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5" id="produkList">
                 <!-- Card dirender via JS -->
@@ -107,6 +112,7 @@
         let currentPage = 1;
         let allProducts = [];
         let filteredProducts = [];
+        let selectedKategori = ['semua'];
 
         // LOAD PRODUK DARI DATABASE
         function loadProduk() {
@@ -122,6 +128,7 @@
                 .then(res => res.json())
                 .then(response => {
                     allProducts = response;
+                    renderChipKategori(allProducts);
                     applyFilters();
                 })
                 .catch(() => {
@@ -129,7 +136,6 @@
                 });
         }
 
-        // FILTER LOKAL (search + stok)
         function applyFilters() {
             const searchTerm = document.getElementById('searchProduk').value.toLowerCase().trim();
             const stokFilter = document.getElementById('filterStok').value;
@@ -146,11 +152,75 @@
                 if (stokFilter === 'sedikit') matchStok = stok > 0 && stok < 10;
                 if (stokFilter === 'habis') matchStok = stok === 0;
 
-                return matchSearch && matchStok;
+                // === LOGIC MULTI KATEGORI (OR) ===
+                const matchKategori = selectedKategori.includes('semua') ||
+                    selectedKategori.includes(String(product.kategori_id));
+
+                return matchSearch && matchStok && matchKategori;
             });
 
             currentPage = 1;
             renderProducts(currentPage);
+        }
+
+        function renderChipKategori(products) {
+            const container = document.getElementById('chipKategori');
+            const kategoriMap = {};
+
+            products.forEach(p => {
+                if (!kategoriMap[p.kategori_id]) {
+                    kategoriMap[p.kategori_id] = p.kategori_nama;
+                }
+            });
+
+            container.innerHTML = '';
+
+            // Chip "Semua"
+            container.appendChild(buatChip('semua', 'Semua', selectedKategori.includes('semua')));
+
+            // Chip kategori lainnya
+            Object.entries(kategoriMap).forEach(([id, nama]) => {
+                container.appendChild(buatChip(id, nama, selectedKategori.includes(id)));
+            });
+        }
+
+        function buatChip(id, label, active) {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.textContent = label;
+
+            btn.className = active ?
+                'px-4 py-2 text-sm font-semibold rounded-full border-2 border-green-500 bg-green-500 text-white transition-all shadow-sm' :
+                'px-4 py-2 text-sm font-semibold rounded-full border-2 border-gray-200 bg-white text-gray-600 hover:border-green-400 hover:text-green-600 transition-all';
+
+            btn.addEventListener('click', () => {
+                if (id === 'semua') {
+                    selectedKategori = ['semua'];
+                } else {
+                    // Hapus 'semua' jika ada
+                    if (selectedKategori.includes('semua')) {
+                        selectedKategori = [];
+                    }
+
+                    if (selectedKategori.includes(id)) {
+                        // Unselect kategori ini
+                        selectedKategori = selectedKategori.filter(k => k !== id);
+                    } else {
+                        // Select kategori ini
+                        selectedKategori.push(id);
+                    }
+
+                    // Jika tidak ada kategori yang dipilih, kembali ke 'semua'
+                    if (selectedKategori.length === 0) {
+                        selectedKategori = ['semua'];
+                    }
+                }
+
+                renderChipKategori(allProducts);
+                applyFilters();
+            });
+
+            return btn;
         }
 
         // RENDER PRODUK
@@ -191,20 +261,17 @@
                     <img src="${product.img}" alt="${product.nama}"
                         class="object-cover w-full transition-transform duration-300 h-44 group-hover:scale-105">
                     ${product.ada_kadaluarsa ? `
-                        <span class="absolute top-2 left-2 px-2 py-0.5 text-xs font-bold text-white bg-red-500 rounded-full">
-                            <i class="mr-1 fas fa-exclamation-circle"></i>Kadaluarsa
-                        </span>` : ''}
-                    ${product.mendekati_kadaluarsa && !product.ada_kadaluarsa ? `
-                        <span class="absolute top-2 left-2 px-2 py-0.5 text-xs font-bold text-white bg-yellow-500 rounded-full">
-                            <i class="mr-1 fas fa-clock"></i>Segera Exp
-                        </span>` : ''}
+                                                                <span class="absolute top-2 left-2 px-2 py-0.5 text-xs font-bold text-white bg-red-500 rounded-full">
+                                                                    <i class="mr-1 fas fa-exclamation-circle"></i>Kadaluarsa
+                                                                </span>` : ''}
+
                 </div>
                 <div class="p-4">
                     <h4 class="text-sm font-semibold text-gray-800 transition-colors line-clamp-2 group-hover:text-green-700">
                         ${product.nama}
                     </h4>
                     <p class="mt-1 text-xs text-gray-500">${product.barcode ?? '-'}</p>
-                    <p class="mt-1 text-xs font-medium">Stok: <span class="font-bold ${stokColor}">${stokText} ${product.satuan}</span></p>
+                    <p class="mt-1 text-xs font-medium">Stok: <span class="font-bold ${stokColor}">${stokText}</span></p>
                     <p class="mt-2 font-bold text-green-600">Rp ${Number(product.harga).toLocaleString('id-ID')}</p>
                 </div>
             `;
