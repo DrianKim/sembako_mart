@@ -37,7 +37,7 @@ class AdminController extends Controller
                 $lower = strtolower($search);
                 $query->whereRaw('LOWER(nama_kategori) LIKE ?', ["%{$lower}%"]);
             })
-            ->latest('id')
+            ->orderBy('nama_kategori')
             ->paginate(3)
             ->appends(['search' => $search]);
 
@@ -167,7 +167,7 @@ class AdminController extends Controller
                         fn($q) => $q->whereRaw('LOWER(nama_kategori) LIKE ?', ["%{$lower}%"])
                     );
             })
-            ->latest()
+            ->orderBy('nama_produk')
             ->paginate(10)
             ->appends(['search' => $search]);
 

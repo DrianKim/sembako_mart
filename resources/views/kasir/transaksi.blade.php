@@ -108,7 +108,7 @@
 @push('scripts')
     <script>
         let keranjang = [];
-        const itemsPerPage = 12;
+        const itemsPerPage = 10;
         let currentPage = 1;
         let allProducts = [];
         let filteredProducts = [];

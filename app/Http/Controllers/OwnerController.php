@@ -42,7 +42,7 @@ class OwnerController extends Controller
                         fn($q) => $q->whereRaw('LOWER(nama_kategori) LIKE ?', ["%{$lower}%"])
                     );
             })
-            ->latest()
+            ->orderBy('nama_produk')
             ->paginate(10)
             ->appends(['search' => $search]);
 
