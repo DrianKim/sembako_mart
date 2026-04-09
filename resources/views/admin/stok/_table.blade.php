@@ -5,11 +5,15 @@
             ->filter(fn($b) => $b->tanggal_kadaluarsa && \Carbon\Carbon::parse($b->tanggal_kadaluarsa)->isPast())
             ->count();
         $mendekatiKadaluarsa = $produk->batchProduks
-            ->filter(
-                fn($b) => $b->tanggal_kadaluarsa &&
-                    !\Carbon\Carbon::parse($b->tanggal_kadaluarsa)->isPast() &&
-                    \Carbon\Carbon::parse($b->tanggal_kadaluarsa)->diffInDays(now()) <= 7
-            )
+            ->filter(function ($b) {
+                if (!$b->tanggal_kadaluarsa) {
+                    return false;
+                }
+
+                $exp = \Carbon\Carbon::parse($b->tanggal_kadaluarsa);
+
+                return !$exp->isPast() && $exp->diffInDays(now(), false) <= 30;
+            })
             ->count();
     @endphp
     <tr class="transition-colors hover:bg-gray-50">
@@ -18,8 +22,8 @@
         </td>
         <td class="px-6 py-4 whitespace-nowrap">
             @if ($produk->foto)
-                <img src="{{ url($produk->foto) }}"
-                    alt="{{ $produk->nama_produk }}" class="object-cover w-10 h-10 bg-gray-100 rounded-lg">
+                <img src="{{ url($produk->foto) }}" alt="{{ $produk->nama_produk }}"
+                    class="object-cover w-10 h-10 bg-gray-100 rounded-lg">
             @else
                 <div class="flex items-center justify-center w-10 h-10 bg-gray-200 rounded-lg">
                     <i class="text-sm text-gray-500 fas fa-image"></i>
@@ -33,10 +37,10 @@
                 <span class="inline-block px-2 py-0.5 mt-1 text-xs font-medium text-white bg-red-500 rounded-full">
                     <i class="mr-1 fas fa-exclamation-circle"></i>{{ $adaKadaluarsa }} batch kadaluarsa
                 </span>
-            @elseif ($mendekatiKadaluarsa > 0)
+            {{-- @elseif ($mendekatiKadaluarsa > 0)
                 <span class="inline-block px-2 py-0.5 mt-1 text-xs font-medium text-white bg-yellow-500 rounded-full">
                     <i class="mr-1 fas fa-clock"></i>{{ $mendekatiKadaluarsa }} batch segera kadaluarsa
-                </span>
+                </span> --}}
             @endif
         </td>
         <td class="px-6 py-4 text-center whitespace-nowrap">

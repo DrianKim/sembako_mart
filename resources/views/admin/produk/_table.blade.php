@@ -34,10 +34,10 @@
                 <span class="inline-block px-2 py-0.5 mt-1 text-xs font-medium text-white bg-red-500 rounded-full">
                     <i class="mr-1 fas fa-exclamation-circle"></i>{{ $adaKadaluarsa }} batch kadaluarsa
                 </span>
-            @elseif ($mendekatiKadaluarsa > 0)
+            {{-- @elseif ($mendekatiKadaluarsa > 0)
                 <span class="inline-block px-2 py-0.5 mt-1 text-xs font-medium text-white bg-yellow-500 rounded-full">
                     <i class="mr-1 fas fa-clock"></i>{{ $mendekatiKadaluarsa }} batch segera kadaluarsa
-                </span>
+                </span> --}}
             @endif
         </td>
         <td class="px-6 py-4 text-sm text-gray-900">{{ $produk->kategori->nama_kategori ?? '-' }}</td>
