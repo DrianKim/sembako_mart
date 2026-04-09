@@ -105,6 +105,7 @@ Route::middleware(['auth', 'check.status', 'role:kasir'])->prefix('/kasir')->nam
 Route::middleware(['auth', 'role:owner'])->prefix('/owner')->name('owner.')->group(function () {
     // Dashboard
     Route::get('/dashboard', [OwnerController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard/chart-data', [OwnerController::class, 'chartData'])->name('dashboard.chart');
 
     // Produk
     Route::get('/produk', [OwnerController::class, 'produkIndex'])->name('produk');

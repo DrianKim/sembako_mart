@@ -18,11 +18,137 @@ class OwnerController extends Controller
     // Dashboard
     public function dashboard()
     {
-        $data = [
-            'title' => 'Dashboard Owner',
-        ];
+        $today     = Carbon::today();
+        $yesterday = Carbon::yesterday();
+        $bulanIni  = Carbon::now()->startOfMonth();
+        $bulanLalu = Carbon::now()->subMonth()->startOfMonth();
+        $bulanLaluAkhir = Carbon::now()->subMonth()->endOfMonth();
 
-        return view('owner.dashboard', $data);
+        // Omzet hari ini
+        $omzetHariIni = Transaksi::whereDate('tanggal_transaksi', $today)
+            ->sum('total_harga');
+
+        $omzetKemarin = Transaksi::whereDate('tanggal_transaksi', $yesterday)
+            ->sum('total_harga');
+
+        $persenHariIni = $omzetKemarin > 0
+            ? round((($omzetHariIni - $omzetKemarin) / $omzetKemarin) * 100, 1)
+            : 0;
+
+        // Transaksi hari ini
+        $transaksiHariIni = Transaksi::whereDate('tanggal_transaksi', $today)->count();
+        $rataRata = $transaksiHariIni > 0 ? $omzetHariIni / $transaksiHariIni : 0;
+
+        // Omzet bulan ini
+        $omzetBulanIni = Transaksi::whereBetween('tanggal_transaksi', [
+            $bulanIni, Carbon::now()->endOfDay()
+        ])->sum('total_harga');
+
+        $omzetBulanLalu = Transaksi::whereBetween('tanggal_transaksi', [
+            $bulanLalu, $bulanLaluAkhir
+        ])->sum('total_harga');
+
+        $persenBulan = $omzetBulanLalu > 0
+            ? round((($omzetBulanIni - $omzetBulanLalu) / $omzetBulanLalu) * 100, 1)
+            : 0;
+
+        // Kasir aktif
+        $kasirAktif = User::where('role', 'kasir')
+            ->where('status', 'aktif')
+            ->count();
+
+        // Top 5 kasir hari ini berdasarkan omzet
+        $topKasir = Transaksi::with('kasir')
+            ->selectRaw('kasir_id, SUM(total_harga) as total_omzet, COUNT(*) as jumlah_transaksi')
+            ->whereDate('tanggal_transaksi', $today)
+            ->groupBy('kasir_id')
+            ->orderByDesc('total_omzet')
+            ->limit(5)
+            ->get();
+
+        // 7 transaksi terbaru
+        $transaksiTerbaru = Transaksi::with('kasir')
+            ->latest('tanggal_transaksi')
+            ->limit(7)
+            ->get();
+
+        // Data chart default: 7 hari terakhir
+        $chartLabels = [];
+        $chartData   = [];
+        $omzet7Hari  = Transaksi::selectRaw('DATE(tanggal_transaksi) as tanggal, SUM(total_harga) as total')
+            ->whereBetween('tanggal_transaksi', [
+                Carbon::now()->subDays(6)->startOfDay(),
+                Carbon::now()->endOfDay(),
+            ])
+            ->groupBy('tanggal')
+            ->orderBy('tanggal')
+            ->get()
+            ->keyBy('tanggal');
+
+        for ($i = 6; $i >= 0; $i--) {
+            $date = Carbon::now()->subDays($i);
+            $key  = $date->toDateString();
+            $chartLabels[] = $date->locale('id')->translatedFormat('d M');
+            $chartData[]   = isset($omzet7Hari[$key]) ? (float) $omzet7Hari[$key]->total : 0;
+        }
+
+        return view('owner.dashboard', compact(
+            'omzetHariIni', 'omzetKemarin', 'persenHariIni',
+            'transaksiHariIni', 'rataRata',
+            'omzetBulanIni', 'persenBulan',
+            'kasirAktif',
+            'topKasir',
+            'transaksiTerbaru',
+            'chartLabels', 'chartData',
+        ));
+    }
+
+    // Endpoint AJAX untuk switch chart periode
+    public function chartData(Request $request)
+    {
+        $periode = $request->get('periode', 'minggu');
+        $labels  = [];
+        $data    = [];
+
+        if ($periode === 'bulan') {
+            // Per hari dalam bulan ini
+            $start = Carbon::now()->startOfMonth();
+            $end   = Carbon::now()->endOfDay();
+            $rows  = Transaksi::selectRaw('DATE(tanggal_transaksi) as tanggal, SUM(total_harga) as total')
+                ->whereBetween('tanggal_transaksi', [$start, $end])
+                ->groupBy('tanggal')
+                ->orderBy('tanggal')
+                ->get()
+                ->keyBy('tanggal');
+
+            $current = $start->copy();
+            while ($current->lte($end)) {
+                $key      = $current->toDateString();
+                $labels[] = $current->format('d');
+                $data[]   = isset($rows[$key]) ? (float) $rows[$key]->total : 0;
+                $current->addDay();
+            }
+        } else {
+            // 7 hari terakhir
+            $rows = Transaksi::selectRaw('DATE(tanggal_transaksi) as tanggal, SUM(total_harga) as total')
+                ->whereBetween('tanggal_transaksi', [
+                    Carbon::now()->subDays(6)->startOfDay(),
+                    Carbon::now()->endOfDay(),
+                ])
+                ->groupBy('tanggal')
+                ->orderBy('tanggal')
+                ->get()
+                ->keyBy('tanggal');
+
+            for ($i = 6; $i >= 0; $i--) {
+                $date     = Carbon::now()->subDays($i);
+                $key      = $date->toDateString();
+                $labels[] = $date->locale('id')->translatedFormat('d M');
+                $data[]   = isset($rows[$key]) ? (float) $rows[$key]->total : 0;
+            }
+        }
+
+        return response()->json(compact('labels', 'data'));
     }
 
     // Produk
@@ -236,8 +362,8 @@ class OwnerController extends Controller
             $from = now()->startOfWeek();
             $to   = now()->endOfWeek();
         } elseif ($periodeFilter === 'custom' && $fromDate && $toDate) {
-            $from = \Carbon\Carbon::parse($fromDate)->startOfDay();
-            $to   = \Carbon\Carbon::parse($toDate)->endOfDay();
+            $from = Carbon::parse($fromDate)->startOfDay();
+            $to   = Carbon::parse($toDate)->endOfDay();
         }
 
         // Base query transaksi
@@ -255,7 +381,7 @@ class OwnerController extends Controller
         $rataRata         = $jumlahTransaksi > 0 ? $totalPenjualan / $jumlahTransaksi : 0;
 
         // Produk terlaris
-        $produkTerlaris = \App\Models\DetailTransaksi::selectRaw('produk_id, SUM(qty) as total_qty')
+        $produkTerlaris = DetailTransaksi::selectRaw('produk_id, SUM(qty) as total_qty')
             ->whereHas('transaksi', function ($q) use ($from, $to, $kasirId) {
                 $q->whereBetween('tanggal_transaksi', [$from, $to]);
                 if ($kasirId) $q->where('kasir_id', $kasirId);
@@ -282,7 +408,7 @@ class OwnerController extends Controller
             ->orderBy('tanggal')
             ->get();
 
-        $grafikLabels = $grafikData->pluck('tanggal')->map(fn($d) => \Carbon\Carbon::parse($d)->format('d M'))->toArray();
+        $grafikLabels = $grafikData->pluck('tanggal')->map(fn($d) => Carbon::parse($d)->format('d M'))->toArray();
         $grafikOmzet  = $grafikData->pluck('total')->map(fn($v) => (float) $v)->toArray();
 
         // Tabel transaksi paginasi

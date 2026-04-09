@@ -19,13 +19,96 @@ class AdminController extends Controller
 
     // dashboard
     public function dashboard()
-    {
-        $data = [
-            'title' => 'Dashboard',
-        ];
+{
+    $today = \Carbon\Carbon::today();
+    $yesterday = \Carbon\Carbon::yesterday();
 
-        return view('admin.dashboard', $data);
+    // Omzet hari ini
+    $omzetHariIni = Transaksi::whereDate('tanggal_transaksi', $today)
+        ->sum('total_harga');
+
+    // Omzet kemarin (untuk persentase perubahan)
+    $omzetKemarin = Transaksi::whereDate('tanggal_transaksi', $yesterday)
+        ->sum('total_harga');
+
+    $persenOmzet = $omzetKemarin > 0
+        ? round((($omzetHariIni - $omzetKemarin) / $omzetKemarin) * 100, 1)
+        : 0;
+
+    // Jumlah transaksi hari ini
+    $transaksiHariIni = Transaksi::whereDate('tanggal_transaksi', $today)->count();
+
+    // Rata-rata per transaksi
+    $rataRataTransaksi = $transaksiHariIni > 0
+        ? $omzetHariIni / $transaksiHariIni
+        : 0;
+
+    // Produk dengan total stok < 10
+    $produkStokRendah = BatchProduk::selectRaw('produk_id, SUM(stok) as total_stok')
+        ->whereNull('deleted_at')
+        ->groupBy('produk_id')
+        ->havingRaw('SUM(stok) < 10')
+        ->count();
+
+    // Kasir aktif
+    $kasirAktif = User::where('role', 'kasir')
+        ->where('status', 'aktif')
+        ->count();
+
+    // Omzet 7 hari terakhir (untuk chart)
+    $omzet7Hari = Transaksi::selectRaw('DATE(tanggal_transaksi) as tanggal, SUM(total_harga) as total')
+        ->whereBetween('tanggal_transaksi', [
+            \Carbon\Carbon::now()->subDays(6)->startOfDay(),
+            \Carbon\Carbon::now()->endOfDay(),
+        ])
+        ->groupBy('tanggal')
+        ->orderBy('tanggal')
+        ->get()
+        ->keyBy('tanggal');
+
+    // Generate lengkap 7 hari (isi 0 kalau ga ada transaksi)
+    $chartLabels = [];
+    $chartData = [];
+    for ($i = 6; $i >= 0; $i--) {
+        $date = \Carbon\Carbon::now()->subDays($i);
+        $key = $date->toDateString();
+        $chartLabels[] = $date->locale('id')->translatedFormat('d M');
+        $chartData[] = isset($omzet7Hari[$key]) ? (float) $omzet7Hari[$key]->total : 0;
     }
+
+    // 5 Transaksi terbaru
+    $transaksiTerbaru = Transaksi::with('kasir')
+        ->latest('tanggal_transaksi')
+        ->limit(5)
+        ->get();
+
+    // Produk hampir kadaluarsa (dalam 7 hari ke depan)
+    $produkHampirKadaluarsa = BatchProduk::with('produk')
+        ->whereNull('deleted_at')
+        ->whereNotNull('tanggal_kadaluarsa')
+        ->whereBetween('tanggal_kadaluarsa', [
+            \Carbon\Carbon::today(),
+            \Carbon\Carbon::today()->addDays(7),
+        ])
+        ->where('stok', '>', 0)
+        ->orderBy('tanggal_kadaluarsa')
+        ->limit(5)
+        ->get();
+
+    return view('admin.dashboard', compact(
+        'omzetHariIni',
+        'omzetKemarin',
+        'persenOmzet',
+        'transaksiHariIni',
+        'rataRataTransaksi',
+        'produkStokRendah',
+        'kasirAktif',
+        'chartLabels',
+        'chartData',
+        'transaksiTerbaru',
+        'produkHampirKadaluarsa',
+    ));
+}
 
     // Kategori
     public function kategoriIndex(Request $request)

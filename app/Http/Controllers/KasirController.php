@@ -16,10 +16,54 @@ class KasirController extends Controller
     // Dashboard
     public function dashboard()
     {
-        $data = [
-            'title' => 'Dashboard Kasir',
-        ];
-        return view('kasir.dashboard', $data);
+        $kasirId = Auth::id();
+        $today   = \Carbon\Carbon::today();
+        $yesterday = \Carbon\Carbon::yesterday();
+
+        // Omzet hari ini (kasir ini aja)
+        $omzetHariIni = Transaksi::where('kasir_id', $kasirId)
+            ->whereDate('tanggal_transaksi', $today)
+            ->sum('total_harga');
+
+        // Omzet kemarin (untuk persentase)
+        $omzetKemarin = Transaksi::where('kasir_id', $kasirId)
+            ->whereDate('tanggal_transaksi', $yesterday)
+            ->sum('total_harga');
+
+        $persenOmzet = $omzetKemarin > 0
+            ? round((($omzetHariIni - $omzetKemarin) / $omzetKemarin) * 100, 1)
+            : 0;
+
+        // Jumlah transaksi hari ini (kasir ini)
+        $transaksiHariIni = Transaksi::where('kasir_id', $kasirId)
+            ->whereDate('tanggal_transaksi', $today)
+            ->count();
+
+        // Rata-rata per transaksi
+        $rataRata = $transaksiHariIni > 0 ? $omzetHariIni / $transaksiHariIni : 0;
+
+        // Produk stok rendah (global, bukan per kasir)
+        $produkStokRendah = BatchProduk::selectRaw('produk_id, SUM(stok) as total_stok')
+            ->whereNull('deleted_at')
+            ->groupBy('produk_id')
+            ->havingRaw('SUM(stok) < 10')
+            ->count();
+
+        // 5 transaksi terbaru kasir ini
+        $transaksiTerbaru = Transaksi::where('kasir_id', $kasirId)
+            ->latest('tanggal_transaksi')
+            ->limit(5)
+            ->get();
+
+        return view('kasir.dashboard', compact(
+            'omzetHariIni',
+            'omzetKemarin',
+            'persenOmzet',
+            'transaksiHariIni',
+            'rataRata',
+            'produkStokRendah',
+            'transaksiTerbaru',
+        ));
     }
 
     // Transaksi
@@ -109,7 +153,7 @@ class KasirController extends Controller
 
             $kasirId = Auth::id();
             $namaPelanggan = $request->nama_pelanggan ?: 'Umum';
-            $nomorUnik = 'TRX-' . now()->format('Ymd') . '-' . str_pad(rand(100, 999), 3, '0', STR_PAD_LEFT);
+            $nomorUnik = 'SMRT-' . now()->format('Ymd') . '-' . chr(65 + Transaksi::whereDate('created_at', now()->toDateString())->count());
 
             $transaksi = Transaksi::create([
                 'kasir_id'          => $kasirId,
