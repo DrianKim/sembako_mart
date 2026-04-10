@@ -261,9 +261,9 @@
                     <img src="${product.img}" alt="${product.nama}"
                         class="object-cover w-full transition-transform duration-300 h-44 group-hover:scale-105">
                     ${product.ada_kadaluarsa ? `
-                                                                <span class="absolute top-2 left-2 px-2 py-0.5 text-xs font-bold text-white bg-red-500 rounded-full">
-                                                                    <i class="mr-1 fas fa-exclamation-circle"></i>Kadaluarsa
-                                                                </span>` : ''}
+                                                                    <span class="absolute top-2 left-2 px-2 py-0.5 text-xs font-bold text-white bg-red-500 rounded-full">
+                                                                        <i class="mr-1 fas fa-exclamation-circle"></i>Kadaluarsa
+                                                                    </span>` : ''}
 
                 </div>
                 <div class="p-4">
@@ -560,6 +560,17 @@
                 allowOutsideClick: false
             }).then(result => {
                 if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Memproses Transaksi...',
+                        html: 'Mohon tunggu sebentar',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
                     fetch("{{ route('kasir.transaksi.proses_bayar') }}", {
                             method: 'POST',
                             headers: {

@@ -24,7 +24,7 @@
     </section>
 
     <!-- Summary Cards -->
-    <div class="grid grid-cols-1 gap-6 mb-6 md:grid-cols-4">
+    <div class="grid grid-cols-1 gap-6 mb-6 md:grid-cols-3">
         <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
             <h4 class="text-sm font-medium text-gray-600">Total Penjualan</h4>
             <p class="text-2xl font-bold text-green-600" id="cardTotalPenjualan">
@@ -59,6 +59,23 @@
             </p>
             <p class="mt-1 text-sm text-gray-500">Omzet Rp <span
                     id="cardKasirOmzet">{{ number_format($kasirTerbaik?->total_omzet ?? 0, 0, ',', '.') }}</span></p>
+        </div>
+
+        {{-- Tambah 2 card baru --}}
+        <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+            <h4 class="text-sm font-medium text-gray-600">Total Modal</h4>
+            <p class="text-2xl font-bold text-orange-500" id="cardTotalModal">
+                Rp {{ number_format($totalModal, 0, ',', '.') }}
+            </p>
+            <p class="mt-1 text-xs text-gray-400">Harga beli × qty terjual</p>
+        </div>
+
+        <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+            <h4 class="text-sm font-medium text-gray-600">Laba Bersih</h4>
+            <p class="text-2xl font-bold {{ $labaBersih >= 0 ? 'text-green-600' : 'text-red-600' }}" id="cardLabaBersih">
+                Rp {{ number_format($labaBersih, 0, ',', '.') }}
+            </p>
+            <p class="mt-1 text-xs text-gray-400">Total Penjualan - Total Modal</p>
         </div>
     </div>
 
@@ -280,14 +297,12 @@
                 `);
                 },
                 success: function(res) {
-                    // Update tabel
                     $('#tableBody').html(res.html);
                     $('#paginationContainer').html(res.pagination);
                     $('#totalTransaksiLabel').text(res.total);
                     $('#totalRows').text(res.total);
                     if (res.from && res.to) $('#pageInfo').text(res.from + '-' + res.to);
 
-                    // Update cards
                     $('#cardTotalPenjualan').text('Rp ' + res.totalPenjualan);
                     $('#cardJumlahTransaksi').text(res.jumlahTransaksi);
                     $('#cardRataRata').text(res.rataRata);
@@ -297,7 +312,14 @@
                     $('#cardKasirOmzet').text(res.kasirOmzet);
                     $('#cardPeriodeLabel').text('Periode: ' + res.periodeLabel);
 
-                    // Update chart
+                    // Tambah ini
+                    $('#cardTotalModal').text('Rp ' + res.totalModal);
+                    $('#cardLabaBersih')
+                        .text('Rp ' + res.labaBersih)
+                        .removeClass('text-green-600 text-red-600')
+                        .addClass(parseInt(res.labaBersih.replace(/\./g, '')) >= 0 ? 'text-green-600' :
+                            'text-red-600');
+
                     omzetChart.data.labels = res.grafikLabels;
                     omzetChart.data.datasets[0].data = res.grafikOmzet;
                     omzetChart.update();

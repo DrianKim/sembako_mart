@@ -133,7 +133,7 @@
         @endif
     </div>
 
-    {{-- Summary pakai table karena DomPDF ga support flexbox --}}
+
     <table class="summary-table">
         <tr>
             <td>
@@ -147,6 +147,18 @@
             <td>
                 <div class="label">Rata-rata per Transaksi</div>
                 <div class="value">Rp {{ number_format($rataRata, 0, ',', '.') }}</div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="label">Total Modal</div>
+                <div class="value" style="color: #f97316;">Rp {{ number_format($totalModal, 0, ',', '.') }}</div>
+            </td>
+            <td colspan="2">
+                <div class="label">Laba Bersih</div>
+                <div class="value" style="color: {{ $labaBersih >= 0 ? '#10B981' : '#ef4444' }};">
+                    Rp {{ number_format($labaBersih, 0, ',', '.') }}
+                </div>
             </td>
         </tr>
     </table>

@@ -382,7 +382,6 @@ class OwnerController extends Controller
         $toDate        = $request->query('to_date');
         $kasirId       = $request->query('kasir_id');
 
-        // === Tentuin range tanggal berdasarkan periode ===
         $from = now()->startOfMonth();
         $to   = now()->endOfMonth();
 
@@ -397,21 +396,29 @@ class OwnerController extends Controller
             $to   = Carbon::parse($toDate)->endOfDay();
         }
 
-        // Base query transaksi
         $query = Transaksi::with(['kasir', 'detailTransaksi.produk'])
             ->whereBetween('tanggal_transaksi', [$from, $to])
             ->when($kasirId, fn($q) => $q->where('kasir_id', $kasirId))
             ->latest('tanggal_transaksi');
 
-        // Summary cards
-        $summaryQuery = Transaksi::whereBetween('tanggal_transaksi', [$from, $to])
+        $summaryQuery    = Transaksi::whereBetween('tanggal_transaksi', [$from, $to])
             ->when($kasirId, fn($q) => $q->where('kasir_id', $kasirId));
 
-        $totalPenjualan   = $summaryQuery->sum('total_harga');
-        $jumlahTransaksi  = $summaryQuery->count();
-        $rataRata         = $jumlahTransaksi > 0 ? $totalPenjualan / $jumlahTransaksi : 0;
+        $totalPenjualan  = $summaryQuery->sum('total_harga');
+        $jumlahTransaksi = $summaryQuery->count();
+        $rataRata        = $jumlahTransaksi > 0 ? $totalPenjualan / $jumlahTransaksi : 0;
 
-        // Produk terlaris
+        // Hitung modal dari harga_beli accessor produk × qty
+        $totalModal = DetailTransaksi::whereHas('transaksi', function ($q) use ($from, $to, $kasirId) {
+                $q->whereBetween('tanggal_transaksi', [$from, $to]);
+                if ($kasirId) $q->where('kasir_id', $kasirId);
+            })
+            ->with('produk.batchProduks')
+            ->get()
+            ->sum(fn($d) => ($d->produk?->harga_beli ?? 0) * $d->qty);
+
+        $labaBersih = $totalPenjualan - $totalModal;
+
         $produkTerlaris = DetailTransaksi::selectRaw('produk_id, SUM(qty) as total_qty')
             ->whereHas('transaksi', function ($q) use ($from, $to, $kasirId) {
                 $q->whereBetween('tanggal_transaksi', [$from, $to]);
@@ -422,7 +429,6 @@ class OwnerController extends Controller
             ->orderByDesc('total_qty')
             ->first();
 
-        // Kasir terbaik
         $kasirTerbaik = Transaksi::selectRaw('kasir_id, SUM(total_harga) as total_omzet')
             ->whereBetween('tanggal_transaksi', [$from, $to])
             ->when($kasirId, fn($q) => $q->where('kasir_id', $kasirId))
@@ -431,7 +437,6 @@ class OwnerController extends Controller
             ->orderByDesc('total_omzet')
             ->first();
 
-        // Data grafik (group by tanggal)
         $grafikData = Transaksi::selectRaw('DATE(tanggal_transaksi) as tanggal, SUM(total_harga) as total')
             ->whereBetween('tanggal_transaksi', [$from, $to])
             ->when($kasirId, fn($q) => $q->where('kasir_id', $kasirId))
@@ -442,11 +447,8 @@ class OwnerController extends Controller
         $grafikLabels = $grafikData->pluck('tanggal')->map(fn($d) => Carbon::parse($d)->format('d M'))->toArray();
         $grafikOmzet  = $grafikData->pluck('total')->map(fn($v) => (float) $v)->toArray();
 
-        // Tabel transaksi paginasi
         $transaksis = $query->paginate(10)->appends($request->query());
-
-        // Daftar kasir untuk dropdown
-        $kasirs = User::where('role', 'kasir')->orderBy('nama')->get();
+        $kasirs     = User::where('role', 'kasir')->orderBy('nama')->get();
 
         if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
             return response()->json([
@@ -455,8 +457,10 @@ class OwnerController extends Controller
                 'totalPenjualan'  => number_format($totalPenjualan, 0, ',', '.'),
                 'jumlahTransaksi' => $jumlahTransaksi,
                 'rataRata'        => number_format($rataRata, 0, ',', '.'),
+                'totalModal'      => number_format($totalModal, 0, ',', '.'),
+                'labaBersih'      => number_format($labaBersih, 0, ',', '.'),
                 'produkTerlaris'  => $produkTerlaris?->produk?->nama_produk ?? '-',
-                'produkQty'       => ($produkTerlaris?->total_qty ?? 0) . ' ',
+                'produkQty'       => $produkTerlaris?->total_qty ?? 0,
                 'kasirTerbaik'    => $kasirTerbaik?->kasir?->nama ?? '-',
                 'kasirOmzet'      => number_format($kasirTerbaik?->total_omzet ?? 0, 0, ',', '.'),
                 'grafikLabels'    => $grafikLabels,
@@ -474,6 +478,8 @@ class OwnerController extends Controller
             'totalPenjualan'  => $totalPenjualan,
             'jumlahTransaksi' => $jumlahTransaksi,
             'rataRata'        => $rataRata,
+            'totalModal'      => $totalModal,
+            'labaBersih'      => $labaBersih,
             'produkTerlaris'  => $produkTerlaris,
             'kasirTerbaik'    => $kasirTerbaik,
             'grafikLabels'    => $grafikLabels,
@@ -519,20 +525,26 @@ class OwnerController extends Controller
         $jumlahTransaksi = $summaryQuery->count();
         $rataRata        = $jumlahTransaksi > 0 ? $totalPenjualan / $jumlahTransaksi : 0;
 
-        $kasirNama   = $kasirId ? User::find($kasirId)?->nama : null;
+        // Tambah ini
+        $totalModal = DetailTransaksi::whereHas('transaksi', function ($q) use ($from, $to, $kasirId) {
+                $q->whereBetween('tanggal_transaksi', [$from, $to]);
+                if ($kasirId) $q->where('kasir_id', $kasirId);
+            })
+            ->with('produk.batchProduks')
+            ->get()
+            ->sum(fn($d) => ($d->produk?->harga_beli ?? 0) * $d->qty);
+        $labaBersih = $totalPenjualan - $totalModal;
+
+        $kasirNama    = $kasirId ? User::find($kasirId)?->nama : null;
         $periodeLabel = $from->format('d M Y') . ' - ' . $to->format('d M Y');
 
         $pdf = Pdf::loadView('owner.laporan_penjualan.export_pdf', compact(
-            'transaksis',
-            'totalPenjualan',
-            'jumlahTransaksi',
-            'rataRata',
-            'periodeLabel',
-            'kasirNama'
+            'transaksis', 'totalPenjualan', 'jumlahTransaksi', 'rataRata',
+            'periodeLabel', 'kasirNama',
+            'totalModal', 'labaBersih'
         ))->setPaper('a4', 'landscape');
 
         $filename = 'laporan_penjualan_' . $from->format('Ymd') . '_' . $to->format('Ymd') . '.pdf';
-
         return $pdf->download($filename);
     }
 
