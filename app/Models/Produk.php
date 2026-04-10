@@ -36,19 +36,16 @@ class Produk extends Model
         return $this->hasMany(DetailTransaksi::class, 'produk_id');
     }
 
-    // Total stok dari semua batch aktif
     public function getTotalStokAttribute()
     {
         return $this->batchProduks()->whereNull('deleted_at')->sum('stok');
     }
 
-    // SEKARANG — bisa bentrok sama nama kolom di batch
     public function getHargaBeliAttribute()
     {
         return $this->batchProduks()->whereNull('deleted_at')->latest()->value('harga_beli') ?? 0;
     }
 
-    // FIX — rename jadi lebih eksplisit & pakai withTrashed filter yang benar
     public function getLatestHargaBeliAttribute()
     {
         return $this->batchProduks()

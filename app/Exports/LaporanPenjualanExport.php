@@ -109,17 +109,6 @@ class LaporanPenjualanExport implements
                 $sheet     = $event->sheet->getDelegate();
                 $dataCount = $this->dataCount;
 
-                // Sisipkan 10 baris di atas
-                // Row 1     : Judul
-                // Row 2     : Periode
-                // Row 3     : Kasir
-                // Row 4     : Spacer
-                // Row 5     : Label summary baris 1 (Penjualan, Transaksi, Rata-rata)
-                // Row 6     : Value summary baris 1
-                // Row 7     : Label summary baris 2 (Modal, Laba Kotor)
-                // Row 8     : Value summary baris 2
-                // Row 9     : Spacer
-                // Row 10    : Heading tabel
                 $sheet->insertNewRowBefore(1, 10);
 
                 // ── Row 1: Judul ──

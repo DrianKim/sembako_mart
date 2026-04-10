@@ -469,11 +469,10 @@ class AdminController extends Controller
             'satuan.in' => 'Satuan tidak valid!',
         ]);
 
-        $fotoPath = $produk->foto;   // default pakai foto lama
+        $fotoPath = $produk->foto;
 
         if ($request->hasFile('foto')) {
             try {
-                // === HAPUS FOTO LAMA DI SUPABASE (manual, tanpa deleteFromSupabase) ===
                 if ($produk->foto) {
                     try {
                         // Ambil path dari URL lama
@@ -534,16 +533,13 @@ class AdminController extends Controller
         // Hapus foto dari Supabase Storage (manual, tanpa deleteFromSupabase)
         if ($produk->foto) {
             try {
-                // Ambil path foto dari URL
                 $baseUrl = rtrim(env('SUPABASE_PUBLIC_URL'), '/') . '/storage/v1/object/public/' . env('SUPABASE_BUCKET', 'public') . '/';
                 $filePath = str_replace($baseUrl, '', $produk->foto);
 
-                // Hapus file dari Supabase
                 if ($filePath) {
                     Storage::disk('supabase')->delete($filePath);
                 }
             } catch (\Exception $e) {
-                // Tidak menghentikan proses delete produk kalau gagal hapus foto
                 Log::error('Gagal menghapus foto dari Supabase: ' . $e->getMessage());
             }
         }
@@ -683,14 +679,13 @@ class AdminController extends Controller
         if ($aksi === 'edit_batch') {
             $request->validate([
                 'batch_id'           => 'required|exists:batch_produk,id',
-                // Ignore batch yang sedang diedit (by batch_id) + ignore soft-deleted
                 'nomor_batch'        => [
                     'nullable',
                     'string',
                     'max:255',
                     Rule::unique('batch_produk', 'nomor_batch')
-                        ->ignore($request->batch_id)      // abaikan batch yg sedang diedit
-                        ->whereNull('deleted_at'),         // abaikan yang sudah soft-deleted
+                        ->ignore($request->batch_id)
+                        ->whereNull('deleted_at'),
                 ],
                 'aksi_stok'          => 'required|in:tambah,kurangi,ganti',
                 'jumlah_stok'        => 'required|integer|min:0',
@@ -751,7 +746,6 @@ class AdminController extends Controller
             $request->validate([
                 'stok_baru'               => 'required|integer|min:1',
                 'harga_beli_baru'         => 'required|numeric|min:0',
-                // Tidak perlu ignore karena ini batch baru, cukup skip soft-deleted
                 'nomor_batch_baru'        => [
                     'nullable',
                     'string',
