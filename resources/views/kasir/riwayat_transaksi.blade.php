@@ -28,16 +28,17 @@
 
     <!-- Filter & Search -->
     <div class="p-6 mb-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-5 md:gap-4">
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-12 md:gap-4">
+
             <!-- Search -->
-            <div class="md:col-span-2">
+            <div class="md:col-span-4">
                 <label class="block mb-2 text-sm font-semibold text-gray-700">
                     <i class="mr-1 text-green-600 fas fa-search"></i>
                     Cari Transaksi
                 </label>
                 <div class="relative">
-                    <input type="text" id="searchInput"
-                        placeholder="Cari nama pelanggan, nomor unik, kasir, atau tanggal..."
+                    <input type="text" id="searchInput" value="{{ $search ?? '' }}"
+                        placeholder="Cari nama pelanggan, nomor unik, atau tanggal..."
                         class="w-full px-4 py-2.5 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <i class="text-gray-400 fas fa-search"></i>
@@ -46,29 +47,43 @@
             </div>
 
             <!-- Dari Tanggal -->
-            <div class="md:col-span-1">
+            <div class="md:col-span-2">
                 <label class="block mb-2 text-sm font-semibold text-gray-700">
                     <i class="mr-1 text-green-600 fas fa-calendar-alt"></i>
                     Dari Tanggal
                 </label>
-                <input type="date" id="fromDate"
+                <input type="date" id="fromDate" value="{{ $from_date ?? '' }}"
                     class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
             </div>
 
             <!-- Sampai Tanggal -->
-            <div class="md:col-span-1">
+            <div class="md:col-span-2">
                 <label class="block mb-2 text-sm font-semibold text-gray-700">
                     <i class="mr-1 text-green-600 fas fa-calendar-alt"></i>
                     Sampai Tanggal
                 </label>
-                <input type="date" id="toDate"
+                <input type="date" id="toDate" value="{{ $to_date ?? '' }}"
                     class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
             </div>
 
+            <!-- Per Page -->
+            <div class="md:col-span-2">
+                <label class="block mb-2 text-sm font-semibold text-gray-700">
+                    Tampilkan
+                </label>
+                <select id="perPage"
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
+                    <option value="10" {{ $per_page == 10 ? 'selected' : '' }}>10</option>
+                    <option value="20" {{ $per_page == 20 ? 'selected' : '' }}>20</option>
+                    <option value="50" {{ $per_page == 50 ? 'selected' : '' }}>50</option>
+                    <option value="100" {{ $per_page == 100 ? 'selected' : '' }}>100</option>
+                </select>
+            </div>
+
             <!-- Reset -->
-            <div class="flex items-end justify-end md:col-span-1">
+            <div class="flex items-end md:col-span-2">
                 <button id="btnReset"
-                    class="flex items-center px-6 py-2.5 text-gray-700 transition-all duration-200 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 shadow-sm">
+                    class="w-full flex items-center justify-center px-6 py-2.5 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all">
                     <i class="mr-2 fas fa-redo"></i>
                     Reset
                 </button>
@@ -129,15 +144,7 @@
     <script>
         let currentPage = 1;
         let searchTimer = null;
-
-        function getFilters() {
-            return {
-                page: currentPage,
-                search: $('#searchInput').val(),
-                from_date: $('#fromDate').val(),
-                to_date: $('#toDate').val(),
-            };
-        }
+        let currentPerPage = {{ $per_page }};
 
         function loadData(page = 1) {
             currentPage = page;
@@ -145,18 +152,24 @@
             $.ajax({
                 url: '{{ route('kasir.riwayat_transaksi') }}',
                 method: 'GET',
-                data: getFilters(),
+                data: {
+                    page: page,
+                    search: $('#searchInput').val().trim(),
+                    from_date: $('#fromDate').val(),
+                    to_date: $('#toDate').val(),
+                    per_page: currentPerPage
+                },
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
                 },
                 beforeSend: function() {
                     $('#tableBody').html(`
-                    <tr>
-                        <td colspan="6" class="py-10 text-center text-gray-500">
-                            <i class="mr-2 fas fa-spinner fa-spin"></i> Memuat data...
-                        </td>
-                    </tr>
-                `);
+                        <tr>
+                            <td colspan="6" class="py-10 text-center text-gray-500">
+                                <i class="mr-2 fas fa-spinner fa-spin"></i> Memuat data...
+                            </td>
+                        </tr>
+                    `);
                 },
                 success: function(res) {
                     $('#tableBody').html(res.html);
@@ -167,12 +180,12 @@
                 },
                 error: function() {
                     $('#tableBody').html(`
-                    <tr>
-                        <td colspan="6" class="py-10 text-center text-red-500">
-                            Gagal memuat data.
-                        </td>
-                    </tr>
-                `);
+                        <tr>
+                            <td colspan="6" class="py-10 text-center text-red-500">
+                                Gagal memuat data.
+                            </td>
+                        </tr>
+                    `);
                 }
             });
         }
@@ -190,22 +203,24 @@
             searchTimer = setTimeout(() => loadData(1), 400);
         });
 
-        // Validasi range tanggal
+        // Date change
         $('#fromDate').on('change', function() {
             const fromVal = $(this).val();
             $('#toDate').attr('min', fromVal || '');
-
-            // Kalau toDate sudah diisi tapi lebih kecil dari fromDate, reset toDate
             if ($('#toDate').val() && $('#toDate').val() < fromVal) {
                 $('#toDate').val(fromVal);
             }
-
             loadData(1);
         });
 
         $('#toDate').on('change', function() {
-            const toVal = $(this).val();
-            $('#fromDate').attr('max', toVal || '');
+            $('#fromDate').attr('max', $(this).val() || '');
+            loadData(1);
+        });
+
+        // Per Page Change
+        $('#perPage').on('change', function() {
+            currentPerPage = parseInt($(this).val());
             loadData(1);
         });
 
@@ -214,10 +229,15 @@
             $('#searchInput').val('');
             $('#fromDate').val('').removeAttr('max');
             $('#toDate').val('').removeAttr('min');
+            $('#perPage').val(10);
+            currentPerPage = 10;
             loadData(1);
         });
 
         // Init
-        bindPagination();
+        $(document).ready(function() {
+            bindPagination();
+            loadData(1);
+        });
     </script>
 @endpush

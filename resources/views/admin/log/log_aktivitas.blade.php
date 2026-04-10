@@ -27,9 +27,10 @@
 
     <!-- Filter & Search Section -->
     <div class="p-6 mb-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-4 md:gap-4">
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-12 md:gap-4">
+
             <!-- Search -->
-            <div class="md:col-span-3">
+            <div class="md:col-span-8">
                 <label class="block mb-2 text-sm font-semibold text-gray-700">
                     <i class="mr-1 text-green-600 fas fa-search"></i> Cari Aktivitas
                 </label>
@@ -43,10 +44,24 @@
                 </div>
             </div>
 
+            <!-- Per Page -->
+            <div class="md:col-span-2">
+                <label class="block mb-2 text-sm font-semibold text-gray-700">
+                    Tampilkan
+                </label>
+                <select id="perPage"
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
+                    <option value="10" {{ $per_page == 10 ? 'selected' : '' }}>10</option>
+                    <option value="20" {{ $per_page == 20 ? 'selected' : '' }}>20</option>
+                    <option value="50" {{ $per_page == 50 ? 'selected' : '' }}>50</option>
+                    <option value="100" {{ $per_page == 100 ? 'selected' : '' }}>100</option>
+                </select>
+            </div>
+
             <!-- Reset -->
-            <div class="flex items-end justify-end md:col-span-1">
+            <div class="flex items-end md:col-span-2">
                 <button id="btnReset"
-                    class="flex items-center px-6 py-2.5 text-gray-700 transition-all duration-200 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 shadow-sm">
+                    class="w-full flex items-center justify-center px-6 py-2.5 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all">
                     <i class="mr-2 fas fa-redo"></i> Reset
                 </button>
             </div>
@@ -108,18 +123,21 @@
     <script>
         let currentPage = 1;
         let currentSearch = '';
+        let currentPerPage = {{ $per_page }};
         let searchTimer = null;
 
-        function loadData(page = 1, search = '') {
+        function loadData(page = 1, search = '', perPage = currentPerPage) {
             currentPage = page;
             currentSearch = search;
+            currentPerPage = perPage;
 
             $.ajax({
                 url: '{{ route('admin.log') }}',
                 method: 'GET',
                 data: {
-                    page,
-                    search
+                    page: page,
+                    search: search,
+                    per_page: perPage
                 },
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
@@ -137,13 +155,11 @@
                     $('#tableBody').html(res.html);
                     $('#paginationContainer').html(res.pagination);
                     $('#totalData').text(res.total);
-
                     if (res.from && res.to) {
                         $('#pageInfo').text(res.from + '-' + res.to);
                     } else {
                         $('#pageInfo').text('0-0');
                     }
-
                     bindPagination();
                 },
                 error: function() {
@@ -163,7 +179,7 @@
                 .on('click', '.pagination-link', function(e) {
                     e.preventDefault();
                     const page = $(this).data('page');
-                    if (page) loadData(page, currentSearch);
+                    if (page) loadData(page, currentSearch, currentPerPage);
                 });
         }
 
@@ -172,20 +188,28 @@
             clearTimeout(searchTimer);
             const term = $(this).val().trim();
             searchTimer = setTimeout(() => {
-                loadData(1, term);
+                loadData(1, term, currentPerPage);
             }, 400);
+        });
+
+        // Per Page Change
+        $('#perPage').on('change', function() {
+            currentPerPage = parseInt($(this).val());
+            loadData(1, currentSearch, currentPerPage);
         });
 
         // Reset
         $('#btnReset').on('click', function() {
             $('#searchInput').val('');
+            $('#perPage').val(10);
             currentSearch = '';
-            loadData(1, '');
+            currentPerPage = 10;
+            loadData(1, '', 10);
         });
 
         // Initial load
         $(document).ready(function() {
-            loadData(1, '{{ $search ?? '' }}');
+            loadData(1, '{{ $search ?? '' }}', {{ $per_page }});
         });
     </script>
 @endpush

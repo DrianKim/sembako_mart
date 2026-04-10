@@ -7,6 +7,7 @@ use App\Models\DetailTransaksi;
 use App\Models\Log;
 use App\Models\Produk;
 use App\Models\Transaksi;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -16,11 +17,11 @@ class KasirController extends Controller
     // Dashboard
     public function dashboard()
     {
-        $kasirId = Auth::id();
-        $today   = \Carbon\Carbon::today();
-        $yesterday = \Carbon\Carbon::yesterday();
+        $kasirId   = Auth::id();
+        $today     = Carbon::today();
+        $yesterday = Carbon::yesterday();
 
-        // Omzet hari ini (kasir ini aja)
+        // Omzet hari ini (hanya transaksi kasir ini)
         $omzetHariIni = Transaksi::where('kasir_id', $kasirId)
             ->whereDate('tanggal_transaksi', $today)
             ->sum('total_harga');
@@ -34,15 +35,15 @@ class KasirController extends Controller
             ? round((($omzetHariIni - $omzetKemarin) / $omzetKemarin) * 100, 1)
             : 0;
 
-        // Jumlah transaksi hari ini (kasir ini)
+        // Jumlah transaksi hari ini
         $transaksiHariIni = Transaksi::where('kasir_id', $kasirId)
             ->whereDate('tanggal_transaksi', $today)
             ->count();
 
-        // Rata-rata per transaksi
+        // Rata-rata omzet per transaksi
         $rataRata = $transaksiHariIni > 0 ? $omzetHariIni / $transaksiHariIni : 0;
 
-        // Produk stok rendah (global, bukan per kasir)
+        // Produk stok rendah (global)
         $produkStokRendah = BatchProduk::selectRaw('produk_id, SUM(stok) as total_stok')
             ->whereNull('deleted_at')
             ->groupBy('produk_id')
@@ -55,15 +56,18 @@ class KasirController extends Controller
             ->limit(5)
             ->get();
 
-        return view('kasir.dashboard', compact(
-            'omzetHariIni',
-            'omzetKemarin',
-            'persenOmzet',
-            'transaksiHariIni',
-            'rataRata',
-            'produkStokRendah',
-            'transaksiTerbaru',
-        ));
+        $data = [
+            'title'             => 'Dashboard Kasir',
+            'omzetHariIni'      => $omzetHariIni,
+            'omzetKemarin'      => $omzetKemarin,
+            'persenOmzet'       => $persenOmzet,
+            'transaksiHariIni'  => $transaksiHariIni,
+            'rataRata'          => $rataRata,
+            'produkStokRendah'  => $produkStokRendah,
+            'transaksiTerbaru'  => $transaksiTerbaru,
+        ];
+
+        return view('kasir.dashboard', $data);
     }
 
     // Transaksi
@@ -107,14 +111,14 @@ class KasirController extends Controller
             $adaKadaluarsa = $p->batchProduks->filter(
                 fn($b) =>
                 $b->tanggal_kadaluarsa &&
-                    \Carbon\Carbon::parse($b->tanggal_kadaluarsa)->isPast()
+                    Carbon::parse($b->tanggal_kadaluarsa)->isPast()
             )->count();
 
             $mendekatiKadaluarsa = $p->batchProduks->filter(
                 fn($b) =>
                 $b->tanggal_kadaluarsa &&
-                    !\Carbon\Carbon::parse($b->tanggal_kadaluarsa)->isPast() &&
-                    \Carbon\Carbon::parse($b->tanggal_kadaluarsa)->diffInDays(now()) <= 30
+                    !Carbon::parse($b->tanggal_kadaluarsa)->isPast() &&
+                    Carbon::parse($b->tanggal_kadaluarsa)->diffInDays(now()) <= 30
             )->count();
 
             return [
@@ -238,12 +242,16 @@ class KasirController extends Controller
         $search   = $request->get('search', '');
         $fromDate = $request->get('from_date', '');
         $toDate   = $request->get('to_date', '');
+        $perPage  = (int) $request->get('per_page', 10);
+
+        if (!in_array($perPage, [10, 20, 50, 100])) {
+            $perPage = 10;
+        }
 
         $transaksis = Transaksi::with('kasir')
             ->where('kasir_id', Auth::id())
             ->when($search, function ($q) use ($search) {
                 $lower = strtolower($search);
-
                 $q->where(function ($q2) use ($lower) {
                     $q2->whereRaw('LOWER(nama_pelanggan) LIKE ?', ["%{$lower}%"])
                         ->orWhereRaw('LOWER(nomor_unik) LIKE ?', ["%{$lower}%"]);
@@ -252,8 +260,13 @@ class KasirController extends Controller
             ->when($fromDate, fn($q) => $q->whereDate('tanggal_transaksi', '>=', $fromDate))
             ->when($toDate,   fn($q) => $q->whereDate('tanggal_transaksi', '<=', $toDate))
             ->orderBy('tanggal_transaksi', 'desc')
-            ->paginate(10)
-            ->appends(compact('search', 'fromDate', 'toDate'));
+            ->paginate($perPage)
+            ->appends([
+                'search'    => $search,
+                'from_date' => $fromDate,
+                'to_date'   => $toDate,
+                'per_page'  => $perPage
+            ]);
 
         if ($request->ajax()) {
             return response()->json([
@@ -268,6 +281,10 @@ class KasirController extends Controller
         $data = [
             'title'      => 'Riwayat Transaksi',
             'transaksis' => $transaksis,
+            'search'     => $search,
+            'from_date'  => $fromDate,
+            'to_date'    => $toDate,
+            'per_page'   => $perPage,
         ];
 
         return view('kasir.riwayat_transaksi', $data);
@@ -285,6 +302,11 @@ class KasirController extends Controller
     public function logIndex(Request $request)
     {
         $search = $request->get('search');
+        $perPage = (int) $request->get('per_page', 10);
+
+        if (!in_array($perPage, [10, 20, 50, 100])) {
+            $perPage = 10;
+        }
 
         $logs = Log::with('user:id,nama,role')
             ->where('id_user', auth()->id())
@@ -292,7 +314,11 @@ class KasirController extends Controller
                 $query->where('aktivitas', 'like', "%{$search}%");
             })
             ->orderBy('waktu', 'desc')
-            ->paginate(10);
+            ->paginate($perPage)
+            ->appends([
+                'search'   => $search,
+                'per_page' => $perPage
+            ]);
 
         if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
             return response()->json([
@@ -305,9 +331,10 @@ class KasirController extends Controller
         }
 
         $data = [
-            'title'  => 'Log Aktivitas',
-            'logs'   => $logs,
-            'search' => $search,
+            'title'    => 'Log Aktivitas',
+            'logs'     => $logs,
+            'search'   => $search,
+            'per_page' => $perPage,
         ];
 
         return view('kasir.log_aktivitas', $data);

@@ -8,6 +8,7 @@ use App\Models\Log;
 use App\Models\Produk;
 use App\Models\Transaksi;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -19,101 +20,111 @@ class AdminController extends Controller
 
     // dashboard
     public function dashboard()
-{
-    $today = \Carbon\Carbon::today();
-    $yesterday = \Carbon\Carbon::yesterday();
+    {
+        $today     = Carbon::today();
+        $yesterday = Carbon::yesterday();
 
-    // Omzet hari ini
-    $omzetHariIni = Transaksi::whereDate('tanggal_transaksi', $today)
-        ->sum('total_harga');
+        // Omzet hari ini
+        $omzetHariIni = Transaksi::whereDate('tanggal_transaksi', $today)
+            ->sum('total_harga');
 
-    // Omzet kemarin (untuk persentase perubahan)
-    $omzetKemarin = Transaksi::whereDate('tanggal_transaksi', $yesterday)
-        ->sum('total_harga');
+        // Omzet kemarin (untuk persentase perubahan)
+        $omzetKemarin = Transaksi::whereDate('tanggal_transaksi', $yesterday)
+            ->sum('total_harga');
 
-    $persenOmzet = $omzetKemarin > 0
-        ? round((($omzetHariIni - $omzetKemarin) / $omzetKemarin) * 100, 1)
-        : 0;
+        $persenOmzet = $omzetKemarin > 0
+            ? round((($omzetHariIni - $omzetKemarin) / $omzetKemarin) * 100, 1)
+            : 0;
 
-    // Jumlah transaksi hari ini
-    $transaksiHariIni = Transaksi::whereDate('tanggal_transaksi', $today)->count();
+        // Jumlah transaksi hari ini
+        $transaksiHariIni = Transaksi::whereDate('tanggal_transaksi', $today)->count();
 
-    // Rata-rata per transaksi
-    $rataRataTransaksi = $transaksiHariIni > 0
-        ? $omzetHariIni / $transaksiHariIni
-        : 0;
+        // Rata-rata per transaksi
+        $rataRataTransaksi = $transaksiHariIni > 0
+            ? $omzetHariIni / $transaksiHariIni
+            : 0;
 
-    // Produk dengan total stok < 10
-    $produkStokRendah = BatchProduk::selectRaw('produk_id, SUM(stok) as total_stok')
-        ->whereNull('deleted_at')
-        ->groupBy('produk_id')
-        ->havingRaw('SUM(stok) < 10')
-        ->count();
+        // Produk dengan total stok < 10
+        $produkStokRendah = BatchProduk::selectRaw('produk_id, SUM(stok) as total_stok')
+            ->whereNull('deleted_at')
+            ->groupBy('produk_id')
+            ->havingRaw('SUM(stok) < 10')
+            ->count();
 
-    // Kasir aktif
-    $kasirAktif = User::where('role', 'kasir')
-        ->where('status', 'aktif')
-        ->count();
+        // Kasir aktif
+        $kasirAktif = User::where('role', 'kasir')
+            ->where('status', 'aktif')
+            ->count();
 
-    // Omzet 7 hari terakhir (untuk chart)
-    $omzet7Hari = Transaksi::selectRaw('DATE(tanggal_transaksi) as tanggal, SUM(total_harga) as total')
-        ->whereBetween('tanggal_transaksi', [
-            \Carbon\Carbon::now()->subDays(6)->startOfDay(),
-            \Carbon\Carbon::now()->endOfDay(),
-        ])
-        ->groupBy('tanggal')
-        ->orderBy('tanggal')
-        ->get()
-        ->keyBy('tanggal');
+        // Omzet 7 hari terakhir (untuk chart)
+        $omzet7Hari = Transaksi::selectRaw('DATE(tanggal_transaksi) as tanggal, SUM(total_harga) as total')
+            ->whereBetween('tanggal_transaksi', [
+                Carbon::now()->subDays(6)->startOfDay(),
+                Carbon::now()->endOfDay(),
+            ])
+            ->groupBy('tanggal')
+            ->orderBy('tanggal')
+            ->get()
+            ->keyBy('tanggal');
 
-    // Generate lengkap 7 hari (isi 0 kalau ga ada transaksi)
-    $chartLabels = [];
-    $chartData = [];
-    for ($i = 6; $i >= 0; $i--) {
-        $date = \Carbon\Carbon::now()->subDays($i);
-        $key = $date->toDateString();
-        $chartLabels[] = $date->locale('id')->translatedFormat('d M');
-        $chartData[] = isset($omzet7Hari[$key]) ? (float) $omzet7Hari[$key]->total : 0;
+        // Generate lengkap 7 hari (isi 0 kalau tidak ada transaksi)
+        $chartLabels = [];
+        $chartData   = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = Carbon::now()->subDays($i);
+            $key  = $date->toDateString();
+            $chartLabels[] = $date->locale('id')->translatedFormat('d M');
+            $chartData[]   = isset($omzet7Hari[$key]) ? (float) $omzet7Hari[$key]->total : 0;
+        }
+
+        // 5 Transaksi terbaru
+        $transaksiTerbaru = Transaksi::with('kasir')
+            ->latest('tanggal_transaksi')
+            ->limit(5)
+            ->get();
+
+        // Produk hampir kadaluarsa (dalam 7 hari ke depan)
+        $produkHampirKadaluarsa = BatchProduk::with('produk')
+            ->whereNull('deleted_at')
+            ->whereNotNull('tanggal_kadaluarsa')
+            ->whereBetween('tanggal_kadaluarsa', [
+                Carbon::today(),
+                Carbon::today()->addDays(7),
+            ])
+            ->where('stok', '>', 0)
+            ->orderBy('tanggal_kadaluarsa')
+            ->limit(5)
+            ->get();
+
+        $data = [
+            'title'                  => 'Dashboard Admin',
+            'omzetHariIni'           => $omzetHariIni,
+            'omzetKemarin'           => $omzetKemarin,
+            'persenOmzet'            => $persenOmzet,
+            'transaksiHariIni'       => $transaksiHariIni,
+            'rataRataTransaksi'      => $rataRataTransaksi,
+            'produkStokRendah'       => $produkStokRendah,
+            'kasirAktif'             => $kasirAktif,
+            'chartLabels'            => $chartLabels,
+            'chartData'              => $chartData,
+            'transaksiTerbaru'       => $transaksiTerbaru,
+            'produkHampirKadaluarsa' => $produkHampirKadaluarsa,
+        ];
+
+        return view('admin.dashboard', $data);
     }
-
-    // 5 Transaksi terbaru
-    $transaksiTerbaru = Transaksi::with('kasir')
-        ->latest('tanggal_transaksi')
-        ->limit(5)
-        ->get();
-
-    // Produk hampir kadaluarsa (dalam 7 hari ke depan)
-    $produkHampirKadaluarsa = BatchProduk::with('produk')
-        ->whereNull('deleted_at')
-        ->whereNotNull('tanggal_kadaluarsa')
-        ->whereBetween('tanggal_kadaluarsa', [
-            \Carbon\Carbon::today(),
-            \Carbon\Carbon::today()->addDays(7),
-        ])
-        ->where('stok', '>', 0)
-        ->orderBy('tanggal_kadaluarsa')
-        ->limit(5)
-        ->get();
-
-    return view('admin.dashboard', compact(
-        'omzetHariIni',
-        'omzetKemarin',
-        'persenOmzet',
-        'transaksiHariIni',
-        'rataRataTransaksi',
-        'produkStokRendah',
-        'kasirAktif',
-        'chartLabels',
-        'chartData',
-        'transaksiTerbaru',
-        'produkHampirKadaluarsa',
-    ));
-}
 
     // Kategori
     public function kategoriIndex(Request $request)
     {
         $search = $request->query('search', '');
+        $perPage = (int) $request->query('per_page', 10);
+
+        // Validasi nilai per_page
+        $allowed = [10, 20, 50, 100];
+        if (!in_array($perPage, $allowed)) {
+            $perPage = 10;
+        }
 
         $kategoris = Kategori::query()
             ->when($search, function ($query, $search) {
@@ -121,8 +132,11 @@ class AdminController extends Controller
                 $query->whereRaw('LOWER(nama_kategori) LIKE ?', ["%{$lower}%"]);
             })
             ->orderBy('nama_kategori')
-            ->paginate(3)
-            ->appends(['search' => $search]);
+            ->paginate($perPage)
+            ->appends([
+                'search'   => $search,
+                'per_page' => $perPage
+            ]);
 
         if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
             return response()->json([
@@ -135,9 +149,10 @@ class AdminController extends Controller
         }
 
         $data = [
-            'title' => 'Produk',
-            'kategoris' => $kategoris,
-            'search' => $search,
+            'title'      => 'Kategori Produk',
+            'kategoris'  => $kategoris,
+            'search'     => $search,
+            'per_page'   => $perPage,
         ];
 
         return view('admin.kategori.index', $data);
@@ -237,22 +252,31 @@ class AdminController extends Controller
     public function produkIndex(Request $request)
     {
         $search = $request->query('search', '');
+        $perPage = (int) $request->query('per_page', 10);
+
+        // Validasi nilai per_page
+        $allowedPerPage = [10, 20, 50, 100];
+        if (!in_array($perPage, $allowedPerPage)) {
+            $perPage = 10;
+        }
 
         $produks = Produk::with(['kategori', 'batchProduks' => function ($q) {
-            $q->whereNull('deleted_at')->latest();
-        }])
+                $q->whereNull('deleted_at')->latest();
+            }])
             ->when($search, function ($query, $search) {
                 $lower = strtolower($search);
                 $query->whereRaw('LOWER(nama_produk) LIKE ?', ["%{$lower}%"])
                     ->orWhereRaw('LOWER(barcode) LIKE ?', ["%{$lower}%"])
-                    ->orWhereHas(
-                        'kategori',
-                        fn($q) => $q->whereRaw('LOWER(nama_kategori) LIKE ?', ["%{$lower}%"])
+                    ->orWhereHas('kategori', fn($q) =>
+                        $q->whereRaw('LOWER(nama_kategori) LIKE ?', ["%{$lower}%"])
                     );
             })
             ->orderBy('nama_produk')
-            ->paginate(10)
-            ->appends(['search' => $search]);
+            ->paginate($perPage)
+            ->appends([
+                'search'   => $search,
+                'per_page' => $perPage
+            ]);
 
         if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
             return response()->json([
@@ -264,19 +288,24 @@ class AdminController extends Controller
             ]);
         }
 
-        return view('admin.produk.index', [
-            'title'   => 'Produk',
-            'produks' => $produks,
-            'search'  => $search,
-        ]);
+        $data = [
+            'title'    => 'Produk',
+            'produks'  => $produks,
+            'search'   => $search,
+            'per_page' => $perPage,
+        ];
+
+        return view('admin.produk.index', $data);
     }
 
     public function produkCreate()
     {
-        return view('admin.produk.create', [
+        $data = [
             'title'    => 'Tambah Produk',
             'kategoris' => Kategori::all(),
-        ]);
+        ];
+
+        return view('admin.produk.create', $data);
     }
 
     public function produkStore(Request $request)
@@ -383,11 +412,13 @@ class AdminController extends Controller
             $q->whereNull('deleted_at')->latest();
         }])->findOrFail($id);
 
-        return view('admin.produk.edit', [
+        $data = [
             'title'    => 'Edit Produk',
             'produk'   => $produk,
             'kategoris' => Kategori::all(),
-        ]);
+        ];
+
+        return view('admin.produk.edit', $data);
     }
 
     public function produkUpdate(Request $request, $id)
@@ -510,23 +541,30 @@ class AdminController extends Controller
         return redirect()->route('admin.produk')->with('success', 'Produk berhasil dihapus!');
     }
 
+    // Stok
     public function stokIndex(Request $request)
     {
-        $search     = $request->get('search');
-        $stokFilter = $request->get('stok_filter');
+        $search      = $request->get('search');
+        $stokFilter  = $request->get('stok_filter');
+        $perPage     = (int) $request->get('per_page', 10);
+
+        // Validasi per_page
+        $allowedPerPage = [10, 20, 50, 100];
+        if (!in_array($perPage, $allowedPerPage)) {
+            $perPage = 10;
+        }
 
         $produks = Produk::with(['kategori', 'batchProduks' => function ($q) {
-            $q->whereNull('deleted_at')
-                ->orderByRaw('stok = 0 ASC')
-                ->orderBy('tanggal_kadaluarsa', 'asc');
-        }])
+                $q->whereNull('deleted_at')
+                    ->orderByRaw('stok = 0 ASC')
+                    ->orderBy('tanggal_kadaluarsa', 'asc');
+            }])
             ->when($search, function ($q) use ($search) {
                 $lower = strtolower($search);
                 $q->whereRaw('LOWER(nama_produk) LIKE ?', ["%{$lower}%"])
                     ->orWhereRaw('LOWER(barcode) LIKE ?', ["%{$lower}%"])
-                    ->orWhereHas(
-                        'kategori',
-                        fn($q) => $q->whereRaw('LOWER(nama_kategori) LIKE ?', ["%{$lower}%"])
+                    ->orWhereHas('kategori', fn($q) =>
+                        $q->whereRaw('LOWER(nama_kategori) LIKE ?', ["%{$lower}%"])
                     );
             })
             ->when($stokFilter, function ($q) use ($stokFilter) {
@@ -538,14 +576,18 @@ class AdminController extends Controller
                     $q->having('total_stok_sum', '>', 15);
                 } elseif ($stokFilter === 'peringatan') {
                     $q->having('total_stok_sum', '>=', 6)
-                        ->having('total_stok_sum', '<=', 15);
+                    ->having('total_stok_sum', '<=', 15);
                 } elseif ($stokFilter === 'kritis') {
                     $q->having('total_stok_sum', '<=', 5);
                 }
             })
             ->orderBy('nama_produk')
-            ->paginate(10)
-            ->appends(['search' => $search, 'stok_filter' => $stokFilter]);
+            ->paginate($perPage)
+            ->appends([
+                'search'      => $search,
+                'stok_filter' => $stokFilter,
+                'per_page'    => $perPage
+            ]);
 
         if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
             return response()->json([
@@ -557,12 +599,15 @@ class AdminController extends Controller
             ]);
         }
 
-        return view('admin.stok.index', [
-            'title'       => 'Stok Produk',
-            'produks'     => $produks,
-            'search'      => $search,
-            'stok_filter' => $stokFilter,
-        ]);
+        $data = [
+            'title'        => 'Stok Produk',
+            'produks'      => $produks,
+            'search'       => $search,
+            'stok_filter'  => $stokFilter,
+            'per_page'     => $perPage,
+        ];
+
+        return view('admin.stok.index', $data);
     }
 
     public function stokEdit($id)
@@ -573,10 +618,12 @@ class AdminController extends Controller
                 ->orderBy('tanggal_kadaluarsa', 'asc');
         }])->findOrFail($id);
 
-        return view('admin.stok.edit', [
+        $data = [
             'title'  => 'Kelola Stok: ' . $produk->nama_produk,
             'produk' => $produk,
-        ]);
+        ];
+
+        return view('admin.stok.edit', $data);
     }
 
     public function stokUpdate(Request $request, $id)
@@ -744,6 +791,11 @@ class AdminController extends Controller
     {
         $search = $request->get('search');
         $statusFilter = $request->get('status');
+        $perPage = (int) $request->get('per_page', 10);
+
+        if (!in_array($perPage, [10, 20, 50, 100])) {
+            $perPage = 10;
+        }
 
         $query = User::where('role', 'kasir')
             ->when($search, function ($q) use ($search) {
@@ -759,7 +811,7 @@ class AdminController extends Controller
             })
             ->orderBy('nama');
 
-        $kasirs = $query->paginate(2);
+        $kasirs = $query->paginate($perPage);
 
         if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
             return response()->json([
@@ -772,10 +824,11 @@ class AdminController extends Controller
         }
 
         $data = [
-            'title'  => 'Data Kasir',
-            'kasirs' => $kasirs,
-            'search' => $search,
-            'status' => $statusFilter
+            'title'   => 'Data Kasir',
+            'kasirs'  => $kasirs,
+            'search'  => $search,
+            'status'  => $statusFilter,
+            'per_page'=> $perPage,
         ];
 
         return view('admin.kasir.index', $data);
@@ -871,16 +924,21 @@ class AdminController extends Controller
             ->with('success', "Status kasir {$kasir->nama} berhasil diubah menjadi {$kasir->status}");
     }
 
+    // Riwayat Transaksi
     public function riwayatTransaksiIndex(Request $request)
     {
         $search   = $request->get('search', '');
         $fromDate = $request->get('from_date', '');
         $toDate   = $request->get('to_date', '');
+        $perPage  = (int) $request->get('per_page', 10);
+
+        if (!in_array($perPage, [10, 20, 50, 100])) {
+            $perPage = 10;
+        }
 
         $transaksis = Transaksi::with('kasir')
             ->when($search, function ($q) use ($search) {
                 $lower = strtolower($search);
-
                 $q->where(function ($q2) use ($lower) {
                     $q2->whereRaw('LOWER(nama_pelanggan) LIKE ?', ["%{$lower}%"])
                         ->orWhereRaw('LOWER(nomor_unik) LIKE ?', ["%{$lower}%"])
@@ -892,8 +950,13 @@ class AdminController extends Controller
             ->when($fromDate, fn($q) => $q->whereDate('tanggal_transaksi', '>=', $fromDate))
             ->when($toDate,   fn($q) => $q->whereDate('tanggal_transaksi', '<=', $toDate))
             ->orderBy('tanggal_transaksi', 'desc')
-            ->paginate(5)
-            ->appends(compact('search', 'fromDate', 'toDate'));
+            ->paginate($perPage)
+            ->appends([
+                'search'    => $search,
+                'from_date' => $fromDate,
+                'to_date'   => $toDate,
+                'per_page'  => $perPage
+            ]);
 
         if ($request->ajax()) {
             return response()->json([
@@ -908,6 +971,10 @@ class AdminController extends Controller
         $data = [
             'title'      => 'Riwayat Transaksi',
             'transaksis' => $transaksis,
+            'search'     => $search,
+            'from_date'  => $fromDate,
+            'to_date'    => $toDate,
+            'per_page'   => $perPage,
         ];
 
         return view('admin.riwayat_transaksi.index', $data);
@@ -917,10 +984,12 @@ class AdminController extends Controller
     {
         $transaksi = Transaksi::with('kasir')->findOrFail($id);
 
-        return view('admin.riwayat_transaksi.edit', [
+        $data = [
             'title'      => 'Edit Transaksi',
             'transaksi'  => $transaksi,
-        ]);
+        ];
+
+        return view('admin.riwayat_transaksi.edit', $data);
     }
 
     public function riwayatTransaksiUpdate(Request $request, $id)
@@ -978,18 +1047,26 @@ class AdminController extends Controller
     public function logIndex(Request $request)
     {
         $search = $request->get('search');
+        $perPage = (int) $request->get('per_page', 10);
+
+        if (!in_array($perPage, [10, 20, 50, 100])) {
+            $perPage = 10;
+        }
 
         $logs = Log::with('user:id,nama,role')
             ->where('id_user', auth()->id())
             ->when($search, function ($query) use ($search) {
                 $lower = strtolower($search);
-
                 $query->where(function ($q) use ($lower) {
                     $q->whereRaw('LOWER(aktivitas) LIKE ?', ["%{$lower}%"]);
                 });
             })
             ->orderBy('waktu', 'desc')
-            ->paginate(10);
+            ->paginate($perPage)
+            ->appends([
+                'search'   => $search,
+                'per_page' => $perPage
+            ]);
 
         if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
             return response()->json([
@@ -1005,6 +1082,7 @@ class AdminController extends Controller
             'title'  => 'Log Aktivitas',
             'logs'   => $logs,
             'search' => $search,
+            'per_page' => $perPage,
         ];
 
         return view('admin.log.log_aktivitas', $data);

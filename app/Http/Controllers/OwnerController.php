@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\LaporanPenjualanExport;
+use App\Models\DetailTransaksi;
 use App\Models\Log;
 use App\Models\Produk;
 use App\Models\Transaksi;
@@ -92,15 +93,23 @@ class OwnerController extends Controller
             $chartData[]   = isset($omzet7Hari[$key]) ? (float) $omzet7Hari[$key]->total : 0;
         }
 
-        return view('owner.dashboard', compact(
-            'omzetHariIni', 'omzetKemarin', 'persenHariIni',
-            'transaksiHariIni', 'rataRata',
-            'omzetBulanIni', 'persenBulan',
-            'kasirAktif',
-            'topKasir',
-            'transaksiTerbaru',
-            'chartLabels', 'chartData',
-        ));
+        $data = [
+            'title'             => 'Dashboard Owner',
+            'omzetHariIni'      => $omzetHariIni,
+            'omzetKemarin'      => $omzetKemarin,
+            'persenHariIni'     => $persenHariIni,
+            'transaksiHariIni'  => $transaksiHariIni,
+            'rataRata'          => $rataRata,
+            'omzetBulanIni'     => $omzetBulanIni,
+            'persenBulan'       => $persenBulan,
+            'kasirAktif'        => $kasirAktif,
+            'topKasir'          => $topKasir,
+            'transaksiTerbaru'  => $transaksiTerbaru,
+            'chartLabels'       => $chartLabels,
+            'chartData'         => $chartData,
+        ];
+
+        return view('owner.dashboard', $data);
     }
 
     // Endpoint AJAX untuk switch chart periode
@@ -155,22 +164,29 @@ class OwnerController extends Controller
     public function produkIndex(Request $request)
     {
         $search = $request->query('search', '');
+        $perPage = (int) $request->query('per_page', 10);
+
+        if (!in_array($perPage, [10, 20, 50, 100])) {
+            $perPage = 10;
+        }
 
         $produks = Produk::with(['kategori', 'batchProduks' => function ($q) {
-            $q->whereNull('deleted_at')->latest();
-        }])
+                $q->whereNull('deleted_at')->latest();
+            }])
             ->when($search, function ($query, $search) {
                 $lower = strtolower($search);
                 $query->whereRaw('LOWER(nama_produk) LIKE ?', ["%{$lower}%"])
                     ->orWhereRaw('LOWER(barcode) LIKE ?', ["%{$lower}%"])
-                    ->orWhereHas(
-                        'kategori',
-                        fn($q) => $q->whereRaw('LOWER(nama_kategori) LIKE ?', ["%{$lower}%"])
+                    ->orWhereHas('kategori', fn($q) =>
+                        $q->whereRaw('LOWER(nama_kategori) LIKE ?', ["%{$lower}%"])
                     );
             })
             ->orderBy('nama_produk')
-            ->paginate(10)
-            ->appends(['search' => $search]);
+            ->paginate($perPage)
+            ->appends([
+                'search'   => $search,
+                'per_page' => $perPage
+            ]);
 
         if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
             return response()->json([
@@ -182,11 +198,14 @@ class OwnerController extends Controller
             ]);
         }
 
-        return view('owner.produk.index', [
-            'title'   => 'Produk',
-            'produks' => $produks,
-            'search'  => $search,
-        ]);
+        $data = [
+            'title'    => 'Produk',
+            'produks'  => $produks,
+            'search'   => $search,
+            'per_page' => $perPage,
+        ];
+
+        return view('owner.produk.index', $data);
     }
 
     // User Management
@@ -195,6 +214,11 @@ class OwnerController extends Controller
         $search       = $request->get('search');
         $statusFilter = $request->get('status');
         $roleFilter   = $request->get('role');
+        $perPage      = (int) $request->get('per_page', 10);
+
+        if (!in_array($perPage, [10, 20, 50, 100])) {
+            $perPage = 10;
+        }
 
         $users = User::whereIn('role', ['admin', 'kasir'])
             ->when($search, function ($q) use ($search) {
@@ -212,7 +236,13 @@ class OwnerController extends Controller
                 $q->where('role', $roleFilter);
             })
             ->orderBy('nama')
-            ->paginate(10);
+            ->paginate($perPage)
+            ->appends([
+                'search' => $search,
+                'status' => $statusFilter,
+                'role'   => $roleFilter,
+                'per_page' => $perPage
+            ]);
 
         if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
             return response()->json([
@@ -230,6 +260,7 @@ class OwnerController extends Controller
             'search' => $search,
             'status' => $statusFilter,
             'role'   => $roleFilter,
+            'per_page' => $perPage,
         ];
 
         return view('owner.user.index', $data);
@@ -535,6 +566,11 @@ class OwnerController extends Controller
     {
         $search = $request->get('search');
         $role   = $request->get('role');
+        $perPage = (int) $request->get('per_page', 10);
+
+        if (!in_array($perPage, [10, 20, 50, 100])) {
+            $perPage = 10;
+        }
 
         $logs = Log::with('user:id,nama,role')
             ->whereHas('user', function ($q) {
@@ -555,7 +591,12 @@ class OwnerController extends Controller
                 });
             })
             ->orderBy('waktu', 'desc')
-            ->paginate(10);
+            ->paginate($perPage)
+            ->appends([
+                'search' => $search,
+                'role'   => $role,
+                'per_page' => $perPage
+            ]);
 
         if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
             return response()->json([
@@ -572,6 +613,7 @@ class OwnerController extends Controller
             'logs'   => $logs,
             'search' => $search,
             'role'   => $role,
+            'per_page' => $perPage,
         ];
 
         return view('owner.log.log_aktivitas', $data);
