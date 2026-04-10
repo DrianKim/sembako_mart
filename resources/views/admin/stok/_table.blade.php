@@ -1,21 +1,4 @@
 @forelse ($produks as $index => $produk)
-    @php
-        $totalStok = $produk->total_stok; // dari accessor di model Produk
-        $adaKadaluarsa = $produk->batchProduks
-            ->filter(fn($b) => $b->tanggal_kadaluarsa && \Carbon\Carbon::parse($b->tanggal_kadaluarsa)->isPast())
-            ->count();
-        $mendekatiKadaluarsa = $produk->batchProduks
-            ->filter(function ($b) {
-                if (!$b->tanggal_kadaluarsa) {
-                    return false;
-                }
-
-                $exp = \Carbon\Carbon::parse($b->tanggal_kadaluarsa);
-
-                return !$exp->isPast() && $exp->diffInDays(now(), false) <= 30;
-            })
-            ->count();
-    @endphp
     <tr class="transition-colors hover:bg-gray-50">
         <td class="w-12 px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
             {{ $produks->firstItem() + $index }}
@@ -33,28 +16,28 @@
         <td class="px-6 py-4">
             <div class="text-sm font-semibold text-gray-900">{{ $produk->nama_produk }}</div>
             <div class="text-xs text-gray-500">Barcode: {{ $produk->barcode ?? '-' }}</div>
-            @if ($adaKadaluarsa > 0)
+            @if ($produk->jumlah_kadaluarsa > 0)
                 <span class="inline-block px-2 py-0.5 mt-1 text-xs font-medium text-white bg-red-500 rounded-full">
-                    <i class="mr-1 fas fa-exclamation-circle"></i>{{ $adaKadaluarsa }} batch kadaluarsa
+                    <i class="mr-1 fas fa-exclamation-circle"></i>{{ $produk->jumlah_kadaluarsa }} batch kadaluarsa
                 </span>
-            {{-- @elseif ($mendekatiKadaluarsa > 0)
+            @elseif ($produk->jumlah_mendekati > 0)
                 <span class="inline-block px-2 py-0.5 mt-1 text-xs font-medium text-white bg-yellow-500 rounded-full">
-                    <i class="mr-1 fas fa-clock"></i>{{ $mendekatiKadaluarsa }} batch segera kadaluarsa
-                </span> --}}
+                    <i class="mr-1 fas fa-clock"></i>{{ $produk->jumlah_mendekati }} batch segera kadaluarsa
+                </span>
             @endif
         </td>
         <td class="px-6 py-4 text-center whitespace-nowrap">
-            @if ($totalStok > 15)
+            @if ($produk->total_stok > 15)
                 <span class="px-3 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded-full">
-                    {{ number_format($totalStok) }}
+                    {{ number_format($produk->total_stok) }}
                 </span>
-            @elseif ($totalStok > 5)
+            @elseif ($produk->total_stok > 5)
                 <span class="px-3 py-1 text-xs font-semibold text-yellow-800 bg-yellow-100 rounded-full">
-                    {{ number_format($totalStok) }}
+                    {{ number_format($produk->total_stok) }}
                 </span>
             @else
                 <span class="px-3 py-1 text-xs font-semibold text-red-800 bg-red-100 rounded-full">
-                    {{ number_format($totalStok) }}
+                    {{ number_format($produk->total_stok) }}
                 </span>
             @endif
         </td>

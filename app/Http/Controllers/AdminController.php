@@ -254,11 +254,13 @@ class AdminController extends Controller
         $search = $request->query('search', '');
         $perPage = (int) $request->query('per_page', 10);
 
-        // Validasi nilai per_page
         $allowedPerPage = [10, 20, 50, 100];
         if (!in_array($perPage, $allowedPerPage)) {
             $perPage = 10;
         }
+
+        $now  = now();
+        $batas = now()->addDays(30);
 
         $produks = Produk::with(['kategori', 'batchProduks' => function ($q) {
                 $q->whereNull('deleted_at')->latest();
@@ -277,6 +279,26 @@ class AdminController extends Controller
                 'search'   => $search,
                 'per_page' => $perPage
             ]);
+
+        $produks->getCollection()->transform(function ($produk) use ($now, $batas) {
+            $produk->total_stok = $produk->batchProduks->sum('stok');
+            $produk->harga_beli = $produk->batchProduks->last()?->harga_beli ?? 0;
+
+            $produk->jumlah_kadaluarsa = $produk->batchProduks
+                ->filter(fn($b) => $b->tanggal_kadaluarsa &&
+                    Carbon::parse($b->tanggal_kadaluarsa)->lt($now))
+                ->count();
+
+            $produk->jumlah_mendekati = $produk->batchProduks
+                ->filter(function ($b) use ($now, $batas) {
+                    if (!$b->tanggal_kadaluarsa) return false;
+                    $exp = Carbon::parse($b->tanggal_kadaluarsa);
+                    return $exp->gte($now) && $exp->lte($batas);
+                })
+                ->count();
+
+            return $produk;
+        });
 
         if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
             return response()->json([
@@ -548,11 +570,13 @@ class AdminController extends Controller
         $stokFilter  = $request->get('stok_filter');
         $perPage     = (int) $request->get('per_page', 10);
 
-        // Validasi per_page
         $allowedPerPage = [10, 20, 50, 100];
         if (!in_array($perPage, $allowedPerPage)) {
             $perPage = 10;
         }
+
+        $now       = now();
+        $batas     = now()->addDays(30);
 
         $produks = Produk::with(['kategori', 'batchProduks' => function ($q) {
                 $q->whereNull('deleted_at')
@@ -589,6 +613,28 @@ class AdminController extends Controller
                 'per_page'    => $perPage
             ]);
 
+        // Hitung kadaluarsa setelah paginate — hanya proses item di halaman ini
+        $produks->getCollection()->transform(function ($produk) use ($now, $batas) {
+            $produk->total_stok = $produk->batchProduks
+                ->whereNull('deleted_at')
+                ->sum('stok');
+
+            $produk->jumlah_kadaluarsa = $produk->batchProduks
+                ->filter(fn($b) => $b->tanggal_kadaluarsa &&
+                    Carbon::parse($b->tanggal_kadaluarsa)->lt($now))
+                ->count();
+
+            $produk->jumlah_mendekati = $produk->batchProduks
+                ->filter(function ($b) use ($now, $batas) {
+                    if (!$b->tanggal_kadaluarsa) return false;
+                    $exp = Carbon::parse($b->tanggal_kadaluarsa);
+                    return $exp->gte($now) && $exp->lte($batas);
+                })
+                ->count();
+
+            return $produk;
+        });
+
         if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
             return response()->json([
                 'html'       => view('admin.stok._table', compact('produks'))->render(),
@@ -600,11 +646,11 @@ class AdminController extends Controller
         }
 
         $data = [
-            'title'        => 'Stok Produk',
-            'produks'      => $produks,
-            'search'       => $search,
-            'stok_filter'  => $stokFilter,
-            'per_page'     => $perPage,
+            'title'       => 'Stok Produk',
+            'produks'     => $produks,
+            'search'      => $search,
+            'stok_filter' => $stokFilter,
+            'per_page'    => $perPage,
         ];
 
         return view('admin.stok.index', $data);

@@ -19,8 +19,8 @@
         </td>
         <td class="px-6 py-4 whitespace-nowrap">
             @if ($produk->foto)
-                <img src="{{ url($produk->foto) }}"
-                    alt="{{ $produk->nama_produk }}" class="object-cover w-10 h-10 bg-gray-100 rounded-lg">
+                <img src="{{ url($produk->foto) }}" alt="{{ $produk->nama_produk }}"
+                    class="object-cover w-10 h-10 bg-gray-100 rounded-lg">
             @else
                 <div class="flex items-center justify-center w-10 h-10 bg-gray-200 rounded-lg">
                     <i class="text-sm text-gray-500 fas fa-image"></i>
@@ -30,29 +30,23 @@
         <td class="px-6 py-4">
             <div class="text-sm font-semibold text-gray-900">{{ $produk->nama_produk }}</div>
             <div class="text-xs text-gray-500">Barcode: {{ $produk->barcode ?? '-' }}</div>
-            @if ($adaKadaluarsa > 0)
+            @if ($produk->jumlah_kadaluarsa > 0)
                 <span class="inline-block px-2 py-0.5 mt-1 text-xs font-medium text-white bg-red-500 rounded-full">
-                    <i class="mr-1 fas fa-exclamation-circle"></i>{{ $adaKadaluarsa }} batch kadaluarsa
+                    <i class="mr-1 fas fa-exclamation-circle"></i>{{ $produk->jumlah_kadaluarsa }} batch kadaluarsa
                 </span>
-            {{-- @elseif ($mendekatiKadaluarsa > 0)
+            @elseif ($produk->jumlah_mendekati > 0)
                 <span class="inline-block px-2 py-0.5 mt-1 text-xs font-medium text-white bg-yellow-500 rounded-full">
-                    <i class="mr-1 fas fa-clock"></i>{{ $mendekatiKadaluarsa }} batch segera kadaluarsa
-                </span> --}}
+                    <i class="mr-1 fas fa-clock"></i>{{ $produk->jumlah_mendekati }} batch segera kadaluarsa
+                </span>
             @endif
         </td>
         <td class="px-6 py-4 text-sm text-gray-900">{{ $produk->kategori->nama_kategori ?? '-' }}</td>
         <td class="px-6 py-4 text-sm font-semibold text-orange-600 whitespace-nowrap">
-            Rp {{ number_format($hargaBeli, 0, ',', '.') }}
+            Rp {{ number_format($produk->harga_beli, 0, ',', '.') }}
         </td>
         <td class="px-6 py-4 text-sm font-semibold text-green-600 whitespace-nowrap">
             Rp {{ number_format($produk->harga_jual, 0, ',', '.') }}
         </td>
-        {{-- <td class="px-6 py-4 whitespace-nowrap">
-            <span class="text-sm font-semibold {{ $totalStok <= 0 ? 'text-red-600' : 'text-gray-900' }}">
-                {{ $totalStok }}
-            </span>
-            <span class="text-xs text-gray-500">{{ $produk->satuan }}</span>
-        </td> --}}
         <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">{{ $produk->satuan }}</td>
         <td class="px-6 py-4 text-center whitespace-nowrap">
             <div class="flex justify-center gap-2">
