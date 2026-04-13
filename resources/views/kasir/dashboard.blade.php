@@ -35,10 +35,10 @@
                         <i class="fas fa-wallet text-2xl text-green-600"></i>
                     </div>
                 </div>
-                <p class="mt-3 text-sm {{ $persenOmzet >= 0 ? 'text-green-600' : 'text-red-500' }}">
+                {{-- <p class="mt-3 text-sm {{ $persenOmzet >= 0 ? 'text-green-600' : 'text-red-500' }}">
                     <i class="fas fa-arrow-{{ $persenOmzet >= 0 ? 'up' : 'down' }} mr-1"></i>
                     {{ abs($persenOmzet) }}% dari kemarin
-                </p>
+                </p> --}}
             </div>
 
             <!-- Transaksi Hari Ini -->

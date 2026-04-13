@@ -29,10 +29,10 @@
                         <i class="fas fa-wallet text-2xl text-green-600"></i>
                     </div>
                 </div>
-                <p class="mt-3 text-xs {{ $persenHariIni >= 0 ? 'text-green-600' : 'text-red-500' }}">
+                {{-- <p class="mt-3 text-xs {{ $persenHariIni >= 0 ? 'text-green-600' : 'text-red-500' }}">
                     <i class="fas fa-arrow-{{ $persenHariIni >= 0 ? 'up' : 'down' }} mr-1"></i>
                     {{ abs($persenHariIni) }}% dari kemarin
-                </p>
+                </p> --}}
             </div>
 
             <!-- Transaksi Hari Ini -->
@@ -64,10 +64,10 @@
                         <i class="fas fa-chart-line text-2xl text-purple-600"></i>
                     </div>
                 </div>
-                <p class="mt-3 text-xs {{ $persenBulan >= 0 ? 'text-green-600' : 'text-red-500' }}">
+                {{-- <p class="mt-3 text-xs {{ $persenBulan >= 0 ? 'text-green-600' : 'text-red-500' }}">
                     <i class="fas fa-arrow-{{ $persenBulan >= 0 ? 'up' : 'down' }} mr-1"></i>
                     {{ abs($persenBulan) }}% dari bulan lalu
-                </p>
+                </p> --}}
             </div>
 
             <!-- Kasir Aktif -->

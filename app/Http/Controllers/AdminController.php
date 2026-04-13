@@ -32,9 +32,9 @@ class AdminController extends Controller
         $omzetKemarin = Transaksi::whereDate('tanggal_transaksi', $yesterday)
             ->sum('total_harga');
 
-        $persenOmzet = $omzetKemarin > 0
-            ? round((($omzetHariIni - $omzetKemarin) / $omzetKemarin) * 100, 1)
-            : 0;
+        // $persenOmzet = $omzetKemarin > 0
+        //     ? round((($omzetHariIni - $omzetKemarin) / $omzetKemarin) * 100, 1)
+        //     : 0;
 
         // Jumlah transaksi hari ini
         $transaksiHariIni = Transaksi::whereDate('tanggal_transaksi', $today)->count();
@@ -100,7 +100,7 @@ class AdminController extends Controller
             'title'                  => 'Dashboard Admin',
             'omzetHariIni'           => $omzetHariIni,
             'omzetKemarin'           => $omzetKemarin,
-            'persenOmzet'            => $persenOmzet,
+            // 'persenOmzet'            => $persenOmzet,
             'transaksiHariIni'       => $transaksiHariIni,
             'rataRataTransaksi'      => $rataRataTransaksi,
             'produkStokRendah'       => $produkStokRendah,

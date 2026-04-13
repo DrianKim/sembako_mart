@@ -32,9 +32,9 @@ class OwnerController extends Controller
         $omzetKemarin = Transaksi::whereDate('tanggal_transaksi', $yesterday)
             ->sum('total_harga');
 
-        $persenHariIni = $omzetKemarin > 0
-            ? round((($omzetHariIni - $omzetKemarin) / $omzetKemarin) * 100, 1)
-            : 0;
+        // $persenHariIni = $omzetKemarin > 0
+        //     ? round((($omzetHariIni - $omzetKemarin) / $omzetKemarin) * 100, 1)
+        //     : 0;
 
         // Transaksi hari ini
         $transaksiHariIni = Transaksi::whereDate('tanggal_transaksi', $today)->count();
@@ -49,9 +49,9 @@ class OwnerController extends Controller
             $bulanLalu, $bulanLaluAkhir
         ])->sum('total_harga');
 
-        $persenBulan = $omzetBulanLalu > 0
-            ? round((($omzetBulanIni - $omzetBulanLalu) / $omzetBulanLalu) * 100, 1)
-            : 0;
+        // $persenBulan = $omzetBulanLalu > 0
+        //     ? round((($omzetBulanIni - $omzetBulanLalu) / $omzetBulanLalu) * 100, 1)
+        //     : 0;
 
         // Kasir aktif
         $kasirAktif = User::where('role', 'kasir')
@@ -97,11 +97,11 @@ class OwnerController extends Controller
             'title'             => 'Dashboard Owner',
             'omzetHariIni'      => $omzetHariIni,
             'omzetKemarin'      => $omzetKemarin,
-            'persenHariIni'     => $persenHariIni,
+            // 'persenHariIni'     => $persenHariIni,
             'transaksiHariIni'  => $transaksiHariIni,
             'rataRata'          => $rataRata,
             'omzetBulanIni'     => $omzetBulanIni,
-            'persenBulan'       => $persenBulan,
+            // 'persenBulan'       => $persenBulan,
             'kasirAktif'        => $kasirAktif,
             'topKasir'          => $topKasir,
             'transaksiTerbaru'  => $transaksiTerbaru,

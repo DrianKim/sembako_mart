@@ -31,9 +31,9 @@ class KasirController extends Controller
             ->whereDate('tanggal_transaksi', $yesterday)
             ->sum('total_harga');
 
-        $persenOmzet = $omzetKemarin > 0
-            ? round((($omzetHariIni - $omzetKemarin) / $omzetKemarin) * 100, 1)
-            : 0;
+        // $persenOmzet = $omzetKemarin > 0
+        //     ? round((($omzetHariIni - $omzetKemarin) / $omzetKemarin) * 100, 1)
+        //     : 0;
 
         // Jumlah transaksi hari ini
         $transaksiHariIni = Transaksi::where('kasir_id', $kasirId)
@@ -60,7 +60,7 @@ class KasirController extends Controller
             'title'             => 'Dashboard Kasir',
             'omzetHariIni'      => $omzetHariIni,
             'omzetKemarin'      => $omzetKemarin,
-            'persenOmzet'       => $persenOmzet,
+            // 'persenOmzet'       => $persenOmzet,
             'transaksiHariIni'  => $transaksiHariIni,
             'rataRata'          => $rataRata,
             'produkStokRendah'  => $produkStokRendah,
@@ -197,7 +197,7 @@ class KasirController extends Controller
                     'subtotal'     => $item['harga'] * $item['qty'],
                 ]);
 
-                // FIFO 
+                // FIFO
                 $sisaKurang = $item['qty'];
 
                 $batches = BatchProduk::where('produk_id', $item['produk_id'])
