@@ -1085,7 +1085,6 @@ class AdminController extends Controller
     {
         $request->validate([
             'nama_pelanggan' => 'nullable|string|max:255',
-            'total_harga'    => 'required|numeric|min:0',
             'uang_bayar'     => 'nullable|numeric|min:0',
         ]);
 

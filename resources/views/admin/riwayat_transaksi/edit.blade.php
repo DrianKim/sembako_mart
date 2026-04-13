@@ -89,8 +89,8 @@
                             Total Harga <span class="text-red-500">*</span>
                         </label>
                         <input type="number" id="total_harga" name="total_harga"
-                            value="{{ old('total_harga', $transaksi->total_harga) }}" required
-                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
+                            value="{{ old('total_harga', $transaksi->total_harga) }}" readonly
+                            class="w-full px-4 py-2.5 bg-gray-100 border border-gray-300 rounded-lg cursor-not-allowed">
                     </div>
 
                     <!-- Uang Bayar -->
