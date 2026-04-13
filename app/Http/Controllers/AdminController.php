@@ -562,36 +562,38 @@ class AdminController extends Controller
     // Stok
     public function stokIndex(Request $request)
     {
-        $search      = $request->get('search');
-        $stokFilter  = $request->get('stok_filter');
-        $perPage     = (int) $request->get('per_page', 10);
+        $search        = $request->get('search');
+        $stokFilter    = $request->get('stok_filter');
+        $kadaluarsaFilter = $request->get('kadaluarsa_filter');
+        $perPage       = (int) $request->get('per_page', 10);
 
         $allowedPerPage = [10, 20, 50, 100];
         if (!in_array($perPage, $allowedPerPage)) {
             $perPage = 10;
         }
 
-        $now       = now();
-        $batas     = now()->addDays(30);
+        $now   = now();
+        $batas = now()->addDays(30);
 
         $produks = Produk::with(['kategori', 'batchProduks' => function ($q) {
                 $q->whereNull('deleted_at')
                     ->orderByRaw('stok = 0 ASC')
                     ->orderBy('tanggal_kadaluarsa', 'asc');
             }])
+            ->withSum(['batchProduks as total_stok_sum' => function ($q) {
+                $q->whereNull('deleted_at');
+            }], 'stok')
             ->when($search, function ($q) use ($search) {
                 $lower = strtolower($search);
-                $q->whereRaw('LOWER(nama_produk) LIKE ?', ["%{$lower}%"])
-                    ->orWhereRaw('LOWER(barcode) LIKE ?', ["%{$lower}%"])
-                    ->orWhereHas('kategori', fn($q) =>
-                        $q->whereRaw('LOWER(nama_kategori) LIKE ?', ["%{$lower}%"])
-                    );
+                $q->where(function ($q2) use ($lower) {
+                    $q2->whereRaw('LOWER(nama_produk) LIKE ?', ["%{$lower}%"])
+                        ->orWhereRaw('LOWER(barcode) LIKE ?', ["%{$lower}%"])
+                        ->orWhereHas('kategori', fn($q3) =>
+                            $q3->whereRaw('LOWER(nama_kategori) LIKE ?', ["%{$lower}%"])
+                        );
+                });
             })
             ->when($stokFilter, function ($q) use ($stokFilter) {
-                $q->withSum(['batchProduks as total_stok_sum' => function ($query) {
-                    $query->whereNull('deleted_at');
-                }], 'stok');
-
                 if ($stokFilter === 'aman') {
                     $q->having('total_stok_sum', '>', 15);
                 } elseif ($stokFilter === 'peringatan') {
@@ -601,19 +603,33 @@ class AdminController extends Controller
                     $q->having('total_stok_sum', '<=', 5);
                 }
             })
+            ->when($kadaluarsaFilter, function ($q) use ($kadaluarsaFilter, $now, $batas) {
+                if ($kadaluarsaFilter === 'kadaluarsa') {
+                    $q->whereHas('batchProduks', fn($q2) =>
+                        $q2->whereNull('deleted_at')
+                            ->whereNotNull('tanggal_kadaluarsa')
+                            ->where('tanggal_kadaluarsa', '<', $now)
+                    );
+                } elseif ($kadaluarsaFilter === 'mendekati') {
+                    $q->whereHas('batchProduks', fn($q2) =>
+                        $q2->whereNull('deleted_at')
+                            ->whereNotNull('tanggal_kadaluarsa')
+                            ->where('tanggal_kadaluarsa', '>=', $now)
+                            ->where('tanggal_kadaluarsa', '<=', $batas)
+                    );
+                }
+            })
             ->orderBy('nama_produk')
             ->paginate($perPage)
             ->appends([
-                'search'      => $search,
-                'stok_filter' => $stokFilter,
-                'per_page'    => $perPage
+                'search'            => $search,
+                'stok_filter'       => $stokFilter,
+                'kadaluarsa_filter' => $kadaluarsaFilter,
+                'per_page'          => $perPage,
             ]);
 
-        // Hitung kadaluarsa setelah paginate — hanya proses item di halaman ini
         $produks->getCollection()->transform(function ($produk) use ($now, $batas) {
-            $produk->total_stok = $produk->batchProduks
-                ->whereNull('deleted_at')
-                ->sum('stok');
+            $produk->total_stok = $produk->batchProduks->sum('stok');
 
             $produk->jumlah_kadaluarsa = $produk->batchProduks
                 ->filter(fn($b) => $b->tanggal_kadaluarsa &&
@@ -642,11 +658,12 @@ class AdminController extends Controller
         }
 
         $data = [
-            'title'       => 'Stok Produk',
-            'produks'     => $produks,
-            'search'      => $search,
-            'stok_filter' => $stokFilter,
-            'per_page'    => $perPage,
+            'title'             => 'Stok Produk',
+            'produks'           => $produks,
+            'search'            => $search,
+            'stok_filter'       => $stokFilter,
+            'kadaluarsa_filter' => $kadaluarsaFilter,
+            'per_page'          => $perPage,
         ];
 
         return view('admin.stok.index', $data);

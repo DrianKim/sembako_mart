@@ -45,7 +45,7 @@
             </div>
 
             <!-- Status Stok -->
-            <div class="md:col-span-3">
+            {{-- <div class="md:col-span-3">
                 <label class="block mb-2 text-sm font-semibold text-gray-700">
                     <i class="mr-1 text-green-600 fas fa-filter"></i> Status Stok
                 </label>
@@ -56,6 +56,23 @@
                     <option value="peringatan" {{ $stok_filter == 'peringatan' ? 'selected' : '' }}>Peringatan (6-15)
                     </option>
                     <option value="kritis" {{ $stok_filter == 'kritis' ? 'selected' : '' }}>Kritis (≤5)</option>
+                </select>
+            </div> --}}
+
+            <!-- Filter Kadaluarsa -->
+            <div class="md:col-span-3">
+                <label class="block mb-2 text-sm font-semibold text-gray-700">
+                    <i class="mr-1 text-green-600 fas fa-calendar-times"></i> Kadaluarsa
+                </label>
+                <select id="kadaluarsaFilter"
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
+                    <option value="">Semua</option>
+                    <option value="kadaluarsa" {{ ($kadaluarsa_filter ?? '') == 'kadaluarsa' ? 'selected' : '' }}>
+                        Batch Kadaluarsa
+                    </option>
+                    <option value="mendekati" {{ ($kadaluarsa_filter ?? '') == 'mendekati' ? 'selected' : '' }}>
+                        Mendekati Kadaluarsa (30 hari)
+                    </option>
                 </select>
             </div>
 
@@ -137,13 +154,15 @@
         let currentPage = 1;
         let currentSearch = '{{ $search ?? '' }}';
         let currentStokFilter = '{{ $stok_filter ?? '' }}';
+        let currentKadaluarsaFilter = '{{ $kadaluarsa_filter ?? '' }}';
         let currentPerPage = {{ $per_page }};
         let searchTimer = null;
 
-        function loadData(page = 1, search = '', stokFilter = '', perPage = currentPerPage) {
+        function loadData(page = 1, search = '', stokFilter = '', kadaluarsaFilter = '', perPage = currentPerPage) {
             currentPage = page;
             currentSearch = search;
             currentStokFilter = stokFilter;
+            currentKadaluarsaFilter = kadaluarsaFilter;
             currentPerPage = perPage;
 
             $.ajax({
@@ -153,6 +172,7 @@
                     page: page,
                     search: search,
                     stok_filter: stokFilter,
+                    kadaluarsa_filter: kadaluarsaFilter,
                     per_page: perPage
                 },
                 headers: {
@@ -205,32 +225,38 @@
             clearTimeout(searchTimer);
             const term = $(this).val().trim();
             searchTimer = setTimeout(() => {
-                loadData(1, term, currentStokFilter, currentPerPage);
+                loadData(1, term, currentStokFilter, currentKadaluarsaFilter, currentPerPage);
             }, 400);
         });
 
         // Stok Filter Change
         $('#stokFilter').on('change', function() {
-            loadData(1, currentSearch, $(this).val(), currentPerPage);
+            loadData(1, currentSearch, $(this).val(), currentKadaluarsaFilter, currentPerPage);
         });
+
+        // Kadaluarsa Filter Change
+        $('#kadaluarsaFilter').on('change', function() {
+            loadData(1, currentSearch, currentStokFilter, $(this).val(), currentPerPage);
+        });
+
 
         // Per Page Change
         $('#perPage').on('change', function() {
-            const newPerPage = parseInt($(this).val());
-            loadData(1, currentSearch, currentStokFilter, newPerPage);
+            loadData(1, currentSearch, currentStokFilter, currentKadaluarsaFilter, parseInt($(this).val()));
         });
 
         // Reset Button
         $('#btnReset').on('click', function() {
             $('#searchInput').val('');
             $('#stokFilter').val('');
+            $('#kadaluarsaFilter').val('');
             $('#perPage').val(10);
-            loadData(1, '', '', 10);
+            loadData(1, '', '', '', 10);
         });
 
         // Initial Load
         $(document).ready(function() {
-            loadData(1, currentSearch, currentStokFilter, currentPerPage);
+            loadData(1, currentSearch, currentStokFilter, currentKadaluarsaFilter, currentPerPage);
 
             @if (session('success'))
                 Swal.fire({

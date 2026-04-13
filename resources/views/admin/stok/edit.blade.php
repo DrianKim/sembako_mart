@@ -196,8 +196,9 @@
                                 <label class="block mb-1.5 text-sm font-semibold text-gray-700">
                                     Jumlah Stok <span class="text-red-500">*</span>
                                 </label>
-                                <input type="number" name="stok_baru" min="1" value="{{ old('stok_baru') }}"
-                                    class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg @error('stok_baru') border-red-400 @enderror">
+                                <input type="number" id="editJumlahStok" name="jumlah_stok" min="0"
+                                    value="0"
+                                    class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg @error('jumlah_stok') border-red-400 @enderror">
                                 @error('stok_baru')
                                     <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                                 @enderror
@@ -491,13 +492,16 @@
         function setModeEdit(data) {
             stokSaatIni = parseInt(data.stok) || 0;
 
-            // Isi field form edit
             document.getElementById('editBatchId').value = data.batchId;
             document.getElementById('editNomorBatch').value = data.nomorBatch || '';
             document.getElementById('editStokInfo').value = stokSaatIni;
-            document.getElementById('editJumlahStok').value = '';
+            document.getElementById('editJumlahStok').value = '0';
             document.getElementById('editHargaBeli').value = data.hargaBeli;
             document.getElementById('editTanggalKadaluarsa').value = data.tanggal || '';
+
+            // Min tanggal = hari ini (boleh sama dengan hari ini, tidak boleh kemarin)
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('editTanggalKadaluarsa').min = today;
 
             // Reset aksi ke "tambah"
             document.querySelector('input[name="aksi_stok"][value="tambah"]').checked = true;
@@ -620,9 +624,9 @@
             const cfg = aksiConfig[aksi];
             const jumlah = parseInt(document.getElementById('editJumlahStok').value) || 0;
             const el = document.getElementById('previewHasilStok');
-            const isEmpty = document.getElementById('editJumlahStok').value === '';
+            const batchId = document.getElementById('editBatchId').value;
 
-            if (isEmpty || !document.getElementById('editBatchId').value) {
+            if (!batchId) { // hanya sembunyikan kalau belum ada batch dipilih
                 el.textContent = '-';
                 el.className =
                     'flex items-center justify-center w-full px-4 py-2.5 text-lg font-bold border-2 border-dashed rounded-lg border-gray-200 text-gray-300';
