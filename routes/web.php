@@ -61,6 +61,7 @@ Route::middleware(['auth', 'check.status', 'role:admin'])->prefix('/admin')->nam
     Route::post('/stok/{id}/store', [AdminController::class, 'stokStore'])->name('stok.store');
     Route::get('/stok/{id}/edit', [AdminController::class, 'stokEdit'])->name('stok.edit');
     Route::put('/stok/{id}/update', [AdminController::class, 'stokUpdate'])->name('stok.update');
+    Route::delete('stok/batch/{batchId}', [AdminController::class, 'stokBatchHapus'])->name('stok.batch.delete');
 
     // Kasir
     Route::get('/kasir', [AdminController::class, 'kasirIndex'])->name('kasir');

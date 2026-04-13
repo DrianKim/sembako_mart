@@ -78,48 +78,49 @@ class KasirController extends Controller
         ]);
     }
 
-    // AJAX: Ambil daftar produk
     public function getProduk(Request $request)
     {
-        $search = $request->search;
+        $search     = $request->search;
         $stokFilter = $request->stok_filter;
+        $now        = now();
+        $batas      = now()->addDays(30);
 
-        $query = Produk::with(['kategori', 'batchProduks' => function ($q) {
+        $query = Produk::with(['kategori', 'batchProduks' => function ($q) use ($now) {
             $q->whereNull('deleted_at')
                 ->where('stok', '>', 0)
-                ->orderBy('tanggal_kadaluarsa'); // FIFO: yang mau expired duluan
+                ->where(function ($q2) use ($now) {
+                    // Hanya batch yang BELUM kadaluarsa
+                    $q2->whereNull('tanggal_kadaluarsa')
+                        ->orWhere('tanggal_kadaluarsa', '>=', $now);
+                })
+                ->orderBy('tanggal_kadaluarsa'); // FIFO
         }])
-            ->when($search, function ($q) use ($search) {
-                $q->where(function ($q2) use ($search) {
-                    $q2->where('nama_produk', 'like', "%{$search}%")
-                        ->orWhere('barcode', 'like', "%{$search}%");
-                });
+        ->when($search, function ($q) use ($search) {
+            $q->where(function ($q2) use ($search) {
+                $q2->where('nama_produk', 'like', "%{$search}%")
+                    ->orWhere('barcode', 'like', "%{$search}%");
             });
+        });
 
         $products = $query->orderBy('nama_produk')->get();
 
-        $formatted = $products->map(function ($p) use ($stokFilter) {
+        $formatted = $products->map(function ($p) use ($stokFilter, $now, $batas) {
+            // Stok hanya dari batch valid (kadaluarsa sudah difilter di query)
             $totalStok = $p->batchProduks->sum('stok');
             $hargaBeli = $p->batchProduks->first()?->harga_beli ?? 0;
 
-            // Filter stok
             if ($stokFilter === 'tersedia' && $totalStok <= 0) return null;
             if ($stokFilter === 'sedikit' && ($totalStok <= 0 || $totalStok >= 10)) return null;
-            if ($stokFilter === 'habis' && $totalStok > 0) return null;
+            if ($stokFilter === 'habis'   && $totalStok > 0) return null;
 
-            // Cek ada batch hampir/sudah kadaluarsa
-            $adaKadaluarsa = $p->batchProduks->filter(
-                fn($b) =>
-                $b->tanggal_kadaluarsa &&
-                    Carbon::parse($b->tanggal_kadaluarsa)->isPast()
-            )->count();
-
-            $mendekatiKadaluarsa = $p->batchProduks->filter(
-                fn($b) =>
-                $b->tanggal_kadaluarsa &&
-                    !Carbon::parse($b->tanggal_kadaluarsa)->isPast() &&
-                    Carbon::parse($b->tanggal_kadaluarsa)->diffInDays(now()) <= 30
-            )->count();
+            // Cek batch kadaluarsa (semua batch, termasuk yg stok 0) — untuk badge warning
+            $allBatches = $p->batchProduks; // sudah exclude kadaluarsa dari query
+            // Tapi kita perlu load semua untuk cek mendekati
+            $mendekatiKadaluarsa = $allBatches->filter(function ($b) use ($now, $batas) {
+                if (!$b->tanggal_kadaluarsa) return false;
+                $exp = Carbon::parse($b->tanggal_kadaluarsa);
+                return $exp->gte($now) && $exp->lte($batas);
+            })->count();
 
             return [
                 'id'                   => $p->id,
@@ -131,11 +132,9 @@ class KasirController extends Controller
                 'stok'                 => (int) $totalStok,
                 'kategori_id'          => $p->kategori_id,
                 'kategori_nama'        => $p->kategori->nama_kategori ?? 'Lainnya',
-                'ada_kadaluarsa'       => $adaKadaluarsa > 0,
+                'ada_kadaluarsa'       => false, // ga mungkin ada, udah difilter
                 'mendekati_kadaluarsa' => $mendekatiKadaluarsa > 0,
-                'img' => $p->foto
-                    ? $p->foto
-                    : 'https://placehold.co/400x300?text=No+Image',
+                'img'                  => $p->foto ?: 'https://placehold.co/400x300?text=No+Image',
             ];
         })->filter()->values();
 
@@ -170,16 +169,23 @@ class KasirController extends Controller
             ]);
 
             foreach ($request->keranjang as $item) {
-                // Validasi stok total dulu
+                $now = now();
+
+                // Validasi stok
                 $totalStok = BatchProduk::where('produk_id', $item['produk_id'])
                     ->whereNull('deleted_at')
+                    ->where('stok', '>', 0)
+                    ->where(function ($q) use ($now) {
+                        $q->whereNull('tanggal_kadaluarsa')
+                            ->orWhere('tanggal_kadaluarsa', '>=', $now);
+                    })
                     ->sum('stok');
 
                 if ($totalStok < $item['qty']) {
                     DB::rollBack();
                     return response()->json([
                         'success' => false,
-                        'message' => "Stok produk '{$item['nama']}' tidak mencukupi. Sisa: {$totalStok}"
+                        'message' => "Stok produk '{$item['nama']}' tidak mencukupi. Sisa stok valid: {$totalStok}"
                     ], 422);
                 }
 
@@ -191,12 +197,16 @@ class KasirController extends Controller
                     'subtotal'     => $item['harga'] * $item['qty'],
                 ]);
 
-                // FIFO: kurangi dari batch paling dekat kadaluarsa
+                // FIFO 
                 $sisaKurang = $item['qty'];
 
                 $batches = BatchProduk::where('produk_id', $item['produk_id'])
                     ->whereNull('deleted_at')
                     ->where('stok', '>', 0)
+                    ->where(function ($q) use ($now) {
+                        $q->whereNull('tanggal_kadaluarsa')
+                            ->orWhere('tanggal_kadaluarsa', '>=', $now);
+                    })
                     ->orderByRaw('tanggal_kadaluarsa IS NULL, tanggal_kadaluarsa ASC')
                     ->get();
 

@@ -654,11 +654,23 @@ class AdminController extends Controller
 
     public function stokEdit($id)
     {
+        $now   = now();
+        $batas = now()->addDays(30);
+
         $produk = Produk::with(['kategori', 'batchProduks' => function ($q) {
             $q->whereNull('deleted_at')
                 ->orderByRaw('stok = 0 ASC')
                 ->orderBy('tanggal_kadaluarsa', 'asc');
         }])->findOrFail($id);
+
+        $produk->batchProduks->each(function ($batch) use ($now, $batas) {
+            $exp = $batch->tanggal_kadaluarsa
+                ? Carbon::parse($batch->tanggal_kadaluarsa)
+                : null;
+
+            $batch->is_kadaluarsa  = $exp && $exp->lt($now);
+            $batch->is_mendekati   = $exp && $exp->gte($now) && $exp->lte($batas);
+        });
 
         $data = [
             'title'  => 'Kelola Stok: ' . $produk->nama_produk,
@@ -786,6 +798,26 @@ class AdminController extends Controller
         }
 
         return redirect()->route('admin.stok.edit', $id)->with('error', 'Aksi tidak dikenali.');
+    }
+
+    public function stokBatchHapus($batchId)
+    {
+        $batch    = BatchProduk::whereNull('deleted_at')->findOrFail($batchId);
+        $produkId = $batch->produk_id;
+        $produk   = Produk::findOrFail($produkId);
+        $nomor    = $batch->nomor_batch ?? 'Tanpa Nomor';
+        $stok     = $batch->stok;
+
+        Log::create([
+            'id_user'   => auth()->id(),
+            'aktivitas' => "User " . auth()->user()->nama . " menghapus batch '{$nomor}' produk '{$produk->nama_produk}' (stok: {$stok})",
+            'waktu'     => now(),
+        ]);
+
+        $batch->delete();
+
+        return redirect()->route('admin.stok.edit', $produkId)
+            ->with('success', "Batch {$nomor} berhasil dihapus! Stok -{$stok} {$produk->satuan}");
     }
 
     // Tambah helper method di controller

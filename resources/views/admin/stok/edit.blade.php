@@ -92,28 +92,20 @@
 
             <div class="divide-y divide-gray-100" id="batchList">
                 @forelse ($produk->batchProduks as $batch)
-                    @php
-                        $isKadaluarsa =
-                            $batch->tanggal_kadaluarsa && \Carbon\Carbon::parse($batch->tanggal_kadaluarsa)->isPast();
-                        $isMendekati =
-                            !$isKadaluarsa &&
-                            $batch->tanggal_kadaluarsa &&
-                            \Carbon\Carbon::parse($batch->tanggal_kadaluarsa)->diffInDays(now()) <= 30;
-                    @endphp
                     <div class="p-4 transition-colors cursor-pointer hover:bg-gray-50 batch-item"
                         data-batch-id="{{ $batch->id }}" data-nomor-batch="{{ $batch->nomor_batch }}"
                         data-stok="{{ $batch->stok }}" data-harga-beli="{{ $batch->harga_beli }}"
-                        data-tanggal="{{ $batch->tanggal_kadaluarsa }}">
+                        data-tanggal="{{ $batch->tanggal_kadaluarsa ? \Carbon\Carbon::parse($batch->tanggal_kadaluarsa)->format('Y-m-d') : '' }}">
                         <div class="flex items-start justify-between">
                             <div>
                                 <div class="flex items-center gap-2">
                                     <span class="text-sm font-semibold text-gray-800">
                                         {{ $batch->nomor_batch ?? 'Tanpa Nomor Batch' }}
                                     </span>
-                                    @if ($isKadaluarsa)
+                                    @if ($batch->is_kadaluarsa)
                                         <span
                                             class="px-2 py-0.5 text-xs font-medium text-white bg-red-500 rounded-full">Kadaluarsa</span>
-                                    @elseif ($isMendekati)
+                                    @elseif ($batch->is_mendekati)
                                         <span
                                             class="px-2 py-0.5 text-xs font-medium text-white bg-yellow-500 rounded-full">Segera
                                             Kadaluarsa</span>
@@ -134,10 +126,18 @@
                                     {{ $batch->tanggal_kadaluarsa ? \Carbon\Carbon::parse($batch->tanggal_kadaluarsa)->format('d M Y') : '-' }}
                                 </p>
                             </div>
-                            <button type="button"
-                                class="p-2 text-blue-600 transition rounded-lg bg-blue-50 hover:bg-blue-100 btn-edit-batch">
-                                <i class="text-xs fas fa-edit"></i>
-                            </button>
+                            <div class="flex items-center gap-2 flex-shrink-0">
+                                <button type="button"
+                                    class="p-2 text-blue-600 transition rounded-lg bg-blue-50 hover:bg-blue-100 btn-edit-batch">
+                                    <i class="text-xs fas fa-edit"></i>
+                                </button>
+                                <button type="button"
+                                    class="p-2 text-red-600 transition rounded-lg bg-red-50 hover:bg-red-100 btn-hapus-batch"
+                                    data-batch-id="{{ $batch->id }}"
+                                    data-nomor-batch="{{ $batch->nomor_batch ?? 'Tanpa Nomor Batch' }}">
+                                    <i class="text-xs fas fa-trash"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 @empty
@@ -356,7 +356,6 @@
             </div>
 
         </div>
-        {{-- /KOLOM KANAN --}}
 
     </div>
 
@@ -367,6 +366,10 @@
             <i class="mr-2 fas fa-arrow-left"></i> Kembali
         </a>
     </div>
+
+    <form id="formHapusBatch" action="" method="POST" class="hidden">
+        @csrf @method('DELETE')
+    </form>
 @endsection
 
 @push('scripts')
@@ -530,6 +533,36 @@
                 block: 'start'
             });
         }
+
+        // ============================================================
+        // HAPUS BATCH
+        // ============================================================
+        document.querySelectorAll('.btn-hapus-batch').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation(); // jangan trigger klik batch-item
+
+                const batchId = this.dataset.batchId;
+                const nomorBatch = this.dataset.nomorBatch;
+
+                Swal.fire({
+                    title: 'Hapus Batch?',
+                    html: `Batch <strong>${nomorBatch}</strong> akan dihapus permanen.<br>Stok batch ini akan hilang!`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        const form = document.getElementById('formHapusBatch');
+                        form.action = `{{ url('admin/stok/batch') }}/${batchId}`;
+                        form.submit();
+                    }
+                });
+            });
+        });
 
         // ============================================================
         // KLIK BATCH ITEM (daftar kiri)
