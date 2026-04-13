@@ -196,9 +196,9 @@
                                 <label class="block mb-1.5 text-sm font-semibold text-gray-700">
                                     Jumlah Stok <span class="text-red-500">*</span>
                                 </label>
-                                <input type="number" id="editJumlahStok" name="jumlah_stok" min="0"
+                                <input type="number" id="tambahJumlahStok" name="stok_baru" min="1"
                                     value="0"
-                                    class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg @error('jumlah_stok') border-red-400 @enderror">
+                                    class="w-full px-4 py-2.5 text-gray-700 border border-gray-300 rounded-lg @error('stok_baru') border-red-400 @enderror">
                                 @error('stok_baru')
                                     <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                                 @enderror
